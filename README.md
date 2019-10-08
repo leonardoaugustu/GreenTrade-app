@@ -1,4 +1,4 @@
-# GreenTrade-FrontEnd
+# GreenTrade
 This is the front-end work for GreenTrade app 
 
 The navigation part is completed for now, including the drawer navigaion and bottom navigation.
