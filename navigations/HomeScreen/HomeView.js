@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View} from "react-native";
+import { Text, View, Image} from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
@@ -32,6 +32,9 @@ export default class HomeView extends Component {
                   <Text style={styles.textTitle}>Green Trade</Text>
               </View>
               </View>
+          </View>
+          <View style={styles.cameraWrapper}>
+          <Image style={styles.cameraImg} source={require('../../assets/camera.png')}/>
           </View>
         </SafeAreaView>
     );

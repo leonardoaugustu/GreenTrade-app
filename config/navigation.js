@@ -10,6 +10,7 @@ import HistoryView from "../navigations/HistoryScreen/HistoryView";
 import SplashView from "../navigations/SplashScreen/SplashView";
 import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/styles";
+import CameraView from "../navigations/CameraScreen/CameraView";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -70,6 +71,9 @@ const StackNavigator = createStackNavigator({
   SignUp: {
       screen: SignUpView
   },
+  Camera: {
+    screen: CameraView
+  }
 },
 {
   headerMode: "none", //Hide the back button react navigation

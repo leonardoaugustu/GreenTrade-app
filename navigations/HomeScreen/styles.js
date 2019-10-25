@@ -73,4 +73,13 @@ textTitle: {
 drawerIcon: {
     marginLeft: wp('-6%')
 },
+cameraWrapper: {
+    marginTop: hp('40%'),
+    width: wp('100%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+cameraImg: {
+    alignSelf: 'center'
+}
 })
