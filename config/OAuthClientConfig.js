@@ -1,6 +1,6 @@
 export default googleLogInConfig = {
-  androidClientId: '1053830574114-tnvp03e0b5monfgqd3tiom9i0lcv8qdv.apps.googleusercontent.com',
-  iosClientId: '1053830574114-stfb6bfr8qnt3eh2n1rec007v1eqqlkb.apps.googleusercontent.com',
+  iosClientId: '976879369920-sb1pha2ejoq3uckg3l8329uklutqkri5.apps.googleusercontent.com',
+  androidClientId: '976879369920-ec281ids20lris4qp36npa6e93orh5qd.apps.googleusercontent.com',
   scopes: ['profile', 'email'],
   registrationEndpoint: 'https://google.com'
 };
