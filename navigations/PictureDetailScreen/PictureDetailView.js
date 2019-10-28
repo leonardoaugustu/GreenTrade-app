@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Text, View, Image, Button } from "react-native";
-import { Icon } from "react-native-elements";
+import { Text, View, Image, } from "react-native";
+import { Icon, Button } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 
@@ -35,17 +35,23 @@ export default class PictureDetailView extends Component {
             </View>
           </View>
         </SafeAreaView>
-        <View style={{ justifyContent: 'center', flexDirection: 'row', bottom: '70%' }}>
-          <Text>Points: 5</Text>
-          <Image style={{ width: '50%', height: '50%' }} source={require("../../assets/logo.png")} />
-        </View>
-        <View style={{ justifyContent: 'center', flexDirection: 'row'}}>
-          <Image style={{ width: '50%', height: '50%' }} source={require("../../assets/image.png")} />
-        </View>
-        <View style={{ alignSelf: 'center' }}>
-          <Text>Platic</Text>
-          <Text>Bottle</Text>
-          <Button title="Send"></Button>
+        <View style={styles.pictureDetailContainer}>
+          <View style={styles.logo}>
+            <Image style={styles.logoIcon} source={require("../../assets/logo.png")} />
+          </View>
+          <View style={styles.points}>
+            <Text style={styles.Txt_h2}>Points: ??</Text>
+          </View>
+          <View style={styles.image}>
+            <Image style={styles.imageIcon} source={require("../../assets/image.png")} />
+          </View>
+          <View style={styles.materials}>
+            <Text style={styles.Txt_h3}>Platic</Text>
+            <Text style={styles.Txt_h3}>Bottle</Text>
+          </View>
+          <View style={styles.button}>
+            <Button buttonStyle={styles.buttonSize} title="Send"></Button>
+          </View>
         </View>
       </View>
     );
