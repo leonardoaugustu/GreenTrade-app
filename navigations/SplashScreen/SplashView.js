@@ -1,19 +1,38 @@
 import React, { Component } from "react";
-import { Text, View} from "react-native";
+import { Text, View, ActivityIndicator, StyleSheet} from "react-native";
+import styles from "./styles";
 
-export default class SplashView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
+import firebase from 'firebase'
 
-  render() {
- 
-    return (
-        <View>
-            <Text>index</Text>
-        </View>
-    );
-  }
+export default class LoadingScreen extends Component {
+
+    componentDidMount() {
+        console.info('Loading: componentDidMount()');
+        this.checkIfLoggedIn();
+    }
+
+    checkIfLoggedIn = () => {
+        console.info('Loading: checkIfLoggedIn');
+        firebase.auth().onAuthStateChanged(user => 
+        {
+            if (user)
+            {
+                console.info('Loading: navigate to home');
+                this.props.navigation.navigate('Home');
+            } 
+            else {
+                console.info('Loading: navigate to SignIn');
+                this.props.navigation.navigate('SignIn');
+            }
+        })
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator size="large" />
+                <Text>Loading... </Text>
+            </View>
+        );
+    }
 }
