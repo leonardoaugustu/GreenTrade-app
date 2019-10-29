@@ -73,4 +73,29 @@ textTitle: {
 drawerIcon: {
     marginLeft: wp('-6%')
 },
+cameraWrapper: {
+    marginTop: hp('60%'),
+    width: wp('100%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+cameraImg: {
+    alignSelf: 'center',
+    width: wp('35%'),
+    height: wp('35%')
+},
+dialogContainer: {
+    width: wp('100%'),
+    justifyContent: 'center',
+    alignItems: 'center'
+},
+dialog: {
+    width: wp('70%'),
+    borderRadius: wp('10%'),
+    alignSelf: 'center'
+},
+customDialog: {
+    flexDirection: 'column',
+    height: hp('15%'),
+},
 })
