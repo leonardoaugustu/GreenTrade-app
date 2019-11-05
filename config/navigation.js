@@ -21,7 +21,7 @@ const Tabs = createBottomTabNavigator(
     },
     Reward: {
         screen: RewardView
-    }
+    },
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({

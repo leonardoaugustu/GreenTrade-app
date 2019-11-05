@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Text, View} from "react-native";
-import { Icon } from "react-native-elements";
+import { Text, View, FlatList} from "react-native";
+import { Icon, ListItem } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 
@@ -11,6 +11,30 @@ export default class RewardView extends Component {
     };
   }
   
+  renderItem = ({ item, index }) => (
+    <ListItem
+      Component={TouchableScale}
+      leftAvatar={{ rounded: true, source: { uri: item.url }, size: "medium" }}
+      title={`${item.firstName} ${item.lastName.substring(0, 1).toUpperCase()}.`}
+      titleStyle={{ color: "black" }}
+      subtitle={item.speciality}
+      subtitleStyle={{ color: "black", fontSize: 14 }}
+      rightElement={<Rating
+        readonly={true}
+        ratingCount={5}
+        imageSize={18}
+        startingValue={item.rating}
+      />
+
+      }
+
+      rightSubtitle={item.location}
+      rightSubtitleStyle={{ fontSize: 14, color: "black", alignSelf: "flex-start" }}
+      chevron={true}
+      bottomDivider={true}
+      topDivider={true}
+      onPress={() => this.toggleBeeProfileHandler(index)} />
+  );
 
   render() {
  
