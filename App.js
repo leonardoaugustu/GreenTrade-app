@@ -6,14 +6,14 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 
-//const store = createStore(combineReducers, applyMiddleware(thunkMiddleware));
+const store = createStore(combineReducers, applyMiddleware(thunkMiddleware));
 
 export default class App extends React.Component{
   render(){
     return (
-      // <Provider store={store}>
+    <Provider store={store}>
       <DrawerNavigator/>
-      //</Provider>
+    </Provider>
     );
   }
 }
