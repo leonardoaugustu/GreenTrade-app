@@ -1,11 +1,6 @@
 # GreenTrade
 This is the front-end work for GreenTrade app 
 
-# As a client I can view the picture details so that I know how many estimated points I will be earning.
-
-# 1. Code page Design
-# 2. Code page logic/binding
-
 ## Prerequisites 
 please make sure you have the following software installed on your computer:
 1. Node.js 10 LTS or later
