@@ -70,6 +70,9 @@ const StackNavigator = createStackNavigator({
   SignUp: {
       screen: SignUpView
   },
+  Reward: {
+    screen: RewardView
+},
 },
 {
   headerMode: "none", //Hide the back button react navigation

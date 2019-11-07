@@ -2,8 +2,8 @@ import {SORT_REWARDS} from '../../actions/Rewards/actionTypes';
 const initialState = {
     index: 0,
     routes: [
-            { key: 'rewards', title: 'Rewards List' },
-            { key: 'history', title: 'Redeemed History' },
+            { key: 'rewardList', title: 'Rewards List' },
+            { key: 'rewardHistory', title: 'Redeemed History' },
             ],
 };
 
