@@ -54,7 +54,7 @@ export default class CollectorPickupView extends Component {
     db.collection("collector-confirmed-pickups").doc("u3").collection("user-confirmed-pickups").get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => 
       {
-           db.collection('users').doc("u1").get().then(function (userDoc) 
+           db.collection('users').doc(doc.data().UserId).get().then(function (userDoc) 
         {  
           var pickupInfo =
             {
