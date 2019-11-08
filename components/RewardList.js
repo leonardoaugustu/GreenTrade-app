@@ -12,8 +12,6 @@ import * as firebase from "firebase";
 
   firebase.initializeApp(firebaseConfiguration);
 
-  let rewards = [];
-
 class RewardList extends Component {
     constructor(props) {
         super(props);
@@ -24,17 +22,9 @@ class RewardList extends Component {
         };
     }
 
-   async  componentWillMount(){
+    componentWillMount(){
     try {
-        await this.loadCollection();
-        this.setState({rewardList: rewards});
-      }
-      catch (error){
-        console.log(error);
-      }
-    }
-
-   async loadCollection() {
+        const rewards = [];
         var db = firebase.firestore();
         db.collection("rewards").get().then(function(querySnapshot){
             querySnapshot.forEach(function(doc){
@@ -49,6 +39,11 @@ class RewardList extends Component {
                 console.log(rewards);
             });
       });
+        this.setState({rewardList: rewards, loading: true});
+      }
+      catch (error){
+        console.log(error);
+      }
     }
 
     _itemLayout(data, index) {
@@ -87,15 +82,17 @@ class RewardList extends Component {
     render() {
         return (
             <View style={styles.scene}  >
+                  {this.state.loading ? (
             <FlatList
-               data={rewards}
+               data={this.state.rewardList}
                renderItem={this.renderItem}
                keyExtractor={item => item.Id}
                style={styles.listContainer}
-               extraData={rewards}
+               extraData={this.state}
                getItemLayout={this._itemLayout.bind(this)}
                removeClippedSubviews={true}
             />
+            ) : <ActivityIndicator />}
             </View>
         );
     }
