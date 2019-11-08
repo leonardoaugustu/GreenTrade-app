@@ -61,14 +61,21 @@ export default class SignInView extends Component {
             .auth()
             .signInWithCredential(credential)
             .then(user => {
-              console.log('User signed in');
+              console.log('User signed in'); 
               var userData = {
                 uid: user.user.uid,
-                displayName: user.user.displayName,
-                email: user.user.providerData[0].email,
-                photoURL: user.user.photoURL,
                 providerId: user.user.providerData[0].providerId,
-                isNewUser: user.additionalUserInfo.isNewUser
+                email: user.user.providerData[0].email,
+                displayName: user.user.displayName,
+                firstName: user.additionalUserInfo.profile.given_name,
+                lastName: user.additionalUserInfo.profile.family_name,
+                profilePhoto: user.user.photoURL,
+                type: 'member',
+                deleted: false,
+                points: 0,
+                codes: [],
+                containers: [],
+                pickups: []
               }
               this.saveUser(userData);
             })
@@ -127,22 +134,22 @@ export default class SignInView extends Component {
   };
   //save user to firestore db
   saveUser = (userData) => {
-    if (userData.isNewUser) {
-      var userDB = db.collection("users").doc(userData.uid);
-      userDB.set(userData)
-      .then(function (snapshot) {
-        console.log('Inserted Snapshot', snapshot);
-      });
-    }
-    else {
-      var userDB = db.collection('users').doc(userData.uid);
-      userDB.update({
-        lastLoginAt: Date.now()
-      })
-        .then(function (snapshot) {
+    var user = db.collection("users").doc(userData.uid);
+    user.get().then(doc => {
+      if (doc.exists) {
+        user.update({
+          lastLoginAt: Date.now()
+        }).then(function (snapshot) {
           console.log('Updated Snapshot', snapshot);
         });
-    }
+      }
+      else {
+        user.set(userData)
+          .then(function (snapshot) {
+            console.log('Inserted Snapshot', snapshot);
+          });
+      }
+    });
   };
   renderCurrentState() {
     if (this.state.authenticating) {

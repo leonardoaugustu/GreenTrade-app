@@ -3,13 +3,13 @@ import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings(['Setting a timer', 'Accessing view manager']);
 
 // Your web app's Firebase configuration
-  export default firebaseConfig = {
-    apiKey: "AIzaSyCk-SaxbmyTEHiv59jvMzX2AYuhlt15SfU",
-    authDomain: "react-native-firebase-801e3.firebaseapp.com",
-    databaseURL: "https://react-native-firebase-801e3.firebaseio.com",
-    projectId: "react-native-firebase-801e3",
-    storageBucket: "react-native-firebase-801e3.appspot.com",
-    messagingSenderId: "1053830574114",
-    appId: "1:1053830574114:web:f603ae9f5ffe4b90535a7b",
-    measurementId: "G-10K5GR9T3Q"
-  };
+export default firebaseConfig = {
+  apiKey: "AIzaSyDLUAnCa81HkyBlF6Z0xMLhTc55FfAvuEg",
+  authDomain: "greantrade.firebaseapp.com",
+  databaseURL: "https://greantrade.firebaseio.com",
+  projectId: "greantrade",
+  storageBucket: "greantrade.appspot.com",
+  messagingSenderId: "976879369920",
+  appId: "1:976879369920:web:c23dc9dce776c214dd3725",
+  measurementId: "G-1E62XFZ773"
+};
