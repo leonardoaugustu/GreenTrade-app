@@ -1,26 +1,67 @@
 import React from "react";
-import { Image, SafeAreaView, Text, View } from 'react-native';
+import { Image, SafeAreaView, Text, View, Alert } from 'react-native';
 import { createAppContainer } from "react-navigation";
 import  { createDrawerNavigator, DrawerNavigatorItems} from "react-navigation-drawer";
+import { DrawerActions } from 'react-navigation-drawer';
+import { NavigationActions, StackActions } from 'react-navigation'
 import { Divider, Icon } from "react-native-elements";
 import styles from "../navigations/HomeScreen/styles";
 import HomeView from "../navigations/HomeScreen/HomeView";
 import StackNavigator from"./navigation";
+
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/CollectorPickupView";
+
+import PictureDetailView from "../navigations/PictureDetailScreen/PictureDetailView";
+
+import firebase from 'firebase';
+
 
 const DrawerComponent = (props) => (
     <SafeAreaView style={styles.menuContainer}>
         <View style={styles.profileContainer}>
             <Image
-                source={{uri:'https://us.123rf.com/450wm/gmast3r/gmast3r1909/gmast3r190900039/129397458-man-wearing-protective-face-mask-with-human-putting-rubbish-into-trash-bin-environment-protection-re.jpg?ver=6'}}
+                source={{ uri: firebase.auth().currentUser && firebase.auth().currentUser.providerData[0].photoURL ? firebase.auth().currentUser.providerData[0].photoURL : 'https://us.123rf.com/450wm/gmast3r/gmast3r1909/gmast3r190900039/129397458-man-wearing-protective-face-mask-with-human-putting-rubbish-into-trash-bin-environment-protection-re.jpg?ver=6'}}
                 style={styles.profileImg}
             />
-            <Text style={styles.nameTxt}>Sylvia Chen</Text>
-            <Text style={styles.emailTxt}>sylviachen627@gmail.com</Text>
-            </View>
-            <View style={styles.safeView}>
-          <View style={styles.DrawerComponentScrollView}>
-            <DrawerNavigatorItems style={styles.menuItem}  {...props} />
+            <Text style={styles.nameTxt}>{firebase.auth().currentUser && firebase.auth().currentUser.displayName}</Text>
+            <Text style={styles.emailTxt}>{firebase.auth().currentUser && firebase.auth().currentUser.providerData[0].email}</Text>
+        </View>
+        <View style={styles.safeView}>
+            <View style={styles.DrawerComponentScrollView}>
+                <DrawerNavigatorItems style={styles.menuItem}  {...props} 
+                 onItemPress={({ route, focused }) => {
+                    console.log('onItemPress > route: ' + JSON.stringify(route) + ' focused: ' + focused);
+                    if(route.key == 'LogOut'){
+                        Alert.alert(
+                            'Log out', 'Do you want to logout?',
+                            [
+                                { text: 'Cancel', onPress: () => { return null } },
+                                {
+                                    text: 'Confirm', onPress: () => {
+                                        firebase.auth().signOut().then(function () {
+                                            console.info('Sign-out successful');
+                                            props.navigation.dispatch(DrawerActions.closeDrawer());
+                                            //reset navigation stack
+                                            props.navigation.dispatch(StackActions.reset({
+                                              index: 0,
+                                              actions: [
+                                                NavigationActions.navigate({
+                                                  routeName: 'SignIn'
+                                                }),
+                                              ],
+                                            }))
+                                        }).catch(function (error) {
+                                            console.error(error.message);
+                                        });
+                                    }
+                                },
+                            ],
+                            { cancelable: false }
+                        )
+                    } else {
+                        props.onItemPress({ route, focused });
+                    }
+                  }}/>
             </View>
         </View>
     </SafeAreaView>
@@ -37,6 +78,12 @@ const DrawerNavigator = createDrawerNavigator(
         EditProfile: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Edit Profile",
+                drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            }
+        },
+        PictureDetail:{
+            screen: PictureDetailView, navigationOptions: {
+                drawerLabel: "Picture Details",
                 drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             }
         },

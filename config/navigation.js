@@ -21,7 +21,7 @@ const Tabs = createBottomTabNavigator(
     },
     Reward: {
         screen: RewardView
-    }
+    },
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -70,12 +70,14 @@ const StackNavigator = createStackNavigator({
   SignUp: {
       screen: SignUpView
   },
+  Reward: {
+    screen: RewardView
+},
 },
 {
   headerMode: "none", //Hide the back button react navigation
-  initialRouteName: "Home",
+  initialRouteName: "Splash",
 });
-
 
 //const navigation = createAppContainer(StackNavigator);
 
