@@ -8,9 +8,13 @@ import { Divider, Icon } from "react-native-elements";
 import styles from "../navigations/HomeScreen/styles";
 import HomeView from "../navigations/HomeScreen/HomeView";
 import StackNavigator from"./navigation";
+
+import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/CollectorPickupView";
+
 import PictureDetailView from "../navigations/PictureDetailScreen/PictureDetailView";
 
 import firebase from 'firebase';
+
 
 const DrawerComponent = (props) => (
     <SafeAreaView style={styles.menuContainer}>
