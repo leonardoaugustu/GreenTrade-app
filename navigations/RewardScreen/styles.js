@@ -181,7 +181,9 @@ listPoint: {
     fontSize: wp('5%'),
     color: '#FBDFAA',
     marginTop: wp('-6%'),
-    marginLeft: wp('-9%')
+    marginLeft: wp('-9%'),
+    flex: 1,
+    marginBottom: wp('10%')
 },
 dateTxt: {
     marginTop: wp('5%'),
@@ -192,5 +194,9 @@ dateTxt: {
 iconAfterDate: {
     marginTop: wp('-5%'),
     marginLeft: wp('35%'),
+},
+bottom: {
+    height: hp('10%'),
+    backgroundColor: '#F7F4F3'
 }
 })

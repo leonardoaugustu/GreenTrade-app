@@ -76,7 +76,7 @@ const StackNavigator = createStackNavigator({
 },
 {
   headerMode: "none", //Hide the back button react navigation
-  initialRouteName: "Splash",
+  initialRouteName: "Reward",
 });
 
 //const navigation = createAppContainer(StackNavigator);
