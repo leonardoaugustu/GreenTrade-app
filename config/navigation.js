@@ -10,6 +10,7 @@ import HistoryView from "../navigations/HistoryScreen/HistoryView";
 import SplashView from "../navigations/SplashScreen/SplashView";
 import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/styles";
+import TradePointlView from "../navigations/TradePointScreen/TradePointView";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -73,6 +74,9 @@ const StackNavigator = createStackNavigator({
   Reward: {
     screen: RewardView
 },
+  Trade: {
+    screen: TradePointlView
+  }
 },
 {
   headerMode: "none", //Hide the back button react navigation
