@@ -42,9 +42,12 @@ class RewardList extends Component {
             headerUrl: ''
         };
     }
+    toggleReward () {
+        this.props.navigation.navigate("Trade");
+    };
 
     renderItem = ({ item}) => (
-        <ListItem style={styles.itemContainer} onPress={this.toggleReward} >
+        <ListItem style={styles.itemContainer} onPress={() => this.toggleReward()} >
               <Left>
               <Image resizeMethod="resize" style={styles.img} source={{uri: item.url}}/>
               </Left>
