@@ -11,6 +11,8 @@ import SplashView from "../navigations/SplashScreen/SplashView";
 import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/styles";
 import TradePointlView from "../navigations/TradePointScreen/TradePointView";
+import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
+import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/CollectorPickupView";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -76,11 +78,17 @@ const StackNavigator = createStackNavigator({
 },
   Trade: {
     screen: TradePointlView
+  },
+  CollectorMap: {
+    screen: CollectorMapView
+  },
+  CollectorPickup: {
+    screen: CollectorPickupView
   }
 },
 {
   headerMode: "none", //Hide the back button react navigation
-  initialRouteName: "Home",
+  initialRouteName: "Splash",
 });
 
 //const navigation = createAppContainer(StackNavigator);

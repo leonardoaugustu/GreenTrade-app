@@ -87,9 +87,9 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             }
         },
-        Tutorial: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Tutorial",
+        Pickup: {
+            screen: CollectorPickupView, navigationOptions: {
+                drawerLabel: "Comfired Pickup",
                 drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             }
         },
