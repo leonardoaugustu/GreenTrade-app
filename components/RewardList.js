@@ -1,79 +1,102 @@
 import React, { Component } from "react";
 import {View, Text, Image, 
-    ScrollView,} from 'react-native';
+    ScrollView, Dimensions, ActivityIndicator} from 'react-native';
 import {Icon} from 'react-native-elements';
 import { List, ListItem, Left, Body, Right} from 'native-base';
 import { connect } from 'react-redux';
 import {sortRewards} from '../actions/Rewards/actionCreators';
 import { withNavigation, FlatList } from 'react-navigation';
 import styles from '../navigations/RewardScreen/styles';
+import firebaseConfig from '../../config/FireBaseConfig'
+import * as firebase from "firebase";
 
-const DATA = [
-    {
-        id: '1',
-        url: 'https://app.starbucks.com/weblx/images/cards/card-and-stars.png',
-        name: 'Starbucks Gift Card',
-        point: '80'
-    },
-    {
-        id: '2',
-        url: 'https://www.timhortons.com/ca/images/en/register-and-reload-tim-card.png',
-        name: 'Tim Hortons Gift Card',
-        point: '50'
-    },
-    {
-        id: '3',
-        url: 'https://i.pinimg.com/originals/c2/62/62/c26262b655129cd5991582a191d66b2b.png',
-        name: " McDonald's Gift Card",
-        point: '70'
-    },
-    {
-        id: '4',
-        url: 'https://i.ebayimg.com/images/g/9KEAAOSw-JJaV8wE/s-l300.png',
-        name: " Burger King Gift Card",
-        point: '100'
-    }
-];
+  firebase.initializeApp(firebaseConfig);
 
 class RewardList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            headerUrl: ''
+            headerUrl: '',
+            loading: false,
+            rewardList: [],
         };
     }
     toggleReward () {
         this.props.navigation.navigate("Trade");
     };
 
+    componentDidMount(){
+    try {
+        const rewards = [];
+        var db = firebase.firestore();
+        db.collection("rewards").get().then(function(querySnapshot){
+            querySnapshot.forEach(function(doc){
+                var rewardInfo = {
+                    "Name": doc.data().brand,
+                    "Cost": doc.data().cost,
+                    "Img_url": doc.data().img_url,
+                    "Value": doc.data().value,
+                    "Id": doc.data().id.toString(11)
+                };
+                rewards.push(rewardInfo);
+                console.log(rewards);
+            });
+      });
+        this.setState({rewardList: rewards, loading: !this.state.loading});
+      }
+      catch (error){
+        console.log(error);
+      }
+    }
+
+    _itemLayout(data, index) {
+        const width = this._itemWidth()
+    
+        return {
+          length: width,
+          offset: width * index,
+          index,
+        };
+      }
+    
+      _itemWidth() {
+        const { width } = Dimensions.get("window");
+        return width;
+      }
+
     renderItem = ({ item}) => (
         <ListItem style={styles.itemContainer} onPress={() => this.toggleReward()} >
               <Left>
-              <Image resizeMethod="resize" style={styles.img} source={{uri: item.url}}/>
+              <Image resizeMethod="resize" style={styles.img} source={{uri: item.Img_url}}/>
               </Left>
               <Body style={styles.body}>
-                <Text style={styles.rewardNameTxt}>{item.name}</Text>
+                <Text style={styles.rewardNameTxt}>{item.Name}</Text>
                 <Text style={styles.moreTxt}>View More</Text>
                 <Icon name="keyboard-arrow-right" 
                         type='material'
                         iconStyle={styles.iconGo}
                         color="#c3c3c3"
                         />
-                <Text style={styles.listPoint}>{item.point}</Text>
+                <Text style={styles.listPoint}>{item.Cost}</Text>
               </Body>
             </ListItem>
       );
 
     render() {
         return (
-            <ScrollView style={styles.scene}  >
+            <View style={styles.scene}  >
+                  {this.state.loading ? (
             <FlatList
-               data={DATA}
+               data={this.state.rewardList}
                renderItem={this.renderItem}
-               keyExtractor={item => item.id}
+               keyExtractor={item => item.Id}
                style={styles.listContainer}
+               extraData={this.state.loading}
+               getItemLayout={this._itemLayout.bind(this)}
+               removeClippedSubviews={false}
             />
-            </ScrollView>
+            ) : <ActivityIndicator />}
+            </View>
         );
     }
 }

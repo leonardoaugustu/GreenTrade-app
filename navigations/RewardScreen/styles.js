@@ -77,8 +77,10 @@ bottom: {
     height: hp('15%')
 },
 scene: {
+    width: wp('100%'),
   height: hp('100%'),
-  backgroundColor: '#F7F4F3'
+  backgroundColor: '#F7F4F3',
+  flex: 1
 },
 tabBar: {
   backgroundColor: '#fff',
@@ -138,13 +140,14 @@ starIcon: {
 },
 listContainer: {
     width: wp('100%'),
+    height: wp('50%'),
     backgroundColor: '#F7F4F3',
     marginTop: wp('1%'),
 },
 itemContainer: {
     flexDirection: 'row',
     height: hp('12%'),
-    width: wp('100%'),
+    width: wp('92%'),
     backgroundColor: '#fff',
     marginVertical: wp('1%')
 },
@@ -181,7 +184,8 @@ listPoint: {
     fontSize: wp('5%'),
     color: '#FBDFAA',
     marginTop: wp('-6%'),
-    marginLeft: wp('-9%')
+    marginLeft: wp('-9%'),
+    flex: 1,
 },
 dateTxt: {
     marginTop: wp('5%'),
@@ -192,5 +196,9 @@ dateTxt: {
 iconAfterDate: {
     marginTop: wp('-5%'),
     marginLeft: wp('35%'),
+},
+bottom: {
+    height: hp('10%'),
+    backgroundColor: '#F7F4F3'
 }
 })
