@@ -6,6 +6,7 @@ import SafeAreaView from "react-native-safe-area-view";
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
+import firebaseConfig from '../../config/FireBaseConfig'
 
 
 class FlatListItem extends Component {
@@ -36,17 +37,6 @@ export default class CollectorPickupView extends Component {
   componentWillMount()
   {
     const newData=[];
-    var firebaseConfig =
-    {
-      apiKey: "AIzaSyDCYDJXD_KqhqALV1dyg3qmh83m2oUP4Qs",
-      authDomain: "test-project-c55f5.firebaseapp.com",
-      databaseURL: "https://test-project-c55f5.firebaseio.com",
-      projectId: "test-project-c55f5",
-      storageBucket: "test-project-c55f5.appspot.com",
-      messagingSenderId: "560889480153",
-      appId: "1:560889480153:web:5e8aa945c570aa8f130fc8",
-      measurementId: "G-7EQZ7MRPGQ"
-    };
 
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
