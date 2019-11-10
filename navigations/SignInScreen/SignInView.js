@@ -9,7 +9,7 @@ import googleLogInConfig from '../../config/OAuthClientConfig';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import firebaseConfig from '../../config/FireBaseConfig'
-firebase.initializeApp(firebaseConfig); 
+!firebase.apps.length ? firebase.initializeApp(config) : firebase.app();
 const db = firebase.firestore();
 
 export default class SignInView extends Component {

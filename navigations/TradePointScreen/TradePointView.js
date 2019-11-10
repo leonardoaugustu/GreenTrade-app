@@ -20,14 +20,14 @@ export default class TradePointlView extends Component {
           <View style={styles.headerContainer}>
             <View style={styles.header}>
               <View style={styles.iconWrapper}>
-                <Icon
-                  onPress={() => this.props.navigation.openDrawer()}
-                  type="material"
-                  name="menu"
-                  size={30}
-                  color="#fff"
-                  containerStyle={styles.drawerIcon}
-                />
+              <Icon
+          onPress={() => this.props.navigation.goBack(null)}
+          type="material"
+          name="keyboard-arrow-left"
+          size={30}
+          color="#fff"
+          containerStyle={styles.drawerIcon}
+        />
               </View>
               <View style={styles.titleWrapper}>
                 <Text style={styles.textTitle}>Redeem Rewards</Text>

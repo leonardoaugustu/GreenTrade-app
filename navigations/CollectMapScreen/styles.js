@@ -67,7 +67,7 @@ titleWrapper: {
 },
 textTitle: {
     fontSize: wp('5%'),
-    marginLeft: wp('14%'),
+    marginLeft: wp('15%'),
     color: "#fff"
 },
 drawerIcon: {
