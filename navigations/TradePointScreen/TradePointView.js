@@ -49,18 +49,16 @@ export default class TradePointlView extends Component {
               type="font-awesome" name="star" color="#e1b225" />} />
         </View>
 
-        <View style={styles.qrcode}>
+        <View style={styles.usePoint}>
           <Button buttonStyle={{ backgroundColor: "#da272a" }}
             titleStyle={{ color: "white", fontSize: 25 }}
-            title="Scan to Redeem" iconRight={true}
-            icon={<Icon iconStyle={{ left: 20 }}
-              type="font-awesome" name="qrcode" />} />
+            title="Use your point" iconRight={true}/>
         </View>
 
-        <View style={styles.scanQrcode}>
+        {/* <View style={styles.scanQrcode}>
           <Icon iconStyle={{ left: 10 }}
             type="font-awesome" name="qrcode" color="black" size={200} />
-        </View>
+        </View> */}
       </View>
     );
   }
