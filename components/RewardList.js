@@ -7,10 +7,10 @@ import { connect } from 'react-redux';
 import {sortRewards} from '../actions/Rewards/actionCreators';
 import { withNavigation, FlatList } from 'react-navigation';
 import styles from '../navigations/RewardScreen/styles';
-import firebaseConfiguration from '../config/firebase';
+import firebaseConfig from '../../config/FireBaseConfig'
 import * as firebase from "firebase";
 
-  firebase.initializeApp(firebaseConfiguration);
+  firebase.initializeApp(firebaseConfig);
 
 class RewardList extends Component {
     constructor(props) {
