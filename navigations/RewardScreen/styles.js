@@ -77,6 +77,7 @@ bottom: {
     height: hp('15%')
 },
 scene: {
+    width: wp('100%'),
   height: hp('100%'),
   backgroundColor: '#F7F4F3',
   flex: 1
@@ -139,6 +140,7 @@ starIcon: {
 },
 listContainer: {
     width: wp('100%'),
+    height: wp('50%'),
     backgroundColor: '#F7F4F3',
     marginTop: wp('1%'),
 },

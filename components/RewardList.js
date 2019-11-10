@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {View, Text, Image, 
-    ScrollView, Dimensions} from 'react-native';
+    ScrollView, Dimensions, ActivityIndicator} from 'react-native';
 import {Icon} from 'react-native-elements';
 import { List, ListItem, Left, Body, Right} from 'native-base';
 import { connect } from 'react-redux';
@@ -22,7 +22,7 @@ class RewardList extends Component {
         };
     }
 
-    componentWillMount(){
+    componentDidMount(){
     try {
         const rewards = [];
         var db = firebase.firestore();
@@ -39,7 +39,7 @@ class RewardList extends Component {
                 console.log(rewards);
             });
       });
-        this.setState({rewardList: rewards, loading: true});
+        this.setState({rewardList: rewards, loading: !this.state.loading});
       }
       catch (error){
         console.log(error);
@@ -88,9 +88,9 @@ class RewardList extends Component {
                renderItem={this.renderItem}
                keyExtractor={item => item.Id}
                style={styles.listContainer}
-               extraData={this.state}
+               extraData={this.state.loading}
                getItemLayout={this._itemLayout.bind(this)}
-               removeClippedSubviews={true}
+               removeClippedSubviews={false}
             />
             ) : <ActivityIndicator />}
             </View>
