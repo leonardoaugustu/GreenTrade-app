@@ -13,6 +13,7 @@ import SignUpView from "../navigations/SignUpScreen/styles";
 import TradePointlView from "../navigations/TradePointScreen/TradePointView";
 import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/CollectorPickupView";
+import PaymentView from "../navigations/PaymentScreen/PaymentView";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -84,6 +85,9 @@ const StackNavigator = createStackNavigator({
   },
   CollectorPickup: {
     screen: CollectorPickupView
+  },
+  Payment: {
+    screen: PaymentView
   }
 },
 {
