@@ -1,7 +1,6 @@
-import React, { Component } from "react";
+ import React, { Component } from "react";
 import {
   ActivityIndicator,
-  Button,
   Clipboard,
   FlatList,
   Image,
@@ -13,6 +12,8 @@ import {
 } from 'react-native';
 import uuid from 'uuid';
 import * as ImagePicker from 'expo-image-picker';
+import { Button } from 'react-native-elements';
+
 import * as Permissions from 'expo-permissions'; import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
@@ -72,7 +73,7 @@ export default class HomeView extends Component {
               title="Pick an image from camera roll"
             />
 
-            <Button onPress={this._takePhoto} title="Take a photo" />
+            <Button style={styles.takePhoto} onPress={this._takePhoto} title="Take a photo" />
             {this.state.googleResponse && (
               <FlatList
                 data={this.state.googleResponse.responses[0].labelAnnotations}

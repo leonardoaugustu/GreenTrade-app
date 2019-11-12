@@ -10,6 +10,10 @@ import HistoryView from "../navigations/HistoryScreen/HistoryView";
 import SplashView from "../navigations/SplashScreen/SplashView";
 import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/styles";
+import TradePointlView from "../navigations/TradePointScreen/TradePointView";
+import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
+import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/CollectorPickupView";
+import PaymentView from "../navigations/PaymentScreen/PaymentView";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -21,7 +25,7 @@ const Tabs = createBottomTabNavigator(
     },
     Reward: {
         screen: RewardView
-    }
+    },
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -70,6 +74,21 @@ const StackNavigator = createStackNavigator({
   SignUp: {
       screen: SignUpView
   },
+  Reward: {
+    screen: RewardView
+},
+  Trade: {
+    screen: TradePointlView
+  },
+  CollectorMap: {
+    screen: CollectorMapView
+  },
+  CollectorPickup: {
+    screen: CollectorPickupView
+  },
+  Payment: {
+    screen: PaymentView
+  }
 },
 {
   headerMode: "none", //Hide the back button react navigation

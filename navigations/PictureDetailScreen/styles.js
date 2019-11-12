@@ -44,7 +44,6 @@ export default StyleSheet.create({
     },
     container: {
         flex: 1,
-        flexDirection: "column",
     },
     headerContainer: {
         flexDirection: "row",
@@ -73,68 +72,43 @@ export default StyleSheet.create({
     drawerIcon: {
         marginLeft: wp('-6%')
     },
-    cameraWrapper: {
-        marginTop: hp('60%'),
-        width: wp('100%'),
-        justifyContent: 'center',
-        alignItems: 'center',
+    pictureDetailContainer: {
+        height: hp('88%')
     },
-    cameraImg: {
-        alignSelf: 'center',
-        width: wp('35%'),
-        height: wp('35%')
-    },
-    dialogContainer: {
-        width: wp('100%'),
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    dialog: {
-        width: wp('70%'),
-        borderRadius: wp('10%'),
+    points: {
+        flexDirection: "row",
+        top: hp('2%'),
         alignSelf: 'center'
     },
-    customDialog: {
-        flexDirection: 'column',
-        height: hp('15%'),
+    Txt_h2: {
+        fontSize: 25,
     },
-    takePhoto: {
-        width: wp('30%'),
-        alignItems: 'center',
-        paddingTop: hp('5%'),
-        // left: hp('15%'),
-
+    logo: {
+        flexDirection: "row",
+        alignSelf: 'center',
     },
-    container2: {
-        flex: 1,
-        backgroundColor: '#fff',
-        paddingBottom: 10
+    logoIcon:
+    {
     },
-    developmentModeText: {
-        marginBottom: 20,
-        color: 'rgba(0,0,0,0.4)',
-        fontSize: 14,
-        lineHeight: 19,
-        textAlign: 'center'
+    image:
+    {
+        top: hp('3%'),
+        justifyContent: 'center',
+        flexDirection: 'row'
     },
-    contentContainer: {
-        paddingTop: 30
+    imageIcon: {
     },
-
-    getStartedContainer: {
-        alignItems: 'center',
-        marginHorizontal: 50
+    materials: {
+        alignSelf: 'center',
+        padding: hp('5%')
     },
-
-    getStartedText: {
-        fontSize: 17,
-        color: 'rgba(96,100,109, 1)',
-        lineHeight: 24,
-        textAlign: 'center'
+    Txt_h3: {
+        fontSize: 22,
     },
-
-    helpContainer: {
-        marginTop: 15,
-        alignItems: 'center'
-    },
-});
+    button: {
+        alignSelf: 'center',
+    }, 
+    buttonSize: {
+        height: hp('6%'), width: wp('30%')
+    }
+})

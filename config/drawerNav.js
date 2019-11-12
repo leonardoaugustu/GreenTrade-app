@@ -9,7 +9,12 @@ import styles from "../navigations/HomeScreen/styles";
 import HomeView from "../navigations/HomeScreen/HomeView";
 import StackNavigator from"./navigation";
 
+import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/CollectorPickupView";
+
+import PictureDetailView from "../navigations/PictureDetailScreen/PictureDetailView";
+
 import firebase from 'firebase';
+
 
 const DrawerComponent = (props) => (
     <SafeAreaView style={styles.menuContainer}>
@@ -76,9 +81,15 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             }
         },
-        Tutorial: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Tutorial",
+        PictureDetail:{
+            screen: PictureDetailView, navigationOptions: {
+                drawerLabel: "Picture Details",
+                drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            }
+        },
+        Pickup: {
+            screen: CollectorPickupView, navigationOptions: {
+                drawerLabel: "Comfired Pickup",
                 drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             }
         },

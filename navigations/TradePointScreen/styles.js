@@ -44,7 +44,6 @@ export default StyleSheet.create({
     },
     container: {
         flex: 1,
-        flexDirection: "column",
     },
     headerContainer: {
         flexDirection: "row",
@@ -73,68 +72,43 @@ export default StyleSheet.create({
     drawerIcon: {
         marginLeft: wp('-6%')
     },
-    cameraWrapper: {
-        marginTop: hp('60%'),
-        width: wp('100%'),
-        justifyContent: 'center',
-        alignItems: 'center',
+    usePoint: {
+        shadowColor:"black",
+        shadowOffset:{width:5, height:7},
+        bottom: hp('30%'),
+        height: hp('20%'),
+        width: wp('80%'),
+        alignSelf: "center",
+        padding: wp("3%"),
     },
-    cameraImg: {
-        alignSelf: 'center',
-        width: wp('35%'),
-        height: wp('35%')
+    rewardInfo: {
+        shadowColor:"black",
+        shadowOffset:{width:5, height:7},
+        shadowOpacity:0.2,
+        bottom: hp('30%'),
+        height: hp('22%'),
+        width: wp('80%'),
+        alignSelf: "center",
+        padding: wp("3%"),
     },
-    dialogContainer: {
-        width: wp('100%'),
-        justifyContent: 'center',
-        alignItems: 'center'
+    point: {
+        shadowColor:"black",
+        shadowOffset:{width:5, height:7},
+        bottom: hp('30%'),
+        height: hp('10'),
+        width: wp('20%'),
+        left: wp("10%"),
+        alignSelf: "flex-start",
+        padding: wp("3%"),
     },
-    dialog: {
-        width: wp('70%'),
-        borderRadius: wp('10%'),
-        alignSelf: 'center'
-    },
-    customDialog: {
-        flexDirection: 'column',
-        height: hp('15%'),
-    },
-    takePhoto: {
-        width: wp('30%'),
-        alignItems: 'center',
-        paddingTop: hp('5%'),
-        // left: hp('15%'),
+    // scanQrcode: {
+    //     shadowColor:"black",
+    //     shadowOffset:{width:5, height:7},
+    //     bottom: hp('0%'),
+    //     height: hp('35%'),
+    //     width: wp('80%'),
+    //     alignSelf: "center",
+    //     padding: wp("3%"),
+    // }
 
-    },
-    container2: {
-        flex: 1,
-        backgroundColor: '#fff',
-        paddingBottom: 10
-    },
-    developmentModeText: {
-        marginBottom: 20,
-        color: 'rgba(0,0,0,0.4)',
-        fontSize: 14,
-        lineHeight: 19,
-        textAlign: 'center'
-    },
-    contentContainer: {
-        paddingTop: 30
-    },
-
-    getStartedContainer: {
-        alignItems: 'center',
-        marginHorizontal: 50
-    },
-
-    getStartedText: {
-        fontSize: 17,
-        color: 'rgba(96,100,109, 1)',
-        lineHeight: 24,
-        textAlign: 'center'
-    },
-
-    helpContainer: {
-        marginTop: 15,
-        alignItems: 'center'
-    },
-});
+})

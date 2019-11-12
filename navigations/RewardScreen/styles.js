@@ -73,4 +73,132 @@ textTitle: {
 drawerIcon: {
     marginLeft: wp('-6%')
 },
+bottom: {
+    height: hp('15%')
+},
+scene: {
+    width: wp('100%'),
+  height: hp('100%'),
+  backgroundColor: '#F7F4F3',
+  flex: 1
+},
+tabBar: {
+  backgroundColor: '#fff',
+  borderWidth: 0,
+  marginTop: wp('3%'),
+  height: wp('7%')
+},
+tabItem: {
+  flex: 1,
+  alignItems: 'center',
+  paddingTop: wp('3%')
+},
+initialLayout: {
+    width: wp('100%'),
+    height: hp('30%'),
+    marginTop: hp('10%')
+},
+tabText: {
+   color: '#87D5FA',
+  fontSize: wp('3.5%'),
+  textTransform: 'capitalize', 
+  marginTop: wp('-6%'),
+  marginLeft: wp('-5%')
+},
+indocator: {
+  backgroundColor: '#87D5FA',
+  width: wp('40%'),
+  marginLeft: wp('2%'),
+  marginTop: wp('-6%')
+},
+ tab: {
+  borderWidth: 0,
+}, 
+sceneContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    
+  //   borderColor: '#000',
+  //   borderWidth: 1
+},
+headerImg: {
+    width: wp('100%'),
+    height: wp('47.5%')
+},
+topContainer: {
+    height: wp('30%')
+},
+pointText: {
+    fontSize: wp('6.5%'),
+    color: '#FBDFAA',
+    marginTop: wp('-7%'),
+    marginLeft: wp('50%')
+},
+starIcon: {
+    fontSize: wp('6.5%'),
+    marginLeft: wp('-20%'),
+},
+listContainer: {
+    width: wp('100%'),
+    height: wp('50%'),
+    backgroundColor: '#F7F4F3',
+    marginTop: wp('1%'),
+},
+itemContainer: {
+    flexDirection: 'row',
+    height: hp('12%'),
+    width: wp('92%'),
+    backgroundColor: '#fff',
+    marginVertical: wp('1%')
+},
+img: {
+    width: wp('18%'),
+    height: wp('18%')
+},
+itemTxt: {
+    fontSize: wp('4%'),
+    marginTop: hp('-0.5%'),
+    marginLeft: wp('3%'),
+    color: '#4B212F'
+},
+rewardNameTxt: {
+    marginLeft: wp('-10%'),
+    fontSize: wp('4%')
+},
+img: {
+    marginLeft: wp('4%'),
+    width: wp('20%'),
+    height: wp('20%')
+},
+moreTxt: {
+    marginTop: wp('5%'),
+    marginLeft: wp('3%'),
+    color: '#A5A2A2',
+    fontSize: wp('4%')
+},
+iconGo: {
+    marginTop: wp('-5%'),
+    marginLeft: wp('3%')
+},
+listPoint: {
+    fontSize: wp('5%'),
+    color: '#FBDFAA',
+    marginTop: wp('-6%'),
+    marginLeft: wp('-9%'),
+    flex: 1,
+},
+dateTxt: {
+    marginTop: wp('5%'),
+    marginLeft: wp('-10%'),
+    color: '#A5A2A2',
+    fontSize: wp('4%')
+},
+iconAfterDate: {
+    marginTop: wp('-5%'),
+    marginLeft: wp('35%'),
+},
+bottom: {
+    height: hp('10%'),
+    backgroundColor: '#F7F4F3'
+}
 })

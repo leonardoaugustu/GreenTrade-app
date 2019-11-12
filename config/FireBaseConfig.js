@@ -5,6 +5,7 @@ import { YellowBox } from 'react-native';
 YellowBox.ignoreWarnings(['Setting a timer', 'Accessing view manager']);
 
 // Your web app's Firebase configuration
+
 const firebaseConfig = {
   staging:{
   FIREBASE_API_KEY: "AIzaSyDLUAnCa81HkyBlF6Z0xMLhTc55FfAvuEg",
@@ -35,3 +36,4 @@ const firebaseConfig = {
   }               
   var Environment = getEnvironment(getReleaseChannel());
  export default Environment
+
