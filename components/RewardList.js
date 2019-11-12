@@ -17,7 +17,6 @@ class RewardList extends Component {
         super(props);
         this.state = {
             headerUrl: '',
-            loading: false,
             rewardList: [],
         };
     }
@@ -29,8 +28,8 @@ class RewardList extends Component {
     try {
         const rewards = [];
         var db = firebase.firestore();
-        db.collection("rewards").get().then(function(querySnapshot){
-            querySnapshot.forEach(function(doc){
+        db.collection("rewards").get().then((querySnapshot)=>{
+            querySnapshot.forEach((doc)=>{
                 var rewardInfo = {
                     "Name": doc.data().brand,
                     "Cost": doc.data().cost,
@@ -41,8 +40,8 @@ class RewardList extends Component {
                 rewards.push(rewardInfo);
                 console.log(rewards);
             });
+            this.setState({rewardList: rewards});
       });
-        this.setState({rewardList: rewards, loading: !this.state.loading});
       }
       catch (error){
         console.log(error);
@@ -85,17 +84,15 @@ class RewardList extends Component {
     render() {
         return (
             <View style={styles.scene}  >
-                  {this.state.loading ? (
-            <FlatList
-               data={this.state.rewardList}
-               renderItem={this.renderItem}
-               keyExtractor={item => item.Id}
-               style={styles.listContainer}
-               extraData={this.state.loading}
-               getItemLayout={this._itemLayout.bind(this)}
-               removeClippedSubviews={false}
-            />
-            ) : <ActivityIndicator />}
+              <FlatList
+                data={this.state.rewardList}
+                renderItem={this.renderItem}
+                keyExtractor={item => item.Id}
+                style={styles.listContainer}
+                extraData={this.state}
+                getItemLayout={this._itemLayout.bind(this)}
+                removeClippedSubviews={false}
+              />
             </View>
         );
     }
