@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity, Dimensions } from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
@@ -12,35 +12,42 @@ export default class CollectorPickupView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      collectorData:[], newData:'', isLoaded: false,
+      collectorData:[], 
+      name: "",
+      address: "",
     }
   }
 
-  componentWillMount()
+  componentDidMount()
   {
-    const newData=[];
-
-    !firebase.apps.length ? firebase.initializeApp(config) : firebase.app();
-    var db = firebase.firestore();
-
-    db.collection("collector-confirmed-pickups").doc("u3").collection("user-confirmed-pickups").get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => 
-      {
-           db.collection('users').doc(doc.data().UserId).get().then(function (userDoc) 
-        {  
-          var pickupInfo =
-            {
-              "Name": userDoc.data().firstName+ " " +userDoc.data().lastName,
-              "Address": userDoc.data().address,
-              "Date": doc.data().scheduledTime.substring(0,10),
-              "Time": doc.data().scheduledTime.substring(11),
-              "UserId": doc.data().UserId
-            };
-          newData.push(pickupInfo);
+    try{
+      const newData=[]; 
+      var db = firebase.firestore();
+  
+      db.collection("collector-confirmed-pickups").doc("u3").collection("user-confirmed-pickups").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => 
+        {
+             db.collection('users').doc(doc.data().UserId).get().then((userDoc) =>
+          {  
+            var pickupInfo =
+              {
+                "Name": userDoc.data().firstName+ " " +userDoc.data().lastName,
+                "Address": userDoc.data().address,
+                "Date": doc.data().scheduledTime.substring(0,10),
+                "Time": doc.data().scheduledTime.substring(11),
+                "UserId": doc.data().UserId
+              };
+            newData.push(pickupInfo);
+            console.log(this.state.name + "is showing")
+          this.setState({collectorData: newData});
+          });
+          
         });
       });
-      this.setState({collectorData: newData, isLoaded: true});
-    });
+    }
+    catch (error){
+      console.log(error);
+    }
   }
 
   toggleMap =() =>{
@@ -58,6 +65,21 @@ export default class CollectorPickupView extends Component {
       />
     );
   };
+
+  _itemLayout(data, index) {
+    const width = this._itemWidth()
+
+    return {
+      length: width,
+      offset: width * index,
+      index,
+    };
+  }
+
+  _itemWidth() {
+    const { width } = Dimensions.get("window");
+    return width;
+  }
 
   renderItem = ({ item}) => (
     <TouchableOpacity onPress={() => this.toggleMap()}>
@@ -100,6 +122,10 @@ export default class CollectorPickupView extends Component {
           ItemSeparatorComponent={this.renderSeparator}
           renderItem={this.renderItem}
           keyExtractor={item => item.UserId}
+          extraData={this.state}
+          removeClippedSubviews={false}
+          getItemLayout={this._itemLayout.bind(this)}
+          style={{flex:1}}
         >
         </FlatList>
       </SafeAreaView>
