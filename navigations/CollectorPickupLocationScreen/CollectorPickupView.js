@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, FlatList, TouchableOpacity, Dimensions } from "react-native";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
-import * as firebase from 'firebase';
 import 'firebase/firestore';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import firebaseConfig from '../../config/FireBaseConfig'
+import firebase from '../../config/firebase'
 
 export default class CollectorPickupView extends Component {
   constructor(props) {
@@ -23,6 +23,7 @@ export default class CollectorPickupView extends Component {
     try{
       const newData=[]; 
       var db = firebase.firestore();
+
   
       db.collection("collector-confirmed-pickups").doc("u3").collection("user-confirmed-pickups").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => 

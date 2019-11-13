@@ -8,9 +8,8 @@ import {sortRewards} from '../actions/Rewards/actionCreators';
 import { withNavigation, FlatList } from 'react-navigation';
 import styles from '../navigations/RewardScreen/styles';
 import firebaseConfig from '../config/FireBaseConfig';
-import * as firebase from "firebase";
+import firebase from '../config/firebase'
 
-  firebase.initializeApp(firebaseConfig);
 
 class RewardList extends Component {
     constructor(props) {

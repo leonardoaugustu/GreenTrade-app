@@ -5,11 +5,9 @@ import styles from "./styles";
 
 import * as Google from 'expo-google-app-auth';
 import googleLogInConfig from '../../config/OAuthClientConfig';
-
-import * as firebase from 'firebase';
 import 'firebase/firestore';
 import firebaseConfig from '../../config/FireBaseConfig'
-!firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
+import firebase from '../../config/firebase'
 const db = firebase.firestore();
 
 export default class SignInView extends Component {
