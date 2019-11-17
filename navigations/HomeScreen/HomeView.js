@@ -158,9 +158,9 @@ export default class HomeView extends Component {
 					style={{ paddingVertical: 10, paddingHorizontal: 10 }}
 				/>
 
-				<Text>Raw JSON:</Text>
+				{/* <Text>Raw JSON:</Text> */}
 
-				{googleResponse && (
+				{/* {googleResponse && (
 					<Text
 						onPress={this._copyToClipboard}
 						onLongPress={this._share}
@@ -168,7 +168,7 @@ export default class HomeView extends Component {
 					>
 						{JSON.stringify(googleResponse.responses)}
 					</Text>
-				)}
+				)} */}
 			</View>
 		);
   };
@@ -251,6 +251,7 @@ export default class HomeView extends Component {
 						}
 					}
 				]
+				
 			});
 			let response = await fetch(
 				"https://vision.googleapis.com/v1/images:annotate?key=" +
