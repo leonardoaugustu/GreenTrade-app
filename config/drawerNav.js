@@ -9,7 +9,7 @@ import styles from "../navigations/HomeScreen/styles";
 import HomeView from "../navigations/HomeScreen/HomeView";
 import StackNavigator from "./navigation";
 
-import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/CollectorPickupView";
+import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 
 import PictureDetailView from "../navigations/PictureDetailScreen/PictureDetailView";
 
