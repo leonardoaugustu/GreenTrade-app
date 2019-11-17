@@ -73,4 +73,16 @@ textTitle: {
 drawerIcon: {
     marginLeft: wp('-6%')
 },
+maps: {
+    ...StyleSheet.absoluteFillObject
+},
+buttonView:{
+    position: 'absolute',
+    bottom: wp('3%'),
+    height: hp('5%'),
+     width: wp('50%'),
+     left: wp('25%')
+
+
+}
 })
