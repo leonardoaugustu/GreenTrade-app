@@ -11,8 +11,8 @@ import SplashView from "../navigations/SplashScreen/SplashView";
 import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/styles";
 import TradePointlView from "../navigations/TradePointScreen/TradePointView";
-import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
-import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/CollectorPickupView";
+import CollectorMapView from "../navigations/CollectMapScreen/container";
+import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
 
 const Tabs = createBottomTabNavigator(
