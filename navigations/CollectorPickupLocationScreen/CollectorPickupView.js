@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity, Dimensions } from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
@@ -39,7 +39,6 @@ export default class CollectorPickupView extends Component {
                 "UserId": doc.data().UserId
               };
             newData.push(pickupInfo);
-            console.log(this.state.name + "is showing")
           this.setState({collectorData: newData});
           });
           

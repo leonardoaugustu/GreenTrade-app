@@ -11,9 +11,9 @@ import StackNavigator from "./navigation";
 
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/CollectorPickupView";
 
-import PictureDetailView from "../navigations/PictureDetailScreen/PictureDetailView";
-
 import firebase from 'firebase';
+import PaymentView from "../navigations/PaymentScreen/PaymentView";
+import PictureDetailView from "../navigations/PictureDetailScreen/PictureDetailView"
 
 
 const DrawerComponent = (props) => (
@@ -83,7 +83,7 @@ const DrawerNavigator = createDrawerNavigator(
         },
         PictureDetail:{
             screen: PictureDetailView, navigationOptions: {
-                drawerLabel: "Picture Details",
+                drawerLabel: "Picture",
                 drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             }
         },
