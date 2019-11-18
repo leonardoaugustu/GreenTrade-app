@@ -26,8 +26,8 @@ export default class CollectorMapView extends React.Component<{}> {
     const scheme = Platform.select({ ios: `maps:${this.state.region.latitude},${this.state.region.longitude}?q=`, android: `geo:${this.state.region.latitude},${this.state.region.longitude}?q=` });
     const destination = "43.642567" + "," + "-79.387054"
     const url = Platform.select({
-      ios: `${scheme}${"Customer Destination"}@${destination}`,
-      android: `${scheme}${destination}`
+      ios: `${scheme}${`${this.props.selected} Destination`}@${destination}`,
+      android: `${scheme}${`${this.props.selected} Destination`}@${destination}`
     });
 
     Linking.openURL(url)

@@ -1,106 +1,123 @@
 import React, { Component } from "react";
 import {
-  ActivityIndicator,
-  Clipboard,
-  FlatList,
-  Image,
-  Share,
-  StyleSheet,
-  Text,
-  ScrollView,
-  View
+	ActivityIndicator,
+	Clipboard,
+	FlatList,
+	Image,
+	Share,
+	StyleSheet,
+	Text,
+	ScrollView,
+	View
 } from 'react-native';
 import uuid from 'uuid';
 import * as ImagePicker from 'expo-image-picker';
 import { Button } from 'react-native-elements';
 
-import * as Permissions from 'expo-permissions'; 
+import * as Permissions from 'expo-permissions';
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import Environment from '../../config/FireBaseConfig';
-import firebase	 from '../../config/firebase';
+import firebase from '../../config/firebase';
 
 export default class HomeView extends Component {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
-  }
-  state = {
-    image: null,
-    uploading: false,
-	googleResponse: null
-  };
-  async componentDidMount() {
-    await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    await Permissions.askAsync(Permissions.CAMERA);
-  }
+	}
+	state = {
+		image: null,
+		uploading: false,
+		googleResponse: null
+	};
+	async componentDidMount() {
+		await Permissions.askAsync(Permissions.CAMERA_ROLL);
+		await Permissions.askAsync(Permissions.CAMERA);
+	}
 
 
-  render() {
-    let { image } = this.state;
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.headerContainer}>
-          <View style={styles.header}>
-            <View style={styles.iconWrapper}>
-              <Icon
-                onPress={() => this.props.navigation.openDrawer()}
-                type="material"
-                name="menu"
-                size={30}
-                color="#fff"
-                containerStyle={styles.drawerIcon}
-              />
-            </View>
-            <View style={styles.titleWrapper}>
-              <Text style={styles.textTitle}>Green Trade</Text>
-            </View>
-          </View>
-        </View>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-        >
-          <View style={styles.getStartedContainer}>
-            {image ? null : (
-              <Text style={styles.getStartedText}>Find your Recycle Item</Text>
-            )}
-          </View>
+	render() {
+		let { image } = this.state;
+		return (
+			<SafeAreaView style={styles.container}>
+				<View style={styles.headerContainer}>
+					<View style={styles.header}>
+						<View style={styles.iconWrapper}>
+							<Icon
+								onPress={() => this.props.navigation.openDrawer()}
+								type="material"
+								name="menu"
+								size={30}
+								color="#fff"
+								containerStyle={styles.drawerIcon}
+							/>
+						</View>
+						<View style={styles.titleWrapper}>
+							<Text style={styles.textTitle}>Green Trade</Text>
+						</View>
+					</View>
+				</View>
+				<ScrollView
+					style={styles.container}
+					contentContainerStyle={styles.contentContainer}
+				>
+					<View style={styles.getStartedContainer}>
+						{image ? null : (
+							<Text style={styles.getStartedText}>Find your Recycle Item</Text>
+						)}
+					</View>
 
-          <View style={styles.helpContainer}>
-            <Button
-              onPress={this._pickImage}
-              title="Pick an image from camera roll"
-            />
+					<View style={styles.helpContainer}>
+						<Button
+							onPress={this._pickImage}
+							title="Pick an image from camera roll"
+						/>
 
-            <Button style={styles.takePhoto} onPress={this._takePhoto} title="Take a photo" />
-            {this.state.googleResponse && (
-              <FlatList
-                data={this.state.googleResponse.responses[0].labelAnnotations}
-                extraData={this.state}
-                keyExtractor={this._keyExtractor}
-                renderItem={({ item }) => <Text>Item: {item.description}</Text>}
-              />
-            )}
-            {this._maybeRenderImage()}
-            {this._maybeRenderUploadingOverlay()}
-          </View>
-        </ScrollView>
+						<Button style={styles.takePhoto} onPress={this._takePhoto} title="Take a photo" />
+						{this.state.googleResponse && (
+							<FlatList
+								data={this.state.googleResponse.responses[0].labelAnnotations}
+								extraData={this.state}
+								keyExtractor={this._keyExtractor}
+								renderItem={({ item }) => {
+									let points;
 
-      </SafeAreaView>
-    );
-  }
-  organize = array =>{
-    return array.map(function(item, i) {
-      return(
-        <View key={i}>
-          <Text>{item}</Text>
-        </View>
-      );
-    });
-  };
-  _maybeRenderUploadingOverlay = () => {
+									<Text>Item: {item.description}</Text>
+									switch (item.description) {
+										case "Plastic":
+										points = 50;
+											alert(`Congratulations! You won ${points} points`)
+											break;
+										case "Metal":
+											 points = 50;
+											alert(`Congratulations! You won ${points} points`)
+											break;
+										default:
+											break;
+
+									}
+								}}
+							/>
+						)}
+						{this._maybeRenderImage()}
+						{this._maybeRenderUploadingOverlay()}
+					</View>
+				</ScrollView>
+
+			</SafeAreaView>
+		);
+	}
+	organize = array => {
+		return array.map(function (item, i) {
+			return (
+				<View key={i}>
+					<Text>{item}</Text>
+				</View>
+			);
+		});
+	};
+	_maybeRenderUploadingOverlay = () => {
 		if (this.state.uploading) {
 			return (
 				<View
@@ -117,8 +134,8 @@ export default class HomeView extends Component {
 				</View>
 			);
 		}
-  };
-  _maybeRenderImage = () => {
+	};
+	_maybeRenderImage = () => {
 		let { image, googleResponse } = this.state;
 		if (!image) {
 			return;
@@ -171,8 +188,8 @@ export default class HomeView extends Component {
 				)} */}
 			</View>
 		);
-  };
-  _keyExtractor = (item, index) => item.id;
+	};
+	_keyExtractor = (item, index) => item.id;
 
 	_renderItem = item => {
 		<Text>response: {JSON.stringify(item)}</Text>;
@@ -251,11 +268,11 @@ export default class HomeView extends Component {
 						}
 					}
 				]
-				
+
 			});
 			let response = await fetch(
 				"https://vision.googleapis.com/v1/images:annotate?key=" +
-					Environment['GOOGLE_CLOUD_VISION_API_KEY'],
+				Environment['GOOGLE_CLOUD_VISION_API_KEY'],
 				{
 					headers: {
 						Accept: 'application/json',
@@ -266,7 +283,7 @@ export default class HomeView extends Component {
 				}
 			);
 			let responseJson = await response.json();
-			console.log(responseJson);
+			// alert(JSON.stringify(responseJson));
 			this.setState({
 				googleResponse: responseJson,
 				uploading: false
@@ -280,10 +297,10 @@ export default class HomeView extends Component {
 async function uploadImageAsync(uri) {
 	const blob = await new Promise((resolve, reject) => {
 		const xhr = new XMLHttpRequest();
-		xhr.onload = function() {
+		xhr.onload = function () {
 			resolve(xhr.response);
 		};
-		xhr.onerror = function(e) {
+		xhr.onerror = function (e) {
 			console.log(e);
 			reject(new TypeError('Network request failed'));
 		};
