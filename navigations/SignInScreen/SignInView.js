@@ -2,13 +2,10 @@ import React, { Component } from "react";
 import {Keyboard, Text, View, TextInput, Image, TouchableOpacity, TouchableWithoutFeedback, Alert, KeyboardAvoidingView, ActivityIndicator} from 'react-native';
 import { Button } from 'react-native-elements';
 import styles from "./styles";
-
 import * as Google from 'expo-google-app-auth';
 import googleLogInConfig from '../../config/OAuthClientConfig';
 import 'firebase/firestore';
-import firebaseConfig from '../../config/FireBaseConfig'
 import firebase from '../../config/firebase'
-const db = firebase.firestore();
 
 export default class SignInView extends Component {
   constructor(props) {
@@ -67,15 +64,9 @@ export default class SignInView extends Component {
                 displayName: user.user.displayName,
                 firstName: user.additionalUserInfo.profile.given_name,
                 lastName: user.additionalUserInfo.profile.family_name,
-                profilePhoto: user.user.photoURL,
-                type: 'member',
-                deleted: false,
-                points: 0,
-                codes: [],
-                containers: [],
-                pickups: []
+                profilePhoto: user.user.photoURL
               }
-              this.saveUser(userData);
+              this.saveGoogleUser(userData);
             })
             .catch(error => {
               // Handle Errors here.
@@ -130,10 +121,12 @@ export default class SignInView extends Component {
           this.setState({authenticating: false, error: error.message });
       });
   };
-  //save user to firestore db
-  saveUser = (userData) => {
+  //save google user to firestore db
+  saveGoogleUser = (userData) => {
+    const db = firebase.firestore();
     var user = db.collection("users").doc(userData.uid);
     user.get().then(doc => {
+      //update
       if (doc.exists) {
         user.update({
           lastLoginAt: Date.now()
@@ -141,14 +134,26 @@ export default class SignInView extends Component {
           console.log('Updated Snapshot', snapshot);
         });
       }
+      //insert
       else {
+        userData.type = 'member';
+        userData.deleted = false;
+        userData.points = 0;
+        userData.codes = [];
+        userData.containers = [];
+        userData.pickups = [];
+
         user.set(userData)
-          .then(function (snapshot) {
-            console.log('Inserted Snapshot', snapshot);
+          .then((snapshot) => {
+            console.log('>>> database callback');
+            this.props.navigation.navigate('Home');
           });
       }
     });
   };
+  onEmailSignUp = () => {
+    this.props.navigation.navigate('SignUp');
+  }  
   renderCurrentState() {
     if (this.state.authenticating) {
       return (
@@ -183,6 +188,11 @@ export default class SignInView extends Component {
               buttonStyle={styles.loginButton}
               onPress={() => this.onEmailSignIn()}
               title="Login"
+            />
+            <Button
+              buttonStyle={styles.loginButton}
+              onPress={() => this.onEmailSignUp()}
+              title="Sign Up"
             />
             <TouchableOpacity onPress={() => this.signInWithGoogleAsync()}  style={styles.GooglePlusStyle} activeOpacity={0.5}>
               <Image
