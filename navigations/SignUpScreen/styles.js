@@ -1,19 +1,115 @@
-import React, { Component } from "react";
-import { Text, View} from "react-native";
+import { StyleSheet } from 'react-native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-export default class SignUpView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
+export default {
 
-  render() {
- 
-    return (
-        <View>
-            <Text>index</Text>
-        </View>
-    );
-  }
-}
+    containerView: {
+        flex: 1,
+    },
+    container: {
+        flex: 1,
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row'
+      },
+    logoText: {
+        fontSize: 25,
+        fontWeight: "800",
+        marginBottom: 30,
+        marginLeft: 20,
+        color: 'grey'
+    },
+    loginFormTextInput: {
+        height: 43,
+        fontSize: 16,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#eaeaea',
+        backgroundColor: '#fafafa',
+        paddingLeft: 10,
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 5,
+        marginBottom: 5,
+
+    },
+    loginButton: {
+        backgroundColor: '#3897f1',
+        borderRadius: 5,
+        height: 45,
+        marginTop: 10,
+        paddingLeft: 10,
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 5,
+        marginBottom: 5,
+    },
+    googleSignInButton: {
+        height: 45,
+        marginTop: 10,
+        paddingLeft: 10,
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 5,
+        marginBottom: 5,
+    },
+    GooglePlusStyle: {
+        height: 45,
+        marginTop: 10,
+        paddingLeft: 10,
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 5,
+        marginBottom: 5,
+        borderRadius: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        borderWidth: 0.5,
+        borderColor: 'grey',
+      },    
+      ImageIconStyle: {
+        padding: 10,
+        margin: 5,
+        height: 40,
+        width: 40,
+        resizeMode: 'stretch',
+      },
+    
+      TextStyle: {
+        color: 'grey',
+        textAlign: 'center',
+        fontSize: 16,
+      },
+    
+      SeparatorLine: {
+        backgroundColor: '#fff',
+        width: 1,
+        height: 40,
+      },      
+
+      ErrorTextStyle: {
+        color: 'red',
+        marginLeft: 15,
+        paddingLeft: 10,
+      },
+      SegmentedStyleBox: {
+        alignItems: "center",
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#ccddff',
+
+        fontSize: 16,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#eaeaea',
+        backgroundColor: '#fafafa',
+        
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 10,
+        marginBottom: 10,
+    },
+
+};
