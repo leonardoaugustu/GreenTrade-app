@@ -11,8 +11,6 @@ import StackNavigator from "./navigation";
 
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 
-import PictureDetailView from "../navigations/PictureDetailScreen/PictureDetailView";
-
 import firebase from 'firebase';
 
 
@@ -78,12 +76,6 @@ const DrawerNavigator = createDrawerNavigator(
         EditProfile: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Edit Profile",
-                drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            }
-        },
-        PictureDetail:{
-            screen: PictureDetailView, navigationOptions: {
-                drawerLabel: "Picture Details",
                 drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             }
         },
