@@ -72,15 +72,6 @@ export default StyleSheet.create({
     drawerIcon: {
         marginLeft: wp('-6%')
     },
-    usePoint: {
-        shadowColor:"black",
-        shadowOffset:{width:5, height:7},
-        bottom: hp('30%'),
-        height: hp('20%'),
-        width: wp('80%'),
-        alignSelf: "center",
-        padding: wp("3%"),
-    },
     rewardInfo: {
         shadowColor:"black",
         shadowOffset:{width:5, height:7},
@@ -91,24 +82,39 @@ export default StyleSheet.create({
         alignSelf: "center",
         padding: wp("3%"),
     },
+    img: {
+        alignItems: "center",
+        width: wp('50%'),
+        height: wp('50%')
+    },
+
     point: {
         shadowColor:"black",
         shadowOffset:{width:5, height:7},
-        bottom: hp('30%'),
+        bottom: hp('25%'),
         height: hp('10'),
         width: wp('20%'),
         left: wp("10%"),
         alignSelf: "flex-start",
         padding: wp("3%"),
     },
-    // scanQrcode: {
-    //     shadowColor:"black",
-    //     shadowOffset:{width:5, height:7},
-    //     bottom: hp('0%'),
-    //     height: hp('35%'),
-    //     width: wp('80%'),
-    //     alignSelf: "center",
-    //     padding: wp("3%"),
-    // }
-
+    userPoint: {
+        shadowColor:"black",
+        shadowOffset:{width:5, height:7},
+        bottom: hp('25%'),
+        height: hp('10'),
+        width: wp('50%'),
+        left: wp("0%"),
+        alignSelf: "flex-start",
+        padding: wp("3%"),
+    },
+    usePoint: {
+        shadowColor:"black",
+        shadowOffset:{width:5, height:7},
+        bottom: hp('30%'),
+        height: hp('20%'),
+        width: wp('80%'),
+        alignSelf: "center",
+        padding: wp("3%"),
+    },
 })
