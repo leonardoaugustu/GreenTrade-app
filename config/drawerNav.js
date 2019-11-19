@@ -15,7 +15,6 @@ import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import HomeView from "../navigations/HomeScreen/HomeView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
-import PictureDetailView from "../navigations/PictureDetailScreen/PictureDetailView";
 
 
 class DrawerComponent extends Component {
@@ -113,6 +112,7 @@ const DrawerNavigator = createDrawerNavigator(
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Edit Profile",
                 drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            
             },
             params: {role: ['member', 'collector']}
         },
