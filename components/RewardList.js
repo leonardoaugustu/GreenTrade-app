@@ -19,8 +19,8 @@ class RewardList extends Component {
             rewardList: [],
         };
     }
-    toggleReward () {
-        this.props.navigation.navigate("Trade");
+    toggleReward (items) {
+        this.props.navigation.navigate("Trade", items);
     };
 
     componentDidMount(){
@@ -37,7 +37,7 @@ class RewardList extends Component {
                     "Id": doc.data().id.toString(11)
                 };
                 rewards.push(rewardInfo);
-                console.log(rewards);
+                // console.log(rewards)
             });
             this.setState({rewardList: rewards});
       });
@@ -62,8 +62,10 @@ class RewardList extends Component {
         return width;
       }
 
-    renderItem = ({ item}) => (
-        <ListItem style={styles.itemContainer} onPress={() => this.toggleReward()} >
+    renderItem = ({ item}) => ( <ListItem style={styles.itemContainer}
+      // When the user click speicific rewords, the user can use their potnt.
+       onPress={
+          () => this.toggleReward(item)} >
               <Left>
               <Image resizeMethod="resize" style={styles.img} source={{uri: item.Img_url}}/>
               </Left>

@@ -29,5 +29,3 @@ You can add or work on your screens in the folder called navigations. Making you
 2. You should always keep all of the styles for the certain screen in your seperate style file.
 3. Do Not make any changes in the App.js.
 4. Create your own components in the folder called components.
-
-
