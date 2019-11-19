@@ -110,5 +110,20 @@ export default StyleSheet.create({
     }, 
     buttonSize: {
         height: hp('6%'), width: wp('30%')
-    }
+    },
+    usePoint: {
+        shadowColor:"black",
+        shadowOffset:{width:5, height:7},
+        bottom: hp('30%'),
+        height: hp('20%'),
+        width: wp('80%'),
+        alignSelf: "center",
+        padding: wp("3%"),
+    },
+    img: {
+        alignSelf: 'center',
+        alignItems: "center",
+        width: wp('100%'),
+        height: wp('100%')
+    },
 })
