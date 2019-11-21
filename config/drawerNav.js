@@ -6,7 +6,7 @@ import { DrawerActions } from 'react-navigation-drawer';
 import { NavigationActions, StackActions } from 'react-navigation'
 import { Divider, Icon } from "react-native-elements";
 import styles from "../navigations/HomeScreen/styles";
-import HomeView from "../navigations/HomeScreen/HomeView";
+import HomeView from "../navigations/HomeScreen/Container";
 import StackNavigator from "./navigation";
 
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";

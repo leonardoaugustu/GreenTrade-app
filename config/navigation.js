@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createStackNavigator } from "react-navigation-stack";
 import {Icon} from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import HomeView from "../navigations/HomeScreen/HomeView";
+import HomeView from "../navigations/HomeScreen/Container";
 import RewardView from "../navigations/RewardScreen/RewardView";
 import HistoryView from "../navigations/HistoryScreen/HistoryView";
 import SplashView from "../navigations/SplashScreen/SplashView";
