@@ -50,10 +50,6 @@ render() {
   return (
     <View style={styles.container}>
 
-
-
-
-
       <View style={{ flex: 1 }}>
         <MapView
           provider='google'
