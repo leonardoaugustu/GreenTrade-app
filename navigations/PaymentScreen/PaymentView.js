@@ -134,26 +134,33 @@ export default class PaymentView extends Component {
           }}
         />
 
-        <ConfirmDialog
+        <Dialog
           title="Thank you"
+          animationType="fade"
+          contentStyle={styles.dialogContent}
           titleStyle={styles.centeredText}
-          visible={this.state.successDialogVisible}
-          animationType='fade'
           onTouchOutside={() => this.props.navigation.goBack()}
-          positiveButton={{
-            title: "OK",
-            onPress: () => this.props.navigation.goBack()
-          }} >
-          <View style={styles.centeredItems}>
-            <Image style={styles.successImage} source={require('../../assets/success-icon.jpg')} />
-            <Text style={styles.dialogMessage}>Your payment has been successfully processed.</Text>
-          </View>
-        </ConfirmDialog>
+          visible={this.state.successDialogVisible}>
+
+          <Image style={styles.successImage} source={require('../../assets/success-icon.jpg')} />
+          <Text style={styles.dialogMessage} >
+              Your payment has been successfully processed.
+          </Text>
+          <Button
+            style={styles.dialogButton}
+            onPress={() => this.props.navigation.goBack()}
+            title="Continue"
+          />
+        </Dialog>
 
         <Dialog
           title="Please check the fields:"
-          visible={this.state.validationDialogVisible}
-          onTouchOutside={() => this.setState({ validationDialogVisible: false })} >
+          animationType="fade"
+          contentStyle={styles.dialogContent}
+          titleStyle={styles.centeredText}
+          onTouchOutside={() => this.setState({ validationDialogVisible: false })}
+          visible={this.state.validationDialogVisible}>
+            
           <View>
             {this.state.creditCard.status.number!='valid' && 
               <Text style={styles.errorMessage}>
@@ -175,6 +182,11 @@ export default class PaymentView extends Component {
                 Name: {this.state.creditCard.status.name || 'Incomplete'}
               </Text>
             }
+            <Button
+              style={styles.dialogButton}
+              onPress={() => this.setState({ validationDialogVisible: false })}
+              title="Continue"
+            />
           </View>
         </Dialog>
 
