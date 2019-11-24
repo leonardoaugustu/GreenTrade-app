@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity,Dimensions} from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
@@ -83,7 +83,10 @@ export default class CollectorPickupView extends Component {
   }
 
   renderItem = ({ item}) => (
-    <TouchableOpacity onPress={() => this.toggleMap()}>
+    <TouchableOpacity onPress={() => {
+      this.props.currentUser(item.Name);
+      this.toggleMap()
+      }}>
     <View style={{ flex: 1, flexDirection: 'row', backgroundColor: this.props.index % 2 == 0 ? '#90ee90' : '#AFE2FC' }}>
       <Icon1 name="circle-thin"   size={52}  color={"#000000"} />
       <Text style={{ flex: 1, fontSize: 18,  textAlignVertical: "center" }}> {item.Name}{"\n"} {item.Address}</Text>
