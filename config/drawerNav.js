@@ -77,7 +77,7 @@ const DrawerNavigator = createDrawerNavigator(
             }
         },
         EditProfile: {
-            screen: UserContainerSelectionView, navigationOptions: {
+            screen: HomeView, navigationOptions: {
                 drawerLabel: "Edit Profile",
                 drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             }

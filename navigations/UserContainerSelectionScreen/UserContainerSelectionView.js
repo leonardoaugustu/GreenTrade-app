@@ -25,6 +25,8 @@ export default class UserContainerSelectionView extends Component
     try
     {
       let dropDownData = [{
+        value: 0,
+      },{
         value: 1,
       }, {
         value: 2,
@@ -83,7 +85,7 @@ export default class UserContainerSelectionView extends Component
     <TouchableOpacity >
     <View style={{ flex: 1, flexDirection: 'row' }}>
     <Image source={{ uri: item.Img_url}} style={{ width: 75, height: 75 }}/>
-    <Dropdown  style={{ flex: 1, width:'90%'}}
+    <Dropdown  style={{ flex: 1, width:'200%'}}
         value={this.state.dropdownNumbers}
         data={this.state.dropdownNumbers}
         value={this.state.quantity}
@@ -115,7 +117,7 @@ export default class UserContainerSelectionView extends Component
   );
   buttonPress()
   {
-    console.log(this.state.purchaseTotal);
+    //console.log(this.state.purchaseTotal);
 
     if (this.state.numberOfContainers<=10)
     {
@@ -143,19 +145,22 @@ export default class UserContainerSelectionView extends Component
             />
           </View>
           <View style={styles.titleWrapper}>
-            <Text style={styles.textTitle}>Container Purchase</Text>
+            <Text style={styles.textTitle}>Container</Text>
 
           </View>
-
         </View>
       </View>
-      <Text style={{ flex: 1, fontSize: 30, textAlign: 'center' }}>Subtotal: CDN ${this.state.purchaseTotal}</Text>
+      <Text style={{ fontSize: 30, textAlign: 'center', marginBottom: 100 }}>Subtotal: CDN ${this.state.purchaseTotal}</Text>
+      <View>
+
+
+      </View>
         <View>
           {
-        this.state.isMaxAmount ? <Text style= {{color: 'red'}}>Can't order more than 10 containers </Text> : null
+        this.state.isMaxAmount ? <Text style= {{ color: 'red'}}>Can't order more than 10 containers </Text> : null
           }
         </View>
-      <Button style={{ width: 25, height: 50, alignHorizontal: 'center' }} title="Proceed To Checkout"
+      <Button style={{ flex:1, width: 50, height: 10, alignHorizontal: 'center' }} title="Proceed To Checkout"
          onPress={() => {this.buttonPress() }}/>
       <FlatList
         data={this.state.containerData}
