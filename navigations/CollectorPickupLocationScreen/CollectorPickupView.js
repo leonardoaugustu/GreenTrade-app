@@ -99,7 +99,8 @@ export default class CollectorPickupView extends Component {
 
   render()
    {
-    return (
+    return 
+    (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
           <View style={styles.header}>
@@ -114,7 +115,7 @@ export default class CollectorPickupView extends Component {
               />
             </View>
             <View style={styles.titleWrapper}>
-              <Text style={styles.textTitle}>Comfired Pickup</Text>
+              <Text style={styles.textTitle}>Confirmed Pickup</Text>
 
             </View>
 
