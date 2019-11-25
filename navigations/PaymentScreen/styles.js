@@ -238,6 +238,12 @@ export default StyleSheet.create({
         marginTop: wp('-5%'),
         marginLeft: wp('35%'),
     },
+    errorMessage: {
+        textAlign: "center",
+        color: "red",
+        fontSize: 18,
+        marginVertical: 5
+    },
     dialogContainer: {
         width: wp('100%'),
         justifyContent: 'center',
@@ -252,25 +258,31 @@ export default StyleSheet.create({
         flexDirection: 'column',
         height: hp('15%'),
     },
-    successImage: {
-        alignSelf: 'center',
-        width: wp('25%'),
-        height: wp('25%')
-    },    
-    errorMessage: {
-        textAlign: "center", 
-        color: "red", 
-        fontSize: 18        
-    },
     centeredText: {
         textAlign: 'center'
     },
     centeredItems: {
         alignItems: 'center'
     },
+    successImage: {
+        alignSelf: 'center',
+        width: wp('25%'),
+        height: wp('25%'),
+        margin: 5
+    },
+
     dialogMessage: {
-        textAlign: "center", 
-        color: "#00000089", 
-        fontSize: 18        
+        textAlign: "center",
+        color: "#00000089",
+        fontSize: 18,
+        marginVertical: 30
+    },
+    dialogContent: {
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    dialogButton: {
+        margin: wp('10%')
     }
+
 })
