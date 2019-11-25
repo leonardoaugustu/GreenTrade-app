@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Keyboard, Text, View, TextInput, Image, TouchableOpacity, TouchableWithoutFeedback, Alert, KeyboardAvoidingView, ActivityIndicator} from 'react-native';
+import { Keyboard, Text, View, TextInput, Image, TouchableOpacity, TouchableWithoutFeedback, Alert, KeyboardAvoidingView, ActivityIndicator, ScrollView } from 'react-native';
 import { Button } from 'react-native-elements';
 import styles from "./styles";
 import * as Google from 'expo-google-app-auth';
@@ -15,25 +15,25 @@ export default class SignInView extends Component {
       password: '',
       authenticating: false,
       error: '',
-      };
+    };
   }
   signInWithGoogleAsync = async () => {
     try {
       console.info('signInWithGoogleAsync()');
-      this.setState({authenticating: true});
-      const result = await Google.logInAsync(googleLogInConfig).catch(e=> {this.setState({error: e.message}); return e;});
+      this.setState({ authenticating: true });
+      const result = await Google.logInAsync(googleLogInConfig).catch(e => { this.setState({ error: e.message }); return e; });
 
       if (result.type === 'success') {
         this.onGoogleSignIn(result);
-        this.setState({error: ''});
+        this.setState({ error: '' });
         return result.accessToken;
       } else {
-        this.setState({authenticating: false});
-      return { cancelled: true };
+        this.setState({ authenticating: false });
+        return { cancelled: true };
       }
     } catch (e) {
       console.error(e.message);
-      this.setState({authenticating: false});
+      this.setState({ authenticating: false });
       return { error: true };
     }
   };
@@ -42,21 +42,21 @@ export default class SignInView extends Component {
     // We need to register an Observer on Firebase Auth to make sure auth is initialized.
     var unsubscribe = firebase
       .auth()
-      .onAuthStateChanged(function(firebaseUser) {
+      .onAuthStateChanged(function (firebaseUser) {
         unsubscribe();
         // Check if we are already signed-in Firebase with the correct user.
         if (!this.isUserEqual(googleUser, firebaseUser)) {
           // Build Firebase credential with the Google ID token.
           var credential = firebase.auth.GoogleAuthProvider.credential(
-              googleUser.idToken,
-              googleUser.accessToken
+            googleUser.idToken,
+            googleUser.accessToken
           );
           // Sign in with credential from the Google user.
           firebase
             .auth()
             .signInWithCredential(credential)
             .then(user => {
-              console.log('User signed in'); 
+              console.log('User signed in');
               var userData = {
                 uid: user.user.uid,
                 providerId: user.user.providerData[0].providerId,
@@ -82,17 +82,17 @@ export default class SignInView extends Component {
                 error: error.message
               });
             });
-      } else {
-        console.log('User already signed-in Firebase.');
-      }
-    }.bind(this));
+        } else {
+          console.log('User already signed-in Firebase.');
+        }
+      }.bind(this));
   };
   isUserEqual = (googleUser, firebaseUser) => {
     if (firebaseUser) {
       var providerData = firebaseUser.providerData;
       for (var i = 0; i < providerData.length; i++) {
         if (providerData[i].providerId === firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
-            providerData[i].uid === googleUser.user.id) {
+          providerData[i].uid === googleUser.user.id) {
           // We don't need to reauth the Firebase connection.
           return true;
         }
@@ -107,7 +107,7 @@ export default class SignInView extends Component {
       error: ''
     });
     const { email, password } = this.state;
-    const provider = new firebase.auth.GoogleAuthProvider(); 
+    const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(user => {
         this.setState({
@@ -117,8 +117,8 @@ export default class SignInView extends Component {
         });
       })
       .catch((error) => {
-          console.info(error.message);
-          this.setState({authenticating: false, error: error.message });
+        console.info(error.message);
+        this.setState({ authenticating: false, error: error.message });
       });
   };
   //save google user to firestore db
@@ -131,7 +131,7 @@ export default class SignInView extends Component {
         user.update({
           lastLoginAt: Date.now()
         }).then(function (snapshot) {
-          console.log('Updated Snapshot', snapshot);
+          console.log('Updated User');
         });
       }
       //insert
@@ -153,7 +153,7 @@ export default class SignInView extends Component {
   };
   onEmailSignUp = () => {
     this.props.navigation.navigate('SignUp');
-  }  
+  }
   renderCurrentState() {
     if (this.state.authenticating) {
       return (
@@ -169,43 +169,55 @@ export default class SignInView extends Component {
       )
     }
     return (
-      <KeyboardAvoidingView style={styles.containerView} behavior="padding">
+      <View style={{ flex: 1 }}>
+        <KeyboardAvoidingView style={styles.containerView} behavior="padding">
+          <ScrollView contentContainerStyle={{ flex: 1 }}>
+            <View style={{
+              flex: 1,
+              justifyContent: 'center',
 
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.loginScreenContainer}>
-          <View style={styles.loginFormView}>
-          <Text style={styles.logoText}>GreenTrade</Text>
-            <TextInput placeholder="Email" textContentType="emailAddress" keyboardType="email-address" autoCompleteType="email" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} 
-              onChangeText={email => this.setState({ email })}
-              value={this.state.email}
-            />
-            <TextInput placeholder="Password" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true}
-              onChangeText={password => this.setState({ password })}
-              value={this.state.password}
-            />
-            <Text style={styles.ErrorTextStyle}>{this.state.error}</Text>
-            <Button
-              buttonStyle={styles.loginButton}
-              onPress={() => this.onEmailSignIn()}
-              title="Login"
-            />
-            <Button
-              buttonStyle={styles.loginButton}
-              onPress={() => this.onEmailSignUp()}
-              title="Sign Up"
-            />
-            <TouchableOpacity onPress={() => this.signInWithGoogleAsync()}  style={styles.GooglePlusStyle} activeOpacity={0.5}>
-              <Image
-                source={require('../../assets/google.png')}
-                style={styles.ImageIconStyle}
+            }}>
+              <View style={styles.logoContainer}>
+                <Image style={styles.logoImage}
+                  source={require('../../assets/logo.png')}
+                />
+              </View>
+              <TextInput placeholder="Email" textContentType="emailAddress" keyboardType="email-address" autoCompleteType="email" placeholderColor="#c4c3cb" style={styles.loginFormTextInput}
+                onChangeText={email => this.setState({ email })}
+                value={this.state.email}
               />
-              <View style={styles.SeparatorLine} />
-              <Text style={styles.TextStyle}>Sign In With Google</Text>
-            </TouchableOpacity>            
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+              <TextInput placeholder="Password" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true}
+                onChangeText={password => this.setState({ password })}
+                value={this.state.password}
+              />
+              <Text style={styles.ErrorTextStyle}>{this.state.error}</Text>
+
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+
+        <View>
+                <Button
+                  buttonStyle={styles.loginButton}
+                  onPress={() => this.onEmailSignIn()}
+                  title="Login"
+                />
+                <Button
+                  buttonStyle={styles.loginButton}
+                  onPress={() => this.onEmailSignUp()}
+                  title="Sign Up"
+                />
+                <TouchableOpacity onPress={() => this.signInWithGoogleAsync()} style={styles.GooglePlusStyle} activeOpacity={0.5}>
+                  <Image
+                    source={require('../../assets/google.png')}
+                    style={styles.ImageIconStyle}
+                  />
+                  <View style={styles.SeparatorLine} />
+                  <Text style={styles.TextStyle}>Sign In With Google</Text>
+                </TouchableOpacity>
+              </View>
+
+      </View>
     );
   };
   render() {
@@ -214,5 +226,5 @@ export default class SignInView extends Component {
         {this.renderCurrentState()}
       </View>
     );
-  }  
+  }
 }
