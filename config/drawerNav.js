@@ -122,10 +122,17 @@ const DrawerNavigator = createDrawerNavigator(
         },
         Pickup: {
             screen: CollectorPickupView, navigationOptions: {
-                drawerLabel: "Comfired Pickup",
+                drawerLabel: "Confirmed Pickup",
                 drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params: {role: ['collector']}
+        },
+        PurchaseContainer: {
+            screen: UserContainerSelectionView, navigationOptions: {
+                drawerLabel: "Select Container",
+                drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member', 'collector']}
         },
         Notifications: {
             screen: HomeView, navigationOptions: {
