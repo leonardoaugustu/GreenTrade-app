@@ -10,6 +10,7 @@ import TradePointlView from "../navigations/TradePointScreen/TradePointView";
 import CollectorMapView from "../navigations/CollectMapScreen/container";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
+import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -63,7 +64,11 @@ const StackNavigator = createStackNavigator({
   },
   Reward: {
     screen: RewardView
-  },
+
+},
+SchedulePickup: {
+  screen: Scheduling
+},
   Trade: {
     screen: TradePointlView
   },
