@@ -30,6 +30,7 @@ class RewardList extends Component {
         db.collection("rewards").get().then((querySnapshot)=>{
             querySnapshot.forEach((doc)=>{
                 var rewardInfo = {
+                    "Doc_name": doc._document.key.path.segments[doc._document.key.path.segments.length - 1],
                     "Name": doc.data().brand,
                     "Cost": doc.data().cost,
                     "Img_url": doc.data().img_url,

@@ -83,9 +83,12 @@ export default StyleSheet.create({
         padding: wp("3%"),
     },
     img: {
-        alignItems: "center",
+        alignSelf: "center",
         width: wp('50%'),
-        height: wp('50%')
+        height: wp('50%'),
+        padding: wp("5%"),
+        padding: hp("5%"),
+
     },
 
     point: {
@@ -103,10 +106,10 @@ export default StyleSheet.create({
         shadowOffset:{width:5, height:7},
         bottom: hp('25%'),
         height: hp('10'),
-        width: wp('50%'),
+        width: wp('100%'),
         left: wp("0%"),
         alignSelf: "flex-start",
-        padding: wp("3%"),
+        padding: wp("2%"),
     },
     usePoint: {
         shadowColor:"black",

@@ -10,16 +10,17 @@ export default class TradePointlView extends Component {
     super(props); {
       this.state = {
         currentUserPoint: {},
+        rewards_code: {}
       };
       try {
         const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
         var db = firebase.firestore();
         db.collection("users").where("displayName", "==", currentUser).get().then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            var uesrPoint = {
+            var userPoint = {
               point: doc.data().points
             };
-            this.setState({ currentUserPoint: uesrPoint });
+            this.setState({ currentUserPoint: userPoint });
           });
         });
       }
@@ -29,36 +30,72 @@ export default class TradePointlView extends Component {
     }
   }
 
-  updatePoint = (userPoint, point) => {
-    var db = firebase.firestore();
+  updatePoint(userPoint, point, currentUser) {
     try {
+      var db = firebase.firestore();
+      const { navigation } = this.props;
+      // console.log(navigation.state.params.Doc_name);
       var diff = userPoint - point;
+      const newData = [];
       if (diff >= 0) {
-        console.log(diff)
-        const currentUser = firebase.auth().currentUser;
-        var user = db.collection("users").doc(currentUser.uid);
-        user.get().then(
-          user.update({
-            points: diff
-          }))
-        try {
-          const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
-          db.collection("users").where("displayName", "==", currentUser).get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-              var uesrPoint = {
-                point: doc.data().points
-              };
-              this.setState({ currentUserPoint: uesrPoint });
-            });
+        db.collection("rewards").doc(navigation.state.params.Doc_name).collection('codes').get().then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const data =
+            {
+              "Name": doc._document.key.path.segments[doc._document.key.path.segments.length - 1],
+              "used": doc.data().used
+            };
+            newData.push(data);
           });
-        }
-        catch (error) {
-          console.log(error);
-        }
-        let code = Math.floor((Math.random() * 10000) + 1);
-        Alert.alert(
-          'Reward code is ' + code
-        )
+        });
+
+        setTimeout(() => {
+          for (let i = 0; i < newData.length; i++) {
+            if (newData[i].used === false) {
+              let reward = db.collection("rewards").doc(navigation.state.params.Doc_name).collection('codes').doc(newData[i].Name)
+              reward.get().then(
+                reward.update({
+                  used: true
+                }))
+
+              var user = db.collection("users").doc(firebase.auth().currentUser.uid);
+              user.get().then(
+                user.update({
+                  points: diff,
+                }))
+
+              var codes = db.collection("users").doc(firebase.auth().currentUser.uid).collection('codes').doc(newData[i].Name);
+              codes.get().then(
+                codes.set({
+                  brand: navigation.state.params.Doc_name,
+                  code: newData[i].Name,
+                  used: true,
+                }))
+      
+
+              // update point
+              db.collection("users").where("displayName", "==", currentUser).get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                  var userpoint = {
+                    point: doc.data().points
+                  };
+                  this.setState({ currentUserPoint: userpoint });
+                });
+              });
+
+              Alert.alert(
+                'Reward code is ' + newData[i].Name
+              )
+              { break; }
+            }
+            else {
+              if (newData.length === i + 1) {
+                Alert.alert(
+                  'All rewards are sold out')
+              }
+            }
+          }
+        }, 2000)
       }
       else {
         Alert.alert(
@@ -75,7 +112,7 @@ export default class TradePointlView extends Component {
     const { navigation } = this.props;
     const image = navigation.state.params.Img_url;
     const point = navigation.state.params.Cost;
-    const user = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
+    const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
     var userPoint = this.state.currentUserPoint.point;
     return (
 
@@ -103,7 +140,7 @@ export default class TradePointlView extends Component {
         <View style={styles.userPoint}>
           <Button disabled={true} disabledStyle={{ backgroundColor: "white" }}
             disabledTitleStyle={{ color: "black", left: 10, fontSize: 20 }}
-            title={user + ": " + userPoint}
+            title={currentUser + ": " + userPoint}
           />
         </View>
 
@@ -120,10 +157,10 @@ export default class TradePointlView extends Component {
         </View>
 
         <View style={styles.usePoint}>
-          <Button buttonStyle={{ backgroundColor: "#da272a" }}
+          <Button disabled={point >= userPoint} buttonStyle={{ backgroundColor: "#da272a" }}
             titleStyle={{ color: "white", fontSize: 25 }}
             title="Use your point" iconRight={true}
-            onPress={() => this.updatePoint(userPoint, point)} />
+            onPress={() => this.updatePoint(userPoint, point, currentUser)} />
         </View>
       </View>
     );
