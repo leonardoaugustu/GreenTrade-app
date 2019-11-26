@@ -93,6 +93,13 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             }
         },
+        SchedulePickup: {
+            screen: StackNavigator, navigationOptions: {
+                
+                drawerLabel: "Schedule PickUp",
+                drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            }
+        },
         Notifications: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Notifications",
