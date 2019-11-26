@@ -84,8 +84,8 @@ export default class UserContainerSelectionView extends Component
   renderItem = ({ item}) => (
     <TouchableOpacity >
     <View style={{ flex: 1, flexDirection: 'row' }}>
-    <Image source={{ uri: item.Img_url}} style={{ width: 75, height: 75 }}/>
-    <Dropdown  style={{ flex: 1, width:'200%'}}
+    <Image source={{ uri: item.Img_url}} style={styles.imgContainer}/>
+    <Dropdown  containerStyle={styles.drop}
         value={this.state.dropdownNumbers}
         data={this.state.dropdownNumbers}
         value={this.state.quantity}
@@ -145,7 +145,7 @@ export default class UserContainerSelectionView extends Component
             />
           </View>
           <View style={styles.titleWrapper}>
-            <Text style={styles.textTitle}>Container</Text>
+            <Text style={styles.textTitle}>Purchase Container</Text>
 
           </View>
         </View>
@@ -166,7 +166,7 @@ export default class UserContainerSelectionView extends Component
         data={this.state.containerData}
         ItemSeparatorComponent={this.renderSeparator}
         renderItem={this.renderItem}
-        keyExtractor={item => item.Cost}
+        keyExtractor={item => item.Name}
         extraData={this.state}
         removeClippedSubviews={false}
         //getItemLayout={this._itemLayout.bind(this)}

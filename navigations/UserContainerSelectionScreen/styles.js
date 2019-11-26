@@ -73,4 +73,12 @@ textTitle: {
 drawerIcon: {
     marginLeft: wp('-6%')
 },
+imgContainer:{
+    width: wp('20%'),
+    height: wp('20%')
+},
+drop: {
+    width: wp('20%'),
+    marginLeft: wp('5%')
+}
 })

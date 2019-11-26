@@ -19,6 +19,7 @@ import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import HomeView from "../navigations/HomeScreen/HomeView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
+import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 
 
 class DrawerComponent extends Component {
@@ -129,17 +130,18 @@ const DrawerNavigator = createDrawerNavigator(
         },
         PurchaseContainer: {
             screen: UserContainerSelectionView, navigationOptions: {
-                drawerLabel: "Select Container",
-                drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+                drawerLabel: "Purchase Container",
+                drawerIcon: <Icon type="material-community" name="shopping" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params:  {role: ['member', 'collector']}
         },
         SchedulePickup: {
-            screen: StackNavigator, navigationOptions: {
+            screen: Scheduling, navigationOptions: {
                 
-                drawerLabel: "Schedule PickUp",
-                drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            }
+                drawerLabel: "Schedule Pickup",
+                drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member', 'collector']}
         },
         Notifications: {
             screen: HomeView, navigationOptions: {
