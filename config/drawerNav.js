@@ -7,8 +7,12 @@ import { DrawerActions } from 'react-navigation-drawer';
 import { NavigationActions, StackActions } from 'react-navigation'
 import { Divider, Icon } from "react-native-elements";
 import styles from "../navigations/HomeScreen/styles";
+
+import UserContainerSelectionView from "../navigations/UserContainerSelectionScreen/UserContainerSelectionView";
+
 import StackNavigator from"./navigation";
 import firebase from 'firebase';
+
 
 import SplashView from "../navigations/SplashScreen/SplashView";
 import SignInView from "../navigations/SignInScreen/SignInView";
@@ -117,10 +121,17 @@ const DrawerNavigator = createDrawerNavigator(
         },
         Pickup: {
             screen: CollectorPickupView, navigationOptions: {
-                drawerLabel: "Comfired Pickup",
+                drawerLabel: "Confirmed Pickup",
                 drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params: {role: ['collector']}
+        },
+        PurchaseContainer: {
+            screen: UserContainerSelectionView, navigationOptions: {
+                drawerLabel: "Select Container",
+                drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member', 'collector']}
         },
         Notifications: {
             screen: HomeView, navigationOptions: {
