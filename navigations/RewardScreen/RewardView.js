@@ -23,9 +23,26 @@ class RewardView extends React.Component {
   constructor(props){
     super(props);
     this.state = {
+      currentUserPoint: {},
     };
     this.marginLeft = new Animated.Value(wp('10%'));
-}
+
+    // try {
+    //   const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
+    //   var db = firebase.firestore();
+    //   db.collection("users").where("displayName", "==", currentUser).get().then((querySnapshot) => {
+    //     querySnapshot.forEach((doc) => {
+    //       var userPoint = {
+    //         point: doc.data().points
+    //       };
+    //       this.setState({ currentUserPoint: userPoint });
+    //     });
+    //   });
+    // }
+    // catch (error) {
+    //   console.log(error);
+    // }
+  }
 async componentDidMount() {
 }
 

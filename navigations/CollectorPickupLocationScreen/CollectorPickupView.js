@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, FlatList, TouchableOpacity,Dimensions} from "react-native";
+import { Text, View, StyleSheet, FlatList, TouchableOpacity,Dimensions, SafeAreaView} from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./styles";
-import SafeAreaView from "react-native-safe-area-view";
 import 'firebase/firestore';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import firebaseConfig from '../../config/FireBaseConfig'
@@ -98,44 +97,42 @@ export default class CollectorPickupView extends Component {
     </View>
     </TouchableOpacity>
   );
+render()
+{
+ return (
+   <SafeAreaView style={styles.container}>
+     <View style={styles.headerContainer}>
+       <View style={styles.header}>
+         <View style={styles.iconWrapper}>
+           <Icon
+             onPress={() => this.props.navigation.openDrawer()}
+             type="material"
+             name="menu"
+             size={30}
+             color="#fff"
+             containerStyle={styles.drawerIcon}
+           />
+         </View>
+         <View style={styles.titleWrapper}>
+           <Text style={styles.textTitle}>Confirmed Pickup</Text>
 
-  render()
-   {
-    return 
-    (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.headerContainer}>
-          <View style={styles.header}>
-            <View style={styles.iconWrapper}>
-              <Icon
-                onPress={() => this.props.navigation.openDrawer()}
-                type="material"
-                name="menu"
-                size={30}
-                color="#fff"
-                containerStyle={styles.drawerIcon}
-              />
-            </View>
-            <View style={styles.titleWrapper}>
-              <Text style={styles.textTitle}>Confirmed Pickup</Text>
+         </View>
 
-            </View>
+       </View>
 
-          </View>
-
-        </View>
-        <FlatList
-          data={this.state.collectorData}
-          ItemSeparatorComponent={this.renderSeparator}
-          renderItem={this.renderItem}
-          keyExtractor={item => item.UserId}
-          extraData={this.state}
-          removeClippedSubviews={false}
-          getItemLayout={this._itemLayout.bind(this)}
-          style={{flex:1}}
-        >
-        </FlatList>
-      </SafeAreaView>
-    );
-  }
+     </View>
+     <FlatList
+       data={this.state.collectorData}
+       ItemSeparatorComponent={this.renderSeparator}
+       renderItem={this.renderItem}
+       keyExtractor={item => item.UserId}
+       extraData={this.state}
+       removeClippedSubviews={false}
+       getItemLayout={this._itemLayout.bind(this)}
+       style={{flex:1}}
+     >
+     </FlatList>
+   </SafeAreaView>
+ );
+}
 }
