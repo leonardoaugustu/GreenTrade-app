@@ -1,6 +1,7 @@
-import {PURCHASE_TOTAL} from '../../actions/Payment/actionTypes';
+import {PURCHASE_TOTAL, CONTSINERS_PURCHASE} from '../../actions/Payment/actionTypes';
 const initialState = {
     price: 0.00,
+    containers: []
 };
 
 const purchaseTotalReducer = (state = initialState, action) => {
@@ -10,6 +11,11 @@ const purchaseTotalReducer = (state = initialState, action) => {
                 ...state,
                 price: action.payload
             };
+        case CONTSINERS_PURCHASE:
+            return {
+                ...state,
+                containers: action.payload
+            };  
         default:
             return state;
 

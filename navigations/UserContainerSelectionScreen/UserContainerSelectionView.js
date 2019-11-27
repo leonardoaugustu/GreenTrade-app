@@ -10,6 +10,7 @@ import firebase from '../../config/firebase'
 import { Dropdown } from 'react-native-material-dropdown';
 import { connect } from 'react-redux';
 import {purchaseTotal} from '../../actions/Payment/actionCreators';
+import {containersToPurchase} from '../../actions/Payment/actionCreators';
 
 class UserContainerSelectionView extends Component 
 {
@@ -126,6 +127,7 @@ class UserContainerSelectionView extends Component
           purchaseTotal: newValue, numberOfContainers:total, containersToPurchase:containers
         });
         this.props.purchaseTotal(newValue)
+        this.props.containersToPurchase(containers)
         }}/>
         
       <Text style={{ flex: 1, fontSize: 18, textAlign: 'right',  textAlignVertical: "center" }}> {item.Name}{"\n"} Cost: ${parseFloat(item.Cost).toFixed(2)}</Text>      
@@ -142,6 +144,7 @@ class UserContainerSelectionView extends Component
       //console.log(this.state.containersToPurchase);
       //this.props.navigation.navigate("CollectorMap");
      this.props.navigation.navigate('Payment');
+     console.log(this.props.containers)
     }
     else if (this.props.price==0)
     {
@@ -207,12 +210,14 @@ class UserContainerSelectionView extends Component
 function mapStateToProps (state){
   return{
     price: state.purchaseTotalReducer.price,
+    containers: state.purchaseTotalReducer.containers
   }; 
 }
 
 function mapDispatchToProps (dispatch)  {
   return {
       purchaseTotal: (price) => dispatch(purchaseTotal(price)),
+      containersToPurchase: (containers) => dispatch(containersToPurchase(containers))
   };
 }
 

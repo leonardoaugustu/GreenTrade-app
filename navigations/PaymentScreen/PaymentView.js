@@ -8,6 +8,7 @@ import { CreditCardInput, LiteCreditCardInput } from "react-native-credit-card-i
 import { SegmentedControls } from 'react-native-radio-buttons';
 import { connect } from 'react-redux';
 import {purchaseTotal} from '../../actions/Payment/actionCreators';
+import {containersToPurchase} from '../../actions/Payment/actionCreators';
 
 const options = [
   "Credit Card",
@@ -200,12 +201,14 @@ class PaymentView extends Component {
 function mapStateToProps (state){
   return{
     price: state.purchaseTotalReducer.price,
+    containers: state.purchaseTotalReducer.containers
   }; 
 }
 
 function mapDispatchToProps (dispatch)  {
   return {
       purchaseTotal: (price) => dispatch(purchaseTotal(price)),
+      containersToPurchase: (containers) => dispatch(containersToPurchase(containers))
   };
 }
 
