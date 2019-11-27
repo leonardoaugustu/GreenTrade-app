@@ -45,11 +45,16 @@ export default class HomeView extends Component {
 
 	}
 
-
 	async getInitialPoints() {
-		db.collection('users').doc(doc.data().UserId).get().then((userDoc)=> {
-			this.props.getPoints(userDoc.data().points)
-		})
+		
+		
+		firebase.database().ref('Users/').once('value', function (snapshot) {
+			console.log(snapshot.val())
+		});
+
+		// db.collection('users').doc(doc.data().UserId).get().then((userDoc)=> {
+		// 	this.props.getPoints(userDoc.data().points)
+		// })
 
 	}
 
@@ -141,13 +146,20 @@ export default class HomeView extends Component {
 			);
 		});
 	};
-	updatePoints() {
-		db.collection('users').doc(doc.data().UserId).update().then((userDoc)=>{
+ async updatePoints() {
+	const user = firebase.auth().currentUser;
+    let uid;
+    if (user != null) {
+      uid = user.uid;
+      const db = firebase.firestore();
+      const docRef = db.collection('users').doc(uid);
+		docRef.update({
 			points: this.props.rewardPoints
 
-		})
+		});
 
 	}
+}
 
 
 	_maybeRenderUploadingOverlay = () => {
@@ -348,9 +360,14 @@ async function uploadImageAsync(uri) {
 		.storage()
 		.ref()
 		.child(uuid.v4());
+	
+		
 	const snapshot = await ref.put(blob);
 
 	blob.close();
 
-	return await snapshot.ref.getDownloadURL();
+	return  snapshot.ref.getDownloadURL()
+	.then((url) => {
+		console.log(url)
+	})
 }
