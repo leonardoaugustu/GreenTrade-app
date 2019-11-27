@@ -5,14 +5,16 @@ import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import { ConfirmDialog, Dialog } from 'react-native-simple-dialogs';
 import { CreditCardInput, LiteCreditCardInput } from "react-native-credit-card-input";
-import { SegmentedControls } from 'react-native-radio-buttons'
+import { SegmentedControls } from 'react-native-radio-buttons';
+import { connect } from 'react-redux';
+import {purchaseTotal} from '../../actions/Payment/actionCreators';
 
 const options = [
   "Credit Card",
   "PayPal"
 ];
 
-export default class PaymentView extends Component {
+class PaymentView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,9 +55,9 @@ export default class PaymentView extends Component {
     });
   }
 
-  formatNumber = (number) => {
-    return (number).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-  }
+  // formatNumber = (number) => {
+  //   return (number).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  // }
 
   render() {
     return (
@@ -85,7 +87,7 @@ export default class PaymentView extends Component {
             <View>
               <View style={styles.displayAmount}>
                 <Text>Total Amount</Text>
-                <Text style={styles.displayText}>$ {this.formatNumber(this.props.navigation.state.params.price)}</Text>
+                <Text style={styles.displayText}>$ {this.props.price}</Text>
               </View>
 
               <View style={styles.paymentMethod}>
@@ -194,3 +196,17 @@ export default class PaymentView extends Component {
     );
   }
 }
+
+function mapStateToProps (state){
+  return{
+    price: state.purchaseTotalReducer.price,
+  }; 
+}
+
+function mapDispatchToProps (dispatch)  {
+  return {
+      purchaseTotal: (price) => dispatch(purchaseTotal(price)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentView);

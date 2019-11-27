@@ -1,0 +1,1 @@
+export const PURCHASE_TOTAL = 'PURCHASE_TOTAL'

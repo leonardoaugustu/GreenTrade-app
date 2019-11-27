@@ -8,8 +8,10 @@ import 'firebase/firestore';
 //import firebaseConfig from '../../config/FireBaseConfig'
 import firebase from '../../config/firebase'
 import { Dropdown } from 'react-native-material-dropdown';
+import { connect } from 'react-redux';
+import {purchaseTotal} from '../../actions/Payment/actionCreators';
 
-export default class UserContainerSelectionView extends Component 
+class UserContainerSelectionView extends Component 
 {
 
     constructor(props) 
@@ -122,7 +124,9 @@ export default class UserContainerSelectionView extends Component
           newValue=parseFloat(newValue).toFixed(2);
           this.setState({
           purchaseTotal: newValue, numberOfContainers:total, containersToPurchase:containers
-        });}}/>
+        });
+        this.props.purchaseTotal(newValue)
+        }}/>
         
       <Text style={{ flex: 1, fontSize: 18, textAlign: 'right',  textAlignVertical: "center" }}> {item.Name}{"\n"} Cost: ${parseFloat(item.Cost).toFixed(2)}</Text>      
     </View>
@@ -132,14 +136,14 @@ export default class UserContainerSelectionView extends Component
   {
     //console.log(this.state.purchaseTotal);
 
-    if (this.state.numberOfContainers<=10 && this.state.purchaseTotal!=0)
+    if (this.state.numberOfContainers<=10 && this.props.price!=0)
     {
       
       //console.log(this.state.containersToPurchase);
       //this.props.navigation.navigate("CollectorMap");
-     this.props.navigation.navigate('Payment', {selection: this.state.containersToPurchase} );
+     this.props.navigation.navigate('Payment');
     }
-    else if (this.state.purchaseTotal==0)
+    else if (this.props.price==0)
     {
       var maxMessage="You haven't selected a container to purchase";
       this.setState({isMaxAmount: true,message:maxMessage});
@@ -172,7 +176,7 @@ export default class UserContainerSelectionView extends Component
           </View>
         </View>
       </View>
-      <Text style={{ fontSize: 30, textAlign: 'center', marginBottom: 100 }}>Subtotal: CDN ${this.state.purchaseTotal}</Text>
+      <Text style={{ fontSize: 30, textAlign: 'center', marginBottom: 100 }}>Subtotal: CDN ${this.props.price}</Text>
       <View>
 
 
@@ -199,3 +203,17 @@ export default class UserContainerSelectionView extends Component
   );
   }
 }
+
+function mapStateToProps (state){
+  return{
+    price: state.purchaseTotalReducer.price,
+  }; 
+}
+
+function mapDispatchToProps (dispatch)  {
+  return {
+      purchaseTotal: (price) => dispatch(purchaseTotal(price)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserContainerSelectionView);
