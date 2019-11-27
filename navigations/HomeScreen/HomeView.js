@@ -366,8 +366,6 @@ async function uploadImageAsync(uri) {
 
 	blob.close();
 
-	return  snapshot.ref.getDownloadURL()
-	.then((url) => {
-		console.log(url)
-	})
+	return await snapshot.ref.getDownloadURL()
+
 }
