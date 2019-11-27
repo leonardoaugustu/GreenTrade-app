@@ -1,5 +1,4 @@
 import React from "react";
-import { createAppContainer} from "react-navigation";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createStackNavigator } from "react-navigation-stack";
 import {Icon} from 'react-native-elements';
@@ -7,13 +6,11 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import HomeView from "../navigations/HomeScreen/HomeView";
 import RewardView from "../navigations/RewardScreen/RewardView";
 import HistoryView from "../navigations/HistoryScreen/HistoryView";
-import SplashView from "../navigations/SplashScreen/SplashView";
-import SignInView from "../navigations/SignInScreen/SignInView";
-import SignUpView from "../navigations/SignUpScreen/styles";
 import TradePointlView from "../navigations/TradePointScreen/TradePointView";
 import CollectorMapView from "../navigations/CollectMapScreen/container";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
+import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -62,20 +59,15 @@ const Tabs = createBottomTabNavigator(
 );
 
 const StackNavigator = createStackNavigator({
-  Home:{
+  Home: {
     screen: Tabs
-  },
-  Splash: {
-      screen: SplashView
-  },
-  SignIn: {
-      screen: SignInView
-  },
-  SignUp: {
-      screen: SignUpView
   },
   Reward: {
     screen: RewardView
+
+},
+SchedulePickup: {
+  screen: Scheduling
 },
   Trade: {
     screen: TradePointlView
@@ -92,9 +84,7 @@ const StackNavigator = createStackNavigator({
 },
 {
   headerMode: "none", //Hide the back button react navigation
-  initialRouteName: "Splash",
+  initialRouteName: "Home",
 });
-
-//const navigation = createAppContainer(StackNavigator);
 
 export default StackNavigator;
