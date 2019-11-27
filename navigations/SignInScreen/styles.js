@@ -2,19 +2,20 @@ import { StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default {
-
+  wrapper: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
     containerView: {
         flex: 1,
     },
     loginScreenContainer: {
         flex: 1,
+        justifyContent: 'center',
     },
     container: {
         flex: 1,
         padding: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row'
       },
     logoText: {
         fontSize: 35,
@@ -23,6 +24,15 @@ export default {
         marginBottom: 30,
         textAlign: 'center',
         color: 'grey'
+    },
+  logoContainer: {
+      alignItems: "center", 
+      justifyContent: "center" ,
+  },
+  logoImage: {
+      height: 200,
+      width: 200,
+      margin: 10
     },
     loginFormView: {
         flex: 1
@@ -39,6 +49,11 @@ export default {
         marginRight: 15,
         marginTop: 5,
         marginBottom: 5,
+        elevation: 2,
+        shadowOffset: { width: 5, height: 5 },
+        shadowColor: "grey",
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
 
     },
     loginButton: {
