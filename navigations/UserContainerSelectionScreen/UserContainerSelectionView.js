@@ -17,7 +17,7 @@ export default class UserContainerSelectionView extends Component
         super(props);
         
         this.state = {containerData:[], dropdownNumbers:[], 
-          purchaseTotal:0.00, numberOfContainers:0, isMaxAmount: false }
+          purchaseTotal:0.00, numberOfContainers:0, isMaxAmount: false, containersToPurchase:[],message:"" }
       }
 
       componentDidMount()
@@ -45,6 +45,10 @@ export default class UserContainerSelectionView extends Component
       {
         querySnapshot.forEach((doc) => 
         {  
+         db.collection('containers-inventory').doc(doc.id).get().then((invDoc) =>
+          {
+         if (invDoc.data().stock!=0)
+         {
           var containerInfo =
               {
                 "Name": doc.data().name,
@@ -55,11 +59,16 @@ export default class UserContainerSelectionView extends Component
                 "Size" : doc.data().size,
                 "Width" : doc.data().width,
                 "Cost"  : doc.data().cost,
+                "Stock" : invDoc.data().stock,
                 "Quantity": 0
               };
-              newData.push(containerInfo)
+              newData.push(containerInfo);
               this.setState({containerData: newData});
               //console.log(this.state.containerData);
+              //console.log(invDoc.data().stock);
+            }
+            
+            });
         });
       });
     }
@@ -100,15 +109,19 @@ export default class UserContainerSelectionView extends Component
             
           var newValue=0;//this.state.purchaseTotal+item.Cost*value;
           var total=0;//this.state.numberOfContainers+value;
-
+          var containers=[];  
           this.state.containerData.forEach(function(entry) {
             total=total+entry.Quantity;
             newValue=newValue+entry.Quantity*entry.Cost;
+            if (entry.Quantity!=0)
+            {
+            containers.push(entry);
+            }
             //newValue=newValue entry.
         });
           newValue=parseFloat(newValue).toFixed(2);
           this.setState({
-          purchaseTotal: newValue, numberOfContainers:total
+          purchaseTotal: newValue, numberOfContainers:total, containersToPurchase:containers
         });}}/>
         
       <Text style={{ flex: 1, fontSize: 18, textAlign: 'right',  textAlignVertical: "center" }}> {item.Name}{"\n"} Cost: ${parseFloat(item.Cost).toFixed(2)}</Text>      
@@ -119,13 +132,22 @@ export default class UserContainerSelectionView extends Component
   {
     //console.log(this.state.purchaseTotal);
 
-    if (this.state.numberOfContainers<=10)
+    if (this.state.numberOfContainers<=10 && this.state.purchaseTotal!=0)
     {
-      this.props.navigation.navigate("CollectorMap");
+      
+      //console.log(this.state.containersToPurchase);
+      //this.props.navigation.navigate("CollectorMap");
+     this.props.navigation.navigate('Payment', {selection: this.state.containersToPurchase} );
+    }
+    else if (this.state.purchaseTotal==0)
+    {
+      var maxMessage="You haven't selected a container to purchase";
+      this.setState({isMaxAmount: true,message:maxMessage});
     }
     else
     {
-      this.setState({isMaxAmount: true})
+      var maxMessage="Can't order more than 10 containers";
+      this.setState({isMaxAmount: true,message:maxMessage});
     }
   }
   render()
@@ -157,7 +179,7 @@ export default class UserContainerSelectionView extends Component
       </View>
         <View>
           {
-        this.state.isMaxAmount ? <Text style= {{ color: 'red'}}>Can't order more than 10 containers </Text> : null
+        this.state.isMaxAmount ? <Text style= {{ color: 'red'}}>{this.state.message} </Text> : null
           }
         </View>
       <Button style={{ flex:1, width: 50, height: 10, alignHorizontal: 'center' }} title="Proceed To Checkout"
