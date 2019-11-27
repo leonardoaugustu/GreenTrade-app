@@ -7,17 +7,13 @@ import { DrawerActions } from 'react-navigation-drawer';
 import { NavigationActions, StackActions } from 'react-navigation'
 import { Divider, Icon } from "react-native-elements";
 import styles from "../navigations/HomeScreen/styles";
-
+import HomeView from "../navigations/HomeScreen/Container";
 import UserContainerSelectionView from "../navigations/UserContainerSelectionScreen/UserContainerSelectionView";
-
 import StackNavigator from"./navigation";
 import firebase from 'firebase';
-
-
 import SplashView from "../navigations/SplashScreen/SplashView";
 import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/SignUpView";
-import HomeView from "../navigations/HomeScreen/HomeView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 

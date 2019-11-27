@@ -8,6 +8,8 @@ import Icon1 from 'react-native-vector-icons/FontAwesome';
 import firebaseConfig from '../../config/FireBaseConfig'
 import firebase from '../../config/firebase'
 
+
+
 export default class CollectorPickupView extends Component {
   constructor(props) {
     super(props);
