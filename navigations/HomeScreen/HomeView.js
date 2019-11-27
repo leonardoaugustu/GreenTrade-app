@@ -47,7 +47,7 @@ export default class HomeView extends Component {
 
 
 	async getInitialPoints() {
-		db.collection('users').get().then((userDoc) => {
+		db.collection('users').doc(doc.data().UserId).get().then((userDoc)=> {
 			this.props.getPoints(userDoc.data().points)
 		})
 
@@ -105,12 +105,12 @@ export default class HomeView extends Component {
 								switch (item.description) {
 									case "Plastic":
 										this.props.addPoints(50)
-										alert(`Congratulations! You won 50 points`);
+										alert(`Awsome`);
 										break;
 									case "Metal":
 										this.props.addPoints(70)
 
-										alert(`Congratulations! You won 70 points`);
+										alert(`Awsome`);
 										break;
 									default:
 										break;
@@ -142,7 +142,7 @@ export default class HomeView extends Component {
 		});
 	};
 	updatePoints() {
-		db.collection("users").doc("wrybz7Y1slP3eAJiGfOl7vhV8Ou2").update({
+		db.collection('users').doc(doc.data().UserId).update().then((userDoc)=>{
 			points: this.props.rewardPoints
 
 		})
