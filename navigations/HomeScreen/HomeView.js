@@ -36,7 +36,12 @@ export default class HomeView extends Component {
 		googleResponse: null,
 		points: 0,
 		rewardPoint: 0,
-		analyzed: false
+		analyzed: false,
+		// collected: false,
+		// createdAt: date,
+		// estimatedPoints: 50,
+		// imageUri:"",
+
 	};
 	async componentDidMount() {
 		await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -46,8 +51,8 @@ export default class HomeView extends Component {
 	}
 
 	async getInitialPoints() {
-		
-		
+
+
 		firebase.database().ref('Users/').once('value', function (snapshot) {
 			console.log(snapshot.val())
 		});
@@ -146,20 +151,20 @@ export default class HomeView extends Component {
 			);
 		});
 	};
- async updatePoints() {
-	const user = firebase.auth().currentUser;
-    let uid;
-    if (user != null) {
-      uid = user.uid;
-      const db = firebase.firestore();
-      const docRef = db.collection('users').doc(uid);
-		docRef.update({
-			points: this.props.rewardPoints
+	async updatePoints() {
+		const user = firebase.auth().currentUser;
+		let uid;
+		if (user != null) {
+			uid = user.uid;
+			const db = firebase.firestore();
+			const docRef = db.collection('users').doc(uid);
+			docRef.update({
+				points: this.props.rewardPoints
 
-		});
+			});
 
+		}
 	}
-}
 
 
 	_maybeRenderUploadingOverlay = () => {
@@ -360,12 +365,32 @@ async function uploadImageAsync(uri) {
 		.storage()
 		.ref()
 		.child(uuid.v4());
-	
-		
+
+
 	const snapshot = await ref.put(blob);
 
 	blob.close();
 
+	const picURI = await ref.getDownloadURL()
+	console.log(picURI)
+	const user = firebase.auth().currentUser;
+
+	db.collection("recycled-items").doc(`${user.displayName}`).set({
+		createdAt: Date.now(),
+		Collected: false,
+		estimatedPoints: "50",
+		imageUri: picURI,
+		userId: user.uid
+	})
+		.then(function () {
+			console.log("Document successfully written!");
+		})
+		.catch(function (error) {
+			console.error("Error writing document: ", error);
+		});
+
+
 	return await snapshot.ref.getDownloadURL()
+
 
 }
