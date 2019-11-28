@@ -140,13 +140,13 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params:  {role: ['member', 'collector']}
         },
-        Notifications: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Notifications",
-                drawerIcon: <Icon type="material-community" name="bell" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params: {role: ['member', 'collector']}
-        },
+        // Notifications: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Notifications",
+        //         drawerIcon: <Icon type="material-community" name="bell" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params: {role: ['member', 'collector']}
+        // },
         InviteFriends: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Invite Friends",
