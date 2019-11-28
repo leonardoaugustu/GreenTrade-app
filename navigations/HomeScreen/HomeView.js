@@ -13,32 +13,59 @@ import {
 import uuid from 'uuid';
 import * as ImagePicker from 'expo-image-picker';
 import { Button } from 'react-native-elements';
-
+import '@firebase/firestore';
 import * as Permissions from 'expo-permissions';
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import Environment from '../../config/FireBaseConfig';
 import firebase from '../../config/firebase';
+const db = firebase.firestore();
+
 
 export default class HomeView extends Component {
 	constructor(props) {
 		super(props);
+		this.getInitialPoints()
+
 
 	}
 	state = {
 		image: null,
 		uploading: false,
-		googleResponse: null
+		googleResponse: null,
+		points: 0,
+		rewardPoint: 0,
+		analyzed: false,
+		// collected: false,
+		// createdAt: date,
+		// estimatedPoints: 50,
+		// imageUri:"",
+
 	};
 	async componentDidMount() {
 		await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
+
+
 	}
 
+	async getInitialPoints() {
+
+
+		firebase.database().ref('Users/').once('value', function (snapshot) {
+			console.log(snapshot.val())
+		});
+
+		// db.collection('users').doc(doc.data().UserId).get().then((userDoc)=> {
+		// 	this.props.getPoints(userDoc.data().points)
+		// })
+
+	}
 
 	render() {
 		let { image } = this.state;
+
 		return (
 			<SafeAreaView style={styles.container}>
 				<View style={styles.headerContainer}>
@@ -70,36 +97,42 @@ export default class HomeView extends Component {
 
 					<View style={styles.helpContainer}>
 						<Button
-							onPress={this._pickImage}
+							onPress={() => {
+								this._pickImage()
+								this.setState({ analyzed: !this.state.analyzed })
+							}}
 							title="Pick an image from camera roll"
 						/>
 
 						<Button style={styles.takePhoto} onPress={this._takePhoto} title="Take a photo" />
-						{this.state.googleResponse && (
-							<FlatList
-								data={this.state.googleResponse.responses[0].labelAnnotations}
-								extraData={this.state}
-								keyExtractor={this._keyExtractor}
-								renderItem={({ item }) => {
-									let points;
 
-									<Text>Item: {item.description}</Text>
-									switch (item.description) {
-										case "Plastic":
-										points = 50;
-											alert(`Congratulations! You won ${points} points`)
-											break;
-										case "Metal":
-											 points = 50;
-											alert(`Congratulations! You won ${points} points`)
-											break;
-										default:
-											break;
+						<FlatList
+							data={this.state.googleResponse ? this.state.googleResponse.responses[0].labelAnnotations : null}
+							extraData={this.state}
+							keyExtractor={this._keyExtractor}
+							renderItem={({ item }) => {
+								// let Points;
+								switch (item.description) {
+									case "Plastic":
+										this.props.addPoints(50)
+										alert(`Awsome`);
+										break;
+									case "Metal":
+										this.props.addPoints(70)
 
-									}
-								}}
-							/>
-						)}
+										alert(`Awsome`);
+										break;
+									default:
+										break;
+
+								}
+								this.updatePoints()
+
+								return <Text>Item: {item.description}</Text>
+							}}
+
+						/>
+
 						{this._maybeRenderImage()}
 						{this._maybeRenderUploadingOverlay()}
 					</View>
@@ -108,6 +141,7 @@ export default class HomeView extends Component {
 			</SafeAreaView>
 		);
 	}
+
 	organize = array => {
 		return array.map(function (item, i) {
 			return (
@@ -117,6 +151,22 @@ export default class HomeView extends Component {
 			);
 		});
 	};
+	async updatePoints() {
+		const user = firebase.auth().currentUser;
+		let uid;
+		if (user != null) {
+			uid = user.uid;
+			const db = firebase.firestore();
+			const docRef = db.collection('users').doc(uid);
+			docRef.update({
+				points: this.props.rewardPoints
+
+			});
+
+		}
+	}
+
+
 	_maybeRenderUploadingOverlay = () => {
 		if (this.state.uploading) {
 			return (
@@ -152,7 +202,9 @@ export default class HomeView extends Component {
 			>
 				<Button
 					style={{ marginBottom: 10 }}
-					onPress={() => this.submitToGoogle()}
+					onPress={() => {
+						this.submitToGoogle()
+					}}
 					title="Analyze!"
 				/>
 
@@ -313,9 +365,32 @@ async function uploadImageAsync(uri) {
 		.storage()
 		.ref()
 		.child(uuid.v4());
+
+
 	const snapshot = await ref.put(blob);
 
 	blob.close();
 
-	return await snapshot.ref.getDownloadURL();
+	const picURI = await ref.getDownloadURL()
+	console.log(picURI)
+	const user = firebase.auth().currentUser;
+
+	db.collection("recycled-items").doc(`${user.displayName}`).set({
+		createdAt: Date.now(),
+		Collected: false,
+		estimatedPoints: "50",
+		imageUri: picURI,
+		userId: user.uid
+	})
+		.then(function () {
+			console.log("Document successfully written!");
+		})
+		.catch(function (error) {
+			console.error("Error writing document: ", error);
+		});
+
+
+	return await snapshot.ref.getDownloadURL()
+
+
 }

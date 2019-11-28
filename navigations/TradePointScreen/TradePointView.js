@@ -69,7 +69,6 @@ export default class TradePointlView extends Component {
                 codes.set({
                   brand: navigation.state.params.Doc_name,
                   code: newData[i].Name,
-                  used: true,
                 }))
       
 
@@ -157,7 +156,7 @@ export default class TradePointlView extends Component {
         </View>
 
         <View style={styles.usePoint}>
-          <Button disabled={point >= userPoint} buttonStyle={{ backgroundColor: "#da272a" }}
+          <Button disabled={point > userPoint} buttonStyle={{ backgroundColor: "#da272a" }}
             titleStyle={{ color: "white", fontSize: 25 }}
             title="Use your point" iconRight={true}
             onPress={() => this.updatePoint(userPoint, point, currentUser)} />

@@ -3,13 +3,14 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import { createStackNavigator } from "react-navigation-stack";
 import {Icon} from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import HomeView from "../navigations/HomeScreen/HomeView";
+import HomeView from "../navigations/HomeScreen/Container";
 import RewardView from "../navigations/RewardScreen/RewardView";
 import HistoryView from "../navigations/HistoryScreen/HistoryView";
 import TradePointlView from "../navigations/TradePointScreen/TradePointView";
 import CollectorMapView from "../navigations/CollectMapScreen/container";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
+import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -63,7 +64,8 @@ const StackNavigator = createStackNavigator({
   },
   Reward: {
     screen: RewardView
-  },
+
+},
   Trade: {
     screen: TradePointlView
   },
