@@ -66,9 +66,6 @@ const StackNavigator = createStackNavigator({
     screen: RewardView
 
 },
-SchedulePickup: {
-  screen: Scheduling
-},
   Trade: {
     screen: TradePointlView
   },

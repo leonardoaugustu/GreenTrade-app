@@ -134,7 +134,6 @@ const DrawerNavigator = createDrawerNavigator(
         },
         SchedulePickup: {
             screen: Scheduling, navigationOptions: {
-                
                 drawerLabel: "Schedule Pickup",
                 drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
@@ -147,13 +146,13 @@ const DrawerNavigator = createDrawerNavigator(
         //     },
         //     params: {role: ['member', 'collector']}
         // },
-        InviteFriends: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Invite Friends",
-                drawerIcon: <Icon type="material-community" name="account-plus" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params: {role: ['member', 'collector']}
-        },
+        // InviteFriends: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Invite Friends",
+        //         drawerIcon: <Icon type="material-community" name="account-plus" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params: {role: ['member', 'collector']}
+        // },
         Settings: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Settings",
@@ -161,13 +160,13 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params: {role: ['member', 'collector']}
         },
-        Help: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Help",
-                drawerIcon: <Icon type="font-awesome" name="question-circle" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params: {role: ['*']}
-        },
+        // Help: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Help",
+        //         drawerIcon: <Icon type="font-awesome" name="question-circle" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params: {role: ['*']}
+        // },
         LogOut: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Log Out",
