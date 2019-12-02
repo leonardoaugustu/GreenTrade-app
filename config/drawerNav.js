@@ -17,7 +17,7 @@ import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
-
+import ContainerView from "../navigations/ContainerScreen/ContainerView";
 
 class DrawerComponent extends Component {
 	constructor(props) {
@@ -129,6 +129,13 @@ const DrawerNavigator = createDrawerNavigator(
             screen: UserContainerSelectionView, navigationOptions: {
                 drawerLabel: "Purchase Container",
                 drawerIcon: <Icon type="material-community" name="shopping" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member', 'collector']}
+        },
+        Containers: {
+            screen: ContainerView, navigationOptions: {
+                drawerLabel: "Containers",
+                drawerIcon: <Icon type="material-community" name="trash-can-outline" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params:  {role: ['member', 'collector']}
         },

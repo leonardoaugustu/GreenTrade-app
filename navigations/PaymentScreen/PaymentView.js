@@ -9,6 +9,9 @@ import { SegmentedControls } from 'react-native-radio-buttons';
 import { connect } from 'react-redux';
 import {purchaseTotal} from '../../actions/Payment/actionCreators';
 import {containersToPurchase} from '../../actions/Payment/actionCreators';
+import 'firebase/firestore';
+import firebase from '../../config/firebase'
+
 
 const options = [
   "Credit Card",
@@ -25,7 +28,8 @@ class PaymentView extends Component {
       validationDialogVisible: false,
       creditCard: {
         status: {}
-      }
+      },
+      error: ''
     };
   }
 
@@ -39,7 +43,66 @@ class PaymentView extends Component {
   }
 
   showConfirmmDialog = () => {
-    this.setState({ confirmDialogVisible: true })
+    this.setState({error: ""});
+    this.checkStock();
+  }
+
+  checkStock = () => {
+    var validStock = true;
+    const selectedContainers = this.props.containers;
+    var db = firebase.firestore();
+    db.collection('containers-inventory')
+      .where(firebase.firestore.FieldPath.documentId(), 'in', selectedContainers.map(c => c.Size))
+      .get().then(docs => {
+        console.info(docs);
+        for (let index = 0; index < docs.size; index++) {
+          const doc = docs.docs[index];
+          var container = selectedContainers.find(c => c.Size == doc.id);
+          var newStock = doc.data().stock - container.Quantity;
+          if (newStock < 0) {
+            validStock = false;
+            this.setState({ error: this.state.error + "\nThere is not enough stock for " + container.Size + " container." });
+          }
+        }
+        if (validStock) {
+          this.setState({ confirmDialogVisible: true })
+        }
+      });
+  }
+
+  deductStock = () => {
+    const selectedContainers = this.props.containers;
+    var db = firebase.firestore();
+    db.collection('containers-inventory')
+      .where(firebase.firestore.FieldPath.documentId(), 'in', selectedContainers.map(c => c.Size))
+      .get().then(docs => {
+        docs.forEach(doc => {
+          var container = selectedContainers.find(c => c.Size == doc.id);
+          var newStock = doc.data().stock - container.Quantity;
+          doc.ref.set({ stock: newStock }, { merge: true });
+          this.addUserContainer(container);
+        });
+      });
+
+    this.setState({ confirmDialogVisible: false, successDialogVisible: true });
+  }
+
+  addUserContainer = (container) => {
+    var db = firebase.firestore();
+    db.collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .collection('containers').doc(container.Size)
+      .set(
+        {
+          amount: firebase.firestore.FieldValue.increment(container.Quantity),
+          orderedDate: Date.now()
+        },
+        { merge: true }
+      )
+      .then(() => {
+        console.info('>>> container added to user');
+      });
+
   }
 
   showValidationErrors = () => {
@@ -107,14 +170,18 @@ class PaymentView extends Component {
                     allowScroll={true}
                     onChange={this._onChange} />
 
+                  <Text style={styles.ErrorTextStyle}>{this.state.error}</Text>
                   <TouchableOpacity style={styles.paymentButton} onPress={this.processPayment}>
                     <Text style={styles.buttonText}>Pay Now</Text>
                   </TouchableOpacity>
                 </View>
                 :
-                <TouchableOpacity style={styles.paymentButton} onPress={this.showConfirmmDialog}>
-                  <Text style={styles.buttonText}>PayPal</Text>
-                </TouchableOpacity>
+                <View>
+                  <Text style={styles.ErrorTextStyle}>{this.state.error}</Text>
+                  <TouchableOpacity style={styles.paymentButton} onPress={this.showConfirmmDialog}>
+                    <Text style={styles.buttonText}>PayPal</Text>
+                  </TouchableOpacity>
+                </View>
               }
             </View>
 
@@ -129,7 +196,7 @@ class PaymentView extends Component {
           onTouchOutside={() => this.setState({ confirmDialogVisible: false })}
           positiveButton={{
             title: "YES",
-            onPress: () => this.setState({ confirmDialogVisible: false, successDialogVisible: true })
+            onPress: () => this.deductStock()
           }}
           negativeButton={{
             title: "NO",
@@ -151,7 +218,10 @@ class PaymentView extends Component {
           </Text>
           <Button
             style={styles.dialogButton}
-            onPress={() => this.props.navigation.goBack()}
+            onPress={() => {
+              this.props.navigation.navigate('Containers');
+              this.setState({successDialogVisible: false});
+            }}
             title="Continue"
           />
         </Dialog>
