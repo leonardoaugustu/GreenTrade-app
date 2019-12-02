@@ -283,6 +283,10 @@ export default StyleSheet.create({
     },
     dialogButton: {
         margin: wp('10%')
+    },
+    ErrorTextStyle: {
+        color: 'red',
+        marginBottom: 10,
+        marginHorizontal: wp('9%'),
     }
-
 })
