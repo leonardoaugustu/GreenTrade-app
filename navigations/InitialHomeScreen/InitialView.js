@@ -7,6 +7,7 @@ import { Dialog } from 'react-native-simple-dialogs';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 
+
 export default class InitialView extends Component {
   constructor(props) {
     super(props);
