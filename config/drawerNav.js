@@ -17,6 +17,7 @@ import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
+import InitialView from "../navigations/InitialHomeScreen/InitialView";
 
 class DrawerComponent extends Component {
 	constructor(props) {
@@ -134,6 +135,13 @@ const DrawerNavigator = createDrawerNavigator(
         SchedulePickup: {
             screen: Scheduling, navigationOptions: {
                 drawerLabel: "Schedule Pickup",
+                drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member', 'collector']}
+        },
+        Initial: {
+            screen: InitialView, navigationOptions: {
+                drawerLabel: "Initial Test",
                 drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params:  {role: ['member', 'collector']}

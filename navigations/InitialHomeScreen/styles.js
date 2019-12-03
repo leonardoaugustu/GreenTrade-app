@@ -74,12 +74,14 @@ drawerIcon: {
     marginLeft: wp('-6%')
 },
 cameraWrapper: {
-    marginTop: hp('60%'),
+    marginTop: hp('15%'),
+    height: wp('35%'),
     width: wp('100%'),
     justifyContent: 'center',
     alignItems: 'center',
 },
 cameraImg: {
+    
     alignSelf: 'center',
     width: wp('35%'),
     height: wp('35%')
@@ -98,4 +100,23 @@ customDialog: {
     flexDirection: 'column',
     height: hp('15%'),
 },
+waveContainer: {
+    marginTop: hp('12%'),
+    marginHorizontal: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0
+},
+wave: {
+    width: 100,
+    aspectRatio: 1,
+    overflow: 'hidden',
+    backgroundColor: 'white',
+},
+waveBall: {
+    width: wp('40%'),
+    aspectRatio: 1,
+    borderRadius: wp('30%'),
+    overflow: 'hidden',
+}
 })

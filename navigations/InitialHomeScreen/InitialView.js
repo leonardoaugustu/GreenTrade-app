@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import { Text, View, Image, TouchableOpacity, Button} from "react-native";
+import { Text, View, Image, TouchableOpacity, Button, TouchableHighlight} from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import { Dialog } from 'react-native-simple-dialogs';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
+import Wave from 'react-native-waveview';
 
 
 export default class InitialView extends Component {
@@ -67,6 +68,34 @@ export default class InitialView extends Component {
               </View>
               </View>
           </View>
+          <View style={styles.waveContainer} >
+    <TouchableHighlight onPress={()=>{
+        // Stop Animation
+        this._waveRect && this._waveRect.stopAnim();
+ 
+        // set water baseline height
+        this._waveRect && this._waveRect.setWaterHeight(70);
+ 
+        // reset wave effect
+        this._waveRect && this._waveRect.setWaveParams([
+            {A: 10, T: 260, fill: '#FF9F2E'},
+            {A: 15, T: 220, fill: '#F08200'},
+            {A: 20, T: 180, fill: '#B36100'},
+        ]);
+    }}>
+    <Wave
+        ref={ref=>this._waveRect = ref}
+        style={styles.waveBall}
+        H={100}
+        waveParams={[
+            {A: 10, T: 260, fill: '#62c2ff'},
+            {A: 15, T: 220, fill: '#0087dc'},
+            {A: 20, T: 180, fill: '#1aa7ff'},
+        ]}
+        animated={true}
+    />
+    </TouchableHighlight>
+</View>
           <TouchableOpacity onPress={this.toggleCamera}>
           <View style={styles.cameraWrapper}>
           <Image style={styles.cameraImg} source={require('../../assets/camera.png')}/>
