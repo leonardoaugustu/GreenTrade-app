@@ -5,6 +5,8 @@ import * as Permissions from 'expo-permissions'
 import * as Location from 'expo-location'
 import styles from "./styles";
 import { Button } from 'react-native-elements';
+import Icon1 from 'react-native-vector-icons/FontAwesome';
+import { Icon } from "react-native-elements";
 
 
 
@@ -48,6 +50,27 @@ _getLocationAsync = async () => {
 }
 render() {
   return (
+    <SafeAreaView style={styles.container}>
+    <View style={styles.headerContainer}>
+      <View style={styles.header}>
+        <View style={styles.iconWrapper}>
+          <Icon
+            onPress={() => this.props.navigation.openDrawer()}
+            type="material"
+            name="menu"
+            size={30}
+            color="#fff"
+            containerStyle={styles.drawerIcon}
+          />
+        </View>
+        <View style={styles.titleWrapper}>
+          <Text style={styles.textTitle}>Confirmed Pickups</Text>
+
+        </View>
+
+      </View>
+
+    </View>
     <View style={styles.container}>
 
 
@@ -77,7 +100,7 @@ render() {
       </View>
 
     </View>
-
+</SafeAreaView>
 
   )
 }

@@ -19,6 +19,7 @@ import CollectorPickupHistory from "../navigations/CollectorPickupHistory/Collec
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
 
+
 class DrawerComponent extends Component {
 	constructor(props) {
 		super(props);

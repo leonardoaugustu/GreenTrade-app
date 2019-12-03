@@ -11,6 +11,7 @@ import CollectorMapView from "../navigations/CollectMapScreen/container";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
+import CollectorView from "../navigations/CollectorML/CollectorView";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -77,6 +78,9 @@ const StackNavigator = createStackNavigator({
   },
   Payment: {
     screen: PaymentView
+  },
+  CollectorML:{
+    screen: CollectorView
   }
 },
 {
