@@ -14,6 +14,7 @@ import RewardList from '../../components/RewardList';
 import RewardHistory from '../../components/RewardHistory';
 import { connect } from 'react-redux';
 import {sortRewards} from '../../actions/Rewards/actionCreators';
+import firebase from '../../config/firebase';
 
 const RewardListRoute = () => <RewardList/>
 
@@ -44,6 +45,21 @@ class RewardView extends React.Component {
     // }
   }
 async componentDidMount() {
+  try {
+    const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
+    var db = firebase.firestore();
+    db.collection("users").where("displayName", "==", currentUser).get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        var userPoint = {
+          point: doc.data().points
+        };
+        this.setState({ currentUserPoint: userPoint });
+      });
+    });
+  }
+  catch (error) {
+    console.log(error);
+  }
 }
 
 _handleIndexChange = index => {
@@ -73,7 +89,7 @@ _renderTabBar = props => {
      </View>
      <View style={styles.topContainer}>
      <Icon name='star' type='material-community' color='#FBDFAA' iconStyle={styles.starIcon}/>
-     <Text style={styles.pointText}>500</Text>
+     <Text style={styles.pointText}>{this.state.currentUserPoint.point}</Text>
      <Image resizeMethod="resize" source={{uri:'https://cdn.dribbble.com/users/1281708/screenshots/4676637/____dribbble.gif'}} style={styles.headerImg}/>
           <TabBar
           {...props}

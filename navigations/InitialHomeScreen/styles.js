@@ -118,5 +118,7 @@ waveBall: {
     aspectRatio: 1,
     borderRadius: wp('30%'),
     overflow: 'hidden',
+    borderWidth: wp('0.2%'),
+    borderColor: '#1aa7ff'
 }
 })

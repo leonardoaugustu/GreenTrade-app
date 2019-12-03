@@ -7,6 +7,8 @@ import { Dialog } from 'react-native-simple-dialogs';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Wave from 'react-native-waveview';
+import firebase from '../../config/firebase';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
 export default class InitialView extends Component {
@@ -14,6 +16,10 @@ export default class InitialView extends Component {
     super(props);
     this.state = {
       dialogVisible: false,
+      height: null,
+      totalPoint: null,
+      maxPoint: 1000,
+      percentage: null
     };
   }
 
@@ -26,7 +32,38 @@ export default class InitialView extends Component {
 
   async componentDidMount() {
 		await Permissions.askAsync(Permissions.CAMERA_ROLL);
-		await Permissions.askAsync(Permissions.CAMERA);
+    await Permissions.askAsync(Permissions.CAMERA);
+    try{
+      var db = firebase.firestore();
+
+  
+      db.collection("recycled-items").get().then((querySnapshot) => {
+        var sum = 0;
+        var p = 0;
+        querySnapshot.forEach((doc) => 
+        {
+
+          if (doc.data().userId==firebase.auth().currentUser.uid)
+          {   
+        sum = sum + doc.data().estimatedPoints;
+        p = sum / this.state.maxPoint;
+        h = p* wp('40%');
+        //console.log(this.state.name + "is showing")
+        this.setState({totalPoint: sum, percentage: p, height: h});
+        console.log(this.state.totalPoint)
+            }
+          });
+        });
+        console.log(this.state.totalPoint)
+    }
+    catch (error){
+      console.log(error);
+    }
+    this.forceUpdate();
+  }
+
+  componentWillMount(){
+    this._waveRect.setWaterHeight(this.state.height);
   }
   
   _takePhoto = async () => {
@@ -45,7 +82,7 @@ export default class InitialView extends Component {
 		});
 
 		this._handleImagePicked(pickerResult);
-	};
+  };
 
   render() {
  
@@ -69,9 +106,8 @@ export default class InitialView extends Component {
               </View>
           </View>
           <View style={styles.waveContainer} >
-    <TouchableHighlight onPress={()=>{
+    {/* <TouchableHighlight onPress={()=>{
         // Stop Animation
-        this._waveRect && this._waveRect.stopAnim();
  
         // set water baseline height
         this._waveRect && this._waveRect.setWaterHeight(70);
@@ -82,11 +118,11 @@ export default class InitialView extends Component {
             {A: 15, T: 220, fill: '#F08200'},
             {A: 20, T: 180, fill: '#B36100'},
         ]);
-    }}>
+    }}> */}
     <Wave
         ref={ref=>this._waveRect = ref}
         style={styles.waveBall}
-        H={100}
+        H={this.state.height}
         waveParams={[
             {A: 10, T: 260, fill: '#62c2ff'},
             {A: 15, T: 220, fill: '#0087dc'},
@@ -94,7 +130,8 @@ export default class InitialView extends Component {
         ]}
         animated={true}
     />
-    </TouchableHighlight>
+  <Text>{this.state.percentage * 100} %</Text>
+    {/* </TouchableHighlight> */}
 </View>
           <TouchableOpacity onPress={this.toggleCamera}>
           <View style={styles.cameraWrapper}>
@@ -120,3 +157,4 @@ export default class InitialView extends Component {
     );
   }
 }
+

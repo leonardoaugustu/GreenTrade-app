@@ -110,14 +110,14 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params: {role: ['member', 'collector']}
         },
-        EditProfile: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Edit Profile",
-                drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        // EditProfile: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Edit Profile",
+        //         drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             
-            },
-            params: {role: ['member', 'collector']}
-        },
+        //     },
+        //     params: {role: ['member', 'collector']}
+        // },
         Pickup: {
             screen: CollectorPickupView, navigationOptions: {
                 drawerLabel: "Confirmed Pickup",
@@ -160,13 +160,13 @@ const DrawerNavigator = createDrawerNavigator(
         //     },
         //     params: {role: ['member', 'collector']}
         // },
-        Settings: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Settings",
-                drawerIcon: <Icon type="font-awesome" name="cog" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params: {role: ['member', 'collector']}
-        },
+        // Settings: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Settings",
+        //         drawerIcon: <Icon type="font-awesome" name="cog" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params: {role: ['member', 'collector']}
+        // },
         // Help: {
         //     screen: HomeView, navigationOptions: {
         //         drawerLabel: "Help",

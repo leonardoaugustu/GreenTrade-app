@@ -33,6 +33,7 @@ class PaymentView extends Component {
     console.log(this.state.creditCard);
     if (this.state.creditCard.valid) {
       this.showConfirmmDialog();
+      this.props.purchaseTotal(0)
     } else {
       this.showValidationErrors();
     }
