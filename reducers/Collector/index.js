@@ -1,6 +1,6 @@
 const initialState = {
     selected: {},
-    points: 0
+    rewardPoints: 0
 };
 
 const collectorReducer = (state = initialState, action) => {
@@ -10,6 +10,19 @@ const collectorReducer = (state = initialState, action) => {
                 ...state,
                 selected: action.payload,
             };
+
+        case "INSERT_POINTS":
+            return {
+                ...state,
+                rewardPoints: state.rewardPoints + action.payload 
+            }
+        
+        case "GET_INITIAL_POINTS":
+            return {
+                ...state,
+                rewardPoints: action.payload
+            }
+    
         default:
             return state;
 

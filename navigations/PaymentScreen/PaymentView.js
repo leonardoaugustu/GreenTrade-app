@@ -5,14 +5,20 @@ import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import { ConfirmDialog, Dialog } from 'react-native-simple-dialogs';
 import { CreditCardInput, LiteCreditCardInput } from "react-native-credit-card-input";
-import { SegmentedControls } from 'react-native-radio-buttons'
+import { SegmentedControls } from 'react-native-radio-buttons';
+import { connect } from 'react-redux';
+import {purchaseTotal} from '../../actions/Payment/actionCreators';
+import {containersToPurchase} from '../../actions/Payment/actionCreators';
+import 'firebase/firestore';
+import firebase from '../../config/firebase'
+
 
 const options = [
   "Credit Card",
   "PayPal"
 ];
 
-export default class PaymentView extends Component {
+class PaymentView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,7 +28,8 @@ export default class PaymentView extends Component {
       validationDialogVisible: false,
       creditCard: {
         status: {}
-      }
+      },
+      error: ''
     };
   }
 
@@ -36,7 +43,66 @@ export default class PaymentView extends Component {
   }
 
   showConfirmmDialog = () => {
-    this.setState({ confirmDialogVisible: true })
+    this.setState({error: ""});
+    this.checkStock();
+  }
+
+  checkStock = () => {
+    var validStock = true;
+    const selectedContainers = this.props.containers;
+    var db = firebase.firestore();
+    db.collection('containers-inventory')
+      .where(firebase.firestore.FieldPath.documentId(), 'in', selectedContainers.map(c => c.Size))
+      .get().then(docs => {
+        console.info(docs);
+        for (let index = 0; index < docs.size; index++) {
+          const doc = docs.docs[index];
+          var container = selectedContainers.find(c => c.Size == doc.id);
+          var newStock = doc.data().stock - container.Quantity;
+          if (newStock < 0) {
+            validStock = false;
+            this.setState({ error: this.state.error + "\nThere is not enough stock for " + container.Size + " container." });
+          }
+        }
+        if (validStock) {
+          this.setState({ confirmDialogVisible: true })
+        }
+      });
+  }
+
+  deductStock = () => {
+    const selectedContainers = this.props.containers;
+    var db = firebase.firestore();
+    db.collection('containers-inventory')
+      .where(firebase.firestore.FieldPath.documentId(), 'in', selectedContainers.map(c => c.Size))
+      .get().then(docs => {
+        docs.forEach(doc => {
+          var container = selectedContainers.find(c => c.Size == doc.id);
+          var newStock = doc.data().stock - container.Quantity;
+          doc.ref.set({ stock: newStock }, { merge: true });
+          this.addUserContainer(container);
+        });
+      });
+
+    this.setState({ confirmDialogVisible: false, successDialogVisible: true });
+  }
+
+  addUserContainer = (container) => {
+    var db = firebase.firestore();
+    db.collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .collection('containers').doc(container.Size)
+      .set(
+        {
+          amount: firebase.firestore.FieldValue.increment(container.Quantity),
+          orderedDate: Date.now()
+        },
+        { merge: true }
+      )
+      .then(() => {
+        console.info('>>> container added to user');
+      });
+
   }
 
   showValidationErrors = () => {
@@ -53,9 +119,9 @@ export default class PaymentView extends Component {
     });
   }
 
-  formatNumber = (number) => {
-    return (number).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-  }
+  // formatNumber = (number) => {
+  //   return (number).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  // }
 
   render() {
     return (
@@ -85,7 +151,7 @@ export default class PaymentView extends Component {
             <View>
               <View style={styles.displayAmount}>
                 <Text>Total Amount</Text>
-                <Text style={styles.displayText}>$ {this.formatNumber(this.props.navigation.state.params.price)}</Text>
+                <Text style={styles.displayText}>$ {this.props.price}</Text>
               </View>
 
               <View style={styles.paymentMethod}>
@@ -104,14 +170,18 @@ export default class PaymentView extends Component {
                     allowScroll={true}
                     onChange={this._onChange} />
 
+                  <Text style={styles.ErrorTextStyle}>{this.state.error}</Text>
                   <TouchableOpacity style={styles.paymentButton} onPress={this.processPayment}>
                     <Text style={styles.buttonText}>Pay Now</Text>
                   </TouchableOpacity>
                 </View>
                 :
-                <TouchableOpacity style={styles.paymentButton} onPress={this.showConfirmmDialog}>
-                  <Text style={styles.buttonText}>PayPal</Text>
-                </TouchableOpacity>
+                <View>
+                  <Text style={styles.ErrorTextStyle}>{this.state.error}</Text>
+                  <TouchableOpacity style={styles.paymentButton} onPress={this.showConfirmmDialog}>
+                    <Text style={styles.buttonText}>PayPal</Text>
+                  </TouchableOpacity>
+                </View>
               }
             </View>
 
@@ -126,7 +196,7 @@ export default class PaymentView extends Component {
           onTouchOutside={() => this.setState({ confirmDialogVisible: false })}
           positiveButton={{
             title: "YES",
-            onPress: () => this.setState({ confirmDialogVisible: false, successDialogVisible: true })
+            onPress: () => this.deductStock()
           }}
           negativeButton={{
             title: "NO",
@@ -148,7 +218,10 @@ export default class PaymentView extends Component {
           </Text>
           <Button
             style={styles.dialogButton}
-            onPress={() => this.props.navigation.goBack()}
+            onPress={() => {
+              this.props.navigation.navigate('Containers');
+              this.setState({successDialogVisible: false});
+            }}
             title="Continue"
           />
         </Dialog>
@@ -194,3 +267,19 @@ export default class PaymentView extends Component {
     );
   }
 }
+
+function mapStateToProps (state){
+  return{
+    price: state.purchaseTotalReducer.price,
+    containers: state.purchaseTotalReducer.containers
+  }; 
+}
+
+function mapDispatchToProps (dispatch)  {
+  return {
+      purchaseTotal: (price) => dispatch(purchaseTotal(price)),
+      containersToPurchase: (containers) => dispatch(containersToPurchase(containers))
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentView);

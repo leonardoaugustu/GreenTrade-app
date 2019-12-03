@@ -7,19 +7,17 @@ import { DrawerActions } from 'react-navigation-drawer';
 import { NavigationActions, StackActions } from 'react-navigation'
 import { Divider, Icon } from "react-native-elements";
 import styles from "../navigations/HomeScreen/styles";
-
+import HomeView from "../navigations/HomeScreen/Container";
 import UserContainerSelectionView from "../navigations/UserContainerSelectionScreen/UserContainerSelectionView";
-
 import StackNavigator from"./navigation";
 import firebase from 'firebase';
-
-
 import SplashView from "../navigations/SplashScreen/SplashView";
 import SignInView from "../navigations/SignInScreen/SignInView";
 import SignUpView from "../navigations/SignUpScreen/SignUpView";
-import HomeView from "../navigations/HomeScreen/HomeView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
+import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
+import ContainerView from "../navigations/ContainerScreen/ContainerView";
 
 
 class DrawerComponent extends Component {
@@ -135,28 +133,34 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params:  {role: ['member', 'collector']}
         },
+        Containers: {
+            screen: ContainerView, navigationOptions: {
+                drawerLabel: "Containers",
+                drawerIcon: <Icon type="material-community" name="trash-can-outline" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params:  {role: ['member', 'collector']}
+        },
         SchedulePickup: {
             screen: Scheduling, navigationOptions: {
-                
                 drawerLabel: "Schedule Pickup",
                 drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params:  {role: ['member', 'collector']}
         },
-        Notifications: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Notifications",
-                drawerIcon: <Icon type="material-community" name="bell" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params: {role: ['member', 'collector']}
-        },
-        InviteFriends: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Invite Friends",
-                drawerIcon: <Icon type="material-community" name="account-plus" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params: {role: ['member', 'collector']}
-        },
+        // Notifications: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Notifications",
+        //         drawerIcon: <Icon type="material-community" name="bell" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params: {role: ['member', 'collector']}
+        // },
+        // InviteFriends: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Invite Friends",
+        //         drawerIcon: <Icon type="material-community" name="account-plus" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params: {role: ['member', 'collector']}
+        // },
         Settings: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Settings",
@@ -164,13 +168,13 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params: {role: ['member', 'collector']}
         },
-        Help: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Help",
-                drawerIcon: <Icon type="font-awesome" name="question-circle" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params: {role: ['*']}
-        },
+        // Help: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Help",
+        //         drawerIcon: <Icon type="font-awesome" name="question-circle" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params: {role: ['*']}
+        // },
         LogOut: {
             screen: HomeView, navigationOptions: {
                 drawerLabel: "Log Out",

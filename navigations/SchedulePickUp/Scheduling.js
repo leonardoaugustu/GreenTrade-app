@@ -1,26 +1,14 @@
 import React, { Component, useState } from "react";
 import {AsyncStorage} from 'react-native';  
 import { Text, Alert, TextInput, TouchableOpacity, View, Button, show, Platform, StyleSheet } from "react-native";
-
 import { colors, Icon } from "react-native-elements";
-
 import DateTimePicker from "react-native-modal-datetime-picker";
-
-
-
-
 import { Keyboard } from 'react-native';
-
-
 import styles from "./styles";
-
 import SafeAreaView from "react-native-safe-area-view";
 import moment from 'moment'
-
 import firebase from '../../config/firebase';
 const db = firebase.firestore();
-
-
 
 export default class Scheduling extends Component {
   constructor(props) {
@@ -43,13 +31,6 @@ export default class Scheduling extends Component {
     };
   }
 
-
-  
-
-
-
-
-
   //for keyboard dismissing
   componentDidMount() {
     this.keyboardDidShowListener = Keyboard.addListener(
@@ -60,11 +41,6 @@ export default class Scheduling extends Component {
       'keyboardDidHide',
       this._keyboardDidHide,
     );
-
-
-        
-
-
   }
 
   componentWillUnmount() {
@@ -79,8 +55,6 @@ export default class Scheduling extends Component {
   _keyboardDidHide() {
     //alert('Keyboard Hidden');
   }
-
-
 
   //for handling date and time
   handlePicker = (datetime) => {
@@ -160,14 +134,8 @@ export default class Scheduling extends Component {
       .catch( err => console.log("error getting users", err));
   }
 
-
-  
-
    //storing the value and passing to db
    async handlePress() {
-
-    
-
     if( this.state.chosenDate==="" ){
         Alert.alert('Please Choose a Date and Time '+firebase.auth().currentUser.displayName);
     }
@@ -181,9 +149,6 @@ export default class Scheduling extends Component {
     var realUser= firebase.auth().currentUser.uid;
     var userName= firebase.auth().currentUser.displayName;
 
-
-    
-
     await Promise.all ( [pickupRef.add({ user: realUser, useraddressDetailscity:this.state.useraddressDetailscity,useraddressDetailspostalCode: this.state.useraddressDetailspostalCode, useraddressDetailsprovince: this.state.useraddressDetailsprovince,useraddressDetailsstreet: this.state.useraddressDetailsstreet,userProfilePicURL: this.state.userprofilePicUrl, scheduledtime: this.state.chosenDate , additionalInfo: this.state.additionalInfo,cancelled: false, collectorid: this.state.collectPersonId , collector: this.state.collectorperson ,customerName: userName, fulfilledAt: null})],
       [userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null})]);
     
@@ -195,16 +160,7 @@ export default class Scheduling extends Component {
     }
   }
 
-  
-  
-
-
   render() {
-
-
-
-
-
     return (
 
       <SafeAreaView style={styles.container}>
@@ -225,18 +181,11 @@ export default class Scheduling extends Component {
             </View>
           </View>
         </View>
-
-
-
-
         <View style={{ flex: 1, alignContent: "center" }}>
           <View style={{ flex: 1, backgroundColor: '#DAE0E2', alignContent: "center", alignItems: "center" }} >
             <Text style={{ height: 80, padding: 60, fontSize: 22 }} >Welcome Back {firebase.auth().currentUser && firebase.auth().currentUser.displayName}</Text>
 
           </View>
-
-
-
           <View style={{ flex: 2, backgroundColor: '#DAE0E2', padding: 20, alignItems: "center", alignContent: "center" }} >
 
             <Text style={{ height: 80, padding: 10, fontSize: 20, alignItems: "center" }} >{this.state.message}</Text>
@@ -266,31 +215,16 @@ export default class Scheduling extends Component {
               style={{ fontSize: 20 }}
             />
 
-            
-
-
           </View>
 
           <View style={{ flex: 3, backgroundColor: '#DAE0E2' }} >
             <Button title="Confirm" onPress={() => this.handlePress()} styles={{ justifyContent: 'center' }} />
-            
-
+          
           </View>
-
             
         </View >
-
       </SafeAreaView>
-
-
-
     );
-
-
-
-
   }
-
-
 }
 
