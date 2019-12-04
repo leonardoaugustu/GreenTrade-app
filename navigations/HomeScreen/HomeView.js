@@ -8,11 +8,12 @@ import {
 	StyleSheet,
 	Text,
 	ScrollView,
-	View
+	View,
+	Button,
+	TouchableOpacity
 } from 'react-native';
 import uuid from 'uuid';
 import * as ImagePicker from 'expo-image-picker';
-import { Button } from 'react-native-elements';
 import '@firebase/firestore';
 import * as Permissions from 'expo-permissions';
 import { Icon } from "react-native-elements";
@@ -20,13 +21,24 @@ import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import Environment from '../../config/FireBaseConfig';
 import firebase from '../../config/firebase';
+import Wave from 'react-native-waveview';
+import { Dialog } from 'react-native-simple-dialogs';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 const db = firebase.firestore();
 
 
 export default class HomeView extends Component {
 	constructor(props) {
 		super(props);
-		this.getInitialPoints()
+		this.getInitialPoints();
+		this.state = {
+			dialogVisible: false,
+			height: 0,
+			totalPoint: 0,
+			maxPoint: 1000,
+			percentage: null,
+		  };
 
 
 	}
@@ -43,12 +55,44 @@ export default class HomeView extends Component {
 		// imageUri:"",
 
 	};
-	async componentDidMount() {
-		await Permissions.askAsync(Permissions.CAMERA_ROLL);
+	toggleCamera = () => {
+		this.setState({dialogVisible: true})
+	  }
+	  _canceltoggle = () => {
+		this.setState({dialogVisible: false})
+	  }
+	
+	  async componentDidMount() {
+			await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
-
-
-	}
+		try{
+		  var db = firebase.firestore();
+	
+	  
+		  db.collection("recycled-items").get().then((querySnapshot) => {
+			var sum = 0;
+			var p = 0;
+			querySnapshot.forEach((doc) => 
+			{
+	
+			  if (doc.data().userId==firebase.auth().currentUser.uid)
+			  {   
+				this.props.points = this.props.points + parseInt(doc.data().estimatedPoints);
+			p = sum / this.state.maxPoint;
+			h = p* wp('40%');
+			//console.log(this.state.name + "is showing")
+			this.setState({totalPoint: sum, percentage: p, height: h});
+			console.log(this.props.points)
+				}
+			  });
+			});
+			console.log(this.state.totalPoint)
+		}
+		catch (error){
+		  console.log(error);
+		}
+		this.forceUpdate();
+	  }
 
 	async getInitialPoints() {
 
@@ -65,6 +109,7 @@ export default class HomeView extends Component {
 
 	render() {
 		let { image } = this.state;
+		const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
 
 		return (
 			<SafeAreaView style={styles.container}>
@@ -89,14 +134,88 @@ export default class HomeView extends Component {
 					style={styles.container}
 					contentContainerStyle={styles.contentContainer}
 				>
+					<View style={styles.welcomeWrapper}>
+		<Text style={styles.welcomeTxt}>{'Welcome Back'.toUpperCase()}, {currentUser.toUpperCase()}!</Text>
+					</View>
+					 <View>
+					 {this.props.points/this.state.maxPoint * 100 <= 80 ? (  
+          <View style={styles.waveContainer} >
+    {/* <TouchableHighlight onPress={()=>{
+        // Stop Animation
+ 
+        // set water baseline height
+        this._waveRect && this._waveRect.setWaterHeight(70);
+ 
+        // reset wave effect
+        this._waveRect && this._waveRect.setWaveParams([
+            {A: 10, T: 260, fill: '#FF9F2E'},
+            {A: 15, T: 220, fill: '#F08200'},
+            {A: 20, T: 180, fill: '#B36100'},
+        ]);
+    }}> */}
+    <Wave
+        ref={(wave) => wave && wave.setWaterHeight(this.props.points/this.state.maxPoint * wp('40%'))}
+        style={styles.waveBall}
+        H={this.props.points/this.state.maxPoint * wp('40%')}
+        waveParams={[
+            {A: 10, T: 260, fill: '#62c2ff'},
+            {A: 15, T: 220, fill: '#0087dc'},
+            {A: 20, T: 180, fill: '#1aa7ff'},
+        ]}
+        animated={true}
+    />
+   <Text style={styles.perText}>{this.props.points/this.state.maxPoint * 100} %</Text>
+    {/* </TouchableHighlight> */}
+</View>
+) :  <View style={styles.waveContainer} >
+<Wave
+	ref={(wave) => wave && wave.setWaterHeight(this.props.points/this.state.maxPoint * wp('40%'))}
+	style={styles.waveBall}
+	H={this.props.points/this.state.maxPoint * wp('40%')}
+	waveParams={[
+		{A: 10, T: 260, fill: '#FF9F2E'},
+		{A: 15, T: 220, fill: '#F08200'},
+		{A: 20, T: 180, fill: '#B36100'},
+	]}
+	animated={true}
+/>
+	<Text style={styles.perText}>{this.props.points/this.state.maxPoint < 1 ? this.props.points/this.state.maxPoint * 100 : 100} %</Text>
+{/* </TouchableHighlight> */}
+</View>}
+ </View>
+ <View style={styles.pointWrapper}>
+		<Text style={styles.pointTxt}>{this.props.points} {'total points'.toUpperCase()}</Text>
+					</View>
+ <View style={styles.cameraWrapper}>
+          <TouchableOpacity onPress={this.toggleCamera} style={styles.cameraImg}>
+          
+          <Image style={styles.cameraImg} source={require('../../assets/camera.png')}/>
+          
+          </TouchableOpacity>
+          </View>
+          <View style={styles.dialogContainer}>
+                <Dialog
+                dialogStyle ={styles.dialog}
+                   visible={this.state.dialogVisible}
+                   >
+                       <View style={styles.customDialog}>
+                       <Button
+							onPress={this._pickImage}
+							title="Choose from camera roll"
+						/>
+						<Button onPress={this._takePhoto} title="Take a photo" />
+            <Button onPress={this._canceltoggle} title="Cancel" />
+                       </View>
+                </Dialog>
+                </View>
 					<View style={styles.getStartedContainer}>
 						{image ? null : (
-							<Text style={styles.getStartedText}>Find your Recycle Item</Text>
+							<Text style={styles.getStartedText}>Find Your Recyclables</Text>
 						)}
 					</View>
 
 					<View style={styles.helpContainer}>
-						<Button
+						{/* <Button
 							onPress={() => {
 								this._pickImage()
 								this.setState({ analyzed: !this.state.analyzed })
@@ -104,7 +223,7 @@ export default class HomeView extends Component {
 							title="Pick an image from camera roll"
 						/>
 
-						<Button style={styles.takePhoto} onPress={this._takePhoto} title="Take a photo" />
+						<Button style={styles.takePhoto} onPress={this._takePhoto} title="Take a photo" /> */}
 
 						<FlatList
 							data={this.state.googleResponse ? this.state.googleResponse.responses[0].labelAnnotations : null}
@@ -266,6 +385,7 @@ export default class HomeView extends Component {
 			aspect: [4, 3]
 		});
 
+		this.setState({dialogVisible: false})
 		this._handleImagePicked(pickerResult);
 	};
 
@@ -275,6 +395,7 @@ export default class HomeView extends Component {
 			aspect: [4, 3]
 		});
 
+		this.setState({dialogVisible: false})
 		this._handleImagePicked(pickerResult);
 	};
 

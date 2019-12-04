@@ -10,7 +10,7 @@ import { Icon } from "react-native-elements";
 
 
 
-export default class CollectorMapView extends React.Component<{}> {
+export default class CollectorMapView extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
@@ -72,10 +72,6 @@ render() {
 
     </View>
     <View style={styles.container}>
-
-
-
-
 
       <View style={{ flex: 1 }}>
         <MapView

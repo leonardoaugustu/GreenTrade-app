@@ -17,6 +17,7 @@ import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
+import InitialView from "../navigations/InitialHomeScreen/InitialView";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
 
 
@@ -111,14 +112,14 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params: {role: ['member', 'collector']}
         },
-        EditProfile: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Edit Profile",
-                drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        // EditProfile: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Edit Profile",
+        //         drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             
-            },
-            params: {role: ['member', 'collector']}
-        },
+        //     },
+        //     params: {role: ['member', 'collector']}
+        // },
         Pickup: {
             screen: CollectorPickupView, navigationOptions: {
                 drawerLabel: "Confirmed Pickup",
@@ -147,6 +148,13 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params:  {role: ['member', 'collector']}
         },
+        // Initial: {
+        //     screen: InitialView, navigationOptions: {
+        //         drawerLabel: "Initial Test",
+        //         drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params:  {role: ['member', 'collector']}
+        // },
         // Notifications: {
         //     screen: HomeView, navigationOptions: {
         //         drawerLabel: "Notifications",
@@ -161,13 +169,13 @@ const DrawerNavigator = createDrawerNavigator(
         //     },
         //     params: {role: ['member', 'collector']}
         // },
-        Settings: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Settings",
-                drawerIcon: <Icon type="font-awesome" name="cog" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params: {role: ['member', 'collector']}
-        },
+        // Settings: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Settings",
+        //         drawerIcon: <Icon type="font-awesome" name="cog" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params: {role: ['member', 'collector']}
+        // },
         // Help: {
         //     screen: HomeView, navigationOptions: {
         //         drawerLabel: "Help",

@@ -74,12 +74,14 @@ export default StyleSheet.create({
         marginLeft: wp('-6%')
     },
     cameraWrapper: {
-        marginTop: hp('60%'),
+        marginTop: hp('3%'),
+        height: wp('35%'),
         width: wp('100%'),
         justifyContent: 'center',
         alignItems: 'center',
     },
     cameraImg: {
+        
         alignSelf: 'center',
         width: wp('35%'),
         height: wp('35%')
@@ -137,4 +139,55 @@ export default StyleSheet.create({
         marginTop: 15,
         alignItems: 'center'
     },
+    waveContainer: {
+        marginTop: hp('4%'),
+        marginHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 0
+    },
+    wave: {
+        width: 100,
+        aspectRatio: 1,
+        overflow: 'hidden',
+        backgroundColor: 'white',
+    },
+    waveBall: {
+        width: wp('40%'),
+        aspectRatio: 1,
+        borderRadius: wp('30%'),
+        overflow: 'hidden',
+        borderWidth: wp('0.2%'),
+        borderColor: '#1aa7ff'
+    },
+    perText: {
+        fontSize: wp('8%'),
+        marginTop: wp('-25%')
+    },
+    welcomeWrapper: {
+        // borderWidth: 1,
+        // borderColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: wp('100%'),
+        height: wp('10%')
+    },
+    welcomeTxt: {
+        fontSize: wp('5%'),
+        color: 'rgba(96,100,109, 1)',
+    },
+    pointWrapper: {
+        // borderWidth: 1,
+        // borderColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: wp('100%'),
+        height: wp('10%'),
+        marginTop: wp('20%')
+    },
+    pointTxt: {
+        fontSize: wp('5%'),
+        color: 'rgba(96,100,109, 1)',
+        fontWeight: 'bold'
+    }
 });
