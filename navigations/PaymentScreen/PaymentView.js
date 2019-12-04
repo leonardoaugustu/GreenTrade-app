@@ -92,13 +92,13 @@ class PaymentView extends Component {
     var db = firebase.firestore();
     db.collection("users")
       .doc(firebase.auth().currentUser.uid)
-      .collection('containers').doc(container.Size)
-      .set(
+      .collection('containers')
+      .add(
         {
-          amount: firebase.firestore.FieldValue.increment(container.Quantity),
-          orderedDate: Date.now()
-        },
-        { merge: true }
+          amount: container.Quantity,
+          size: container.Size,
+          orderedDate: firebase.firestore.Timestamp.now()
+        }
       )
       .then(() => {
         console.info('>>> container added to user');

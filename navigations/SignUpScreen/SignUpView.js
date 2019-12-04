@@ -77,9 +77,6 @@ export default class SignUpView extends Component {
         userData.type = 'member';
         userData.deleted = false;
         userData.points = 0;
-        userData.codes = [];
-        userData.containers = [];
-        userData.pickups = [];
 
         user.set(userData)
           .then((snapshot) => {
