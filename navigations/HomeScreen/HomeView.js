@@ -38,6 +38,8 @@ export default class HomeView extends Component {
 			totalPoint: 0,
 			maxPoint: 1000,
 			percentage: null,
+			point: 50,
+			isAdded: false
 		  };
 
 
@@ -75,7 +77,7 @@ export default class HomeView extends Component {
 			querySnapshot.forEach((doc) => 
 			{
 	
-			  if (doc.data().userId==firebase.auth().currentUser.uid)
+			  if (doc.data().userId==firebase.auth().currentUser.uid && doc.data().Collected == false)
 			  {   
 				this.props.points = this.props.points + parseInt(doc.data().estimatedPoints);
 			p = sum / this.state.maxPoint;
@@ -83,6 +85,7 @@ export default class HomeView extends Component {
 			//console.log(this.state.name + "is showing")
 			this.setState({totalPoint: sum, percentage: p, height: h});
 			console.log(this.props.points)
+			console.log(parseInt(this.props.points)/this.state.maxPoint)
 				}
 			  });
 			});
@@ -164,7 +167,7 @@ export default class HomeView extends Component {
         ]}
         animated={true}
     />
-   <Text style={styles.perText}>{this.props.points/this.state.maxPoint * 100} %</Text>
+   <Text style={styles.perText}>{parseFloat(parseInt(this.props.points)/this.state.maxPoint).toFixed(2) * 100} %</Text>
     {/* </TouchableHighlight> */}
 </View>
 ) :  <View style={styles.waveContainer} >
@@ -179,7 +182,7 @@ export default class HomeView extends Component {
 	]}
 	animated={true}
 />
-	<Text style={styles.perText}>{this.props.points/this.state.maxPoint < 1 ? this.props.points/this.state.maxPoint * 100 : 100} %</Text>
+	<Text style={styles.perText}>{this.props.points/this.state.maxPoint < 1 ? parseFloat(parseInt(this.props.points)/this.state.maxPoint).toFixed(2) * 100 : 100} %</Text>
 {/* </TouchableHighlight> */}
 </View>}
  </View>
@@ -234,12 +237,13 @@ export default class HomeView extends Component {
 								switch (item.description) {
 									case "Plastic":
 										this.props.addPoints(50)
-										alert(`Awsome`);
+										this.setState({point: 50})
+										alert(`Awsome, you get plastic!`);
 										break;
 									case "Metal":
 										this.props.addPoints(70)
-
-										alert(`Awsome`);
+										this.setState({point: 70})
+										alert(`Awsome, you got metal!`);
 										break;
 									default:
 										break;
@@ -461,6 +465,9 @@ export default class HomeView extends Component {
 				googleResponse: responseJson,
 				uploading: false
 			});
+			this.props.points = this.props.points + this.state.point
+			console.log(this.props.points)
+			this.setState({isAdded: !this.state.isAdded})
 		} catch (error) {
 			console.log(error);
 		}
