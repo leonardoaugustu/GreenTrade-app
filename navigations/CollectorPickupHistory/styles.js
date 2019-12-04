@@ -74,8 +74,8 @@ drawerIcon: {
     marginLeft: wp('-6%')
 },
 imgContainer:{
-    width: wp('20%'),
-    height: wp('20%')
+    width: wp('25%'),
+    height: wp('25%')
 },
 drop: {
     width: wp('20%'),

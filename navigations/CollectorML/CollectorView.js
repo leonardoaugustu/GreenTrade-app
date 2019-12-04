@@ -23,7 +23,8 @@ import firebase from '../../config/firebase';
 const db = firebase.firestore();
 
 
-export default class HomeView extends Component {
+
+export default class CollectorView extends Component {
 	constructor(props) {
 		super(props);
 		this.getInitialPoints()
@@ -42,7 +43,8 @@ export default class HomeView extends Component {
 		// estimatedPoints: 50,
 		// imageUri:"",
 
-	};
+    };
+    
 	async componentDidMount() {
 		await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
@@ -81,7 +83,7 @@ export default class HomeView extends Component {
 							/>
 						</View>
 						<View style={styles.titleWrapper}>
-							<Text style={styles.textTitle}>Green Trade</Text>
+							<Text style={styles.textTitle}>Collector ML</Text>
 						</View>
 					</View>
 				</View>
@@ -91,18 +93,18 @@ export default class HomeView extends Component {
 				>
 					<View style={styles.getStartedContainer}>
 						{image ? null : (
-							<Text style={styles.getStartedText}>Find your Recycle Item</Text>
+							<Text style={styles.getStartedText}>Confirm User Containers</Text>
 						)}
 					</View>
 
 					<View style={styles.helpContainer}>
-						<Button
+						{/* <Button
 							onPress={() => {
 								this._pickImage()
 								this.setState({ analyzed: !this.state.analyzed })
 							}}
 							title="Pick an image from camera roll"
-						/>
+						/> */}
 
 						<Button style={styles.takePhoto} onPress={this._takePhoto} title="Take a photo" />
 
@@ -269,14 +271,14 @@ export default class HomeView extends Component {
 		this._handleImagePicked(pickerResult);
 	};
 
-	_pickImage = async () => {
-		let pickerResult = await ImagePicker.launchImageLibraryAsync({
-			allowsEditing: true,
-			aspect: [4, 3]
-		});
+	// _pickImage = async () => {
+	// 	let pickerResult = await ImagePicker.launchImageLibraryAsync({
+	// 		allowsEditing: true,
+	// 		aspect: [4, 3]
+	// 	});
 
-		this._handleImagePicked(pickerResult);
-	};
+	// 	this._handleImagePicked(pickerResult);
+	// };
 
 	_handleImagePicked = async pickerResult => {
 		try {
