@@ -61,8 +61,8 @@ export default class CollectorPickupView extends Component {
     this.props.navigation.navigate("CollectorMap");
   }
   toggleCamera =() =>{
-    //ADD NAVIGATION TO COLLECTOR PICTURE VIEW HERE!!!!!!!!!
-    //this.props.navigation.navigate("Camera");
+    this.props.navigation.navigate("CollectorML");
+
   }
 
   renderSeparator = () => {

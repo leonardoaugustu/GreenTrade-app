@@ -12,6 +12,7 @@ import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/co
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import InitialView from "../navigations/InitialHomeScreen/InitialView";
+import CollectorView from "../navigations/CollectorML/CollectorView";
 
 const Tabs = createBottomTabNavigator(
   {
@@ -80,6 +81,9 @@ const StackNavigator = createStackNavigator({
   Payment: {
     screen: PaymentView
   },
+  CollectorML:{
+    screen: CollectorView
+  }
 },
 {
   headerMode: "none", //Hide the back button react navigation
