@@ -189,6 +189,14 @@ export default class CollectorView extends Component {
 	};
 	_maybeRenderImage = () => {
 		let { image, googleResponse } = this.state;
+		const { navigation } = this.props;
+
+		const name = navigation.state.params.Name;
+		const address = navigation.state.params.Address;
+		const date = navigation.state.params.scheduledtime;
+		const userId = navigation.state.params.UserId;
+		console.log("Get current user data")
+
 		if (!image) {
 			return;
 		}
@@ -206,6 +214,7 @@ export default class CollectorView extends Component {
 					style={{ marginBottom: 10 }}
 					onPress={() => {
 						this.submitToGoogle()
+						this.saveToDB(name, address, date, userId)
 					}}
 					title="Analyze!"
 				/>
@@ -248,6 +257,13 @@ export default class CollectorView extends Component {
 	_renderItem = item => {
 		<Text>response: {JSON.stringify(item)}</Text>;
 	};
+
+	saveToDB = (name, address, date, userId) =>{
+		console.log(name)
+		console.log(address)
+		console.log(date)
+		console.log(userId)
+	}
 
 	_share = () => {
 		Share.share({

@@ -19,7 +19,8 @@ export default class CollectorPickupView extends Component {
       date:"",
       userSelected: false,
       warning: false,
-      message:"Please select a user from the list"
+      message:"Please select a user from the list",
+      userInfo: {},
     }
   }
 
@@ -61,7 +62,7 @@ export default class CollectorPickupView extends Component {
     this.props.navigation.navigate("CollectorMap");
   }
   toggleCamera =() =>{
-    this.props.navigation.navigate("CollectorML");
+    this.props.navigation.navigate("CollectorML",this.state.userInfo);
 
   }
 
@@ -117,7 +118,17 @@ export default class CollectorPickupView extends Component {
     <TouchableOpacity onPress={() => {
       this.props.currentUser(item.Name);
       //this.toggleMap()
+      var currentUserInfo =
+      {
+        "Name": item.Name,
+        "Address": item.Address,
+        "Date": item.Date,
+        "UserId": item.UserId
+      };
+      //this.toggleMap()	      //this.toggleMap()
       this.setState({name: item.Name, address: item.Address, date: item.Date, userSelected: true});
+      this.setState({userInfo: currentUserInfo});
+
       }}>
     <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#AFE2FC' }}>
       <Icon1 name="circle-thin"   size={52}  color={"#000000"} />
