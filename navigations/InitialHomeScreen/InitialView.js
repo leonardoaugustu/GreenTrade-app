@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, Image, TouchableOpacity, Button, TouchableHighlight} from "react-native";
+import { Text, View, Image, TouchableOpacity, Button, ActivityIndicator} from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
@@ -9,17 +9,19 @@ import * as Permissions from 'expo-permissions';
 import Wave from 'react-native-waveview';
 import firebase from '../../config/firebase';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { connect } from 'react-redux';
+import {getPoints} from '../../actions/Payment/actionCreators';
 
 
-export default class InitialView extends Component {
+class InitialView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       dialogVisible: false,
-      height: null,
-      totalPoint: null,
+      height: 0,
+      totalPoint: 0,
       maxPoint: 1000,
-      percentage: null
+      percentage: null,
     };
   }
 
@@ -45,12 +47,12 @@ export default class InitialView extends Component {
 
           if (doc.data().userId==firebase.auth().currentUser.uid)
           {   
-        sum = sum + doc.data().estimatedPoints;
+        this.props.points = this.props.points + doc.data().estimatedPoints;
         p = sum / this.state.maxPoint;
         h = p* wp('40%');
         //console.log(this.state.name + "is showing")
         this.setState({totalPoint: sum, percentage: p, height: h});
-        console.log(this.state.totalPoint)
+        console.log(this.props.points)
             }
           });
         });
@@ -60,10 +62,6 @@ export default class InitialView extends Component {
       console.log(error);
     }
     this.forceUpdate();
-  }
-
-  componentWillMount(){
-    this._waveRect.setWaterHeight(this.state.height);
   }
   
   _takePhoto = async () => {
@@ -82,9 +80,26 @@ export default class InitialView extends Component {
 		});
 
 		this._handleImagePicked(pickerResult);
-  };
+	};
+
+	_handleImagePicked = async pickerResult => {
+		try {
+			this.setState({ uploading: true });
+
+			if (!pickerResult.cancelled) {
+				uploadUrl = await uploadImageAsync(pickerResult.uri);
+				this.setState({ image: uploadUrl });
+			}
+		} catch (e) {
+			console.log(e);
+			alert('Upload failed, sorry :(');
+		} finally {
+			this.setState({ uploading: false });
+		}
+	};
 
   render() {
+    var height = this.state.height;
  
     return (
         <SafeAreaView style={styles.container}>
@@ -105,6 +120,8 @@ export default class InitialView extends Component {
               </View>
               </View>
           </View>
+          <View>
+          {/* {this.state.height != 0 ? (  */}
           <View style={styles.waveContainer} >
     {/* <TouchableHighlight onPress={()=>{
         // Stop Animation
@@ -120,9 +137,9 @@ export default class InitialView extends Component {
         ]);
     }}> */}
     <Wave
-        ref={ref=>this._waveRect = ref}
+        ref={(wave) => wave && wave.setWaterHeight(this.props.points/this.state.maxPoint * wp('40%'))}
         style={styles.waveBall}
-        H={this.state.height}
+        H={this.props.points/this.state.maxPoint * wp('40%')}
         waveParams={[
             {A: 10, T: 260, fill: '#62c2ff'},
             {A: 15, T: 220, fill: '#0087dc'},
@@ -130,14 +147,18 @@ export default class InitialView extends Component {
         ]}
         animated={true}
     />
-  <Text>{this.state.percentage * 100} %</Text>
+  <Text style={styles.perText}>{this.props.points/this.state.maxPoint * 100} %</Text>
     {/* </TouchableHighlight> */}
 </View>
-          <TouchableOpacity onPress={this.toggleCamera}>
-          <View style={styles.cameraWrapper}>
+ {/* ) : <ActivityIndicator />} */}
+ </View>
+ <View style={styles.cameraWrapper}>
+          <TouchableOpacity onPress={this.toggleCamera} style={styles.cameraImg}>
+          
           <Image style={styles.cameraImg} source={require('../../assets/camera.png')}/>
-          </View>
+          
           </TouchableOpacity>
+          </View>
           <View style={styles.dialogContainer}>
                 <Dialog
                 dialogStyle ={styles.dialog}
@@ -157,4 +178,18 @@ export default class InitialView extends Component {
     );
   }
 }
+
+function mapStateToProps (state){
+  return{
+    points: state.getPointsReducer.points,
+  }; 
+}
+
+function mapDispatchToProps (dispatch)  {
+  return {
+      getPoints: (points) => dispatch(getPoints(points)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(InitialView);
 

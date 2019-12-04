@@ -139,13 +139,13 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params:  {role: ['member', 'collector']}
         },
-        Initial: {
-            screen: InitialView, navigationOptions: {
-                drawerLabel: "Initial Test",
-                drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params:  {role: ['member', 'collector']}
-        },
+        // Initial: {
+        //     screen: InitialView, navigationOptions: {
+        //         drawerLabel: "Initial Test",
+        //         drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params:  {role: ['member', 'collector']}
+        // },
         // Notifications: {
         //     screen: HomeView, navigationOptions: {
         //         drawerLabel: "Notifications",

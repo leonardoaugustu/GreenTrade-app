@@ -120,5 +120,9 @@ waveBall: {
     overflow: 'hidden',
     borderWidth: wp('0.2%'),
     borderColor: '#1aa7ff'
+},
+perText: {
+    fontSize: wp('8%'),
+    marginTop: wp('-25%')
 }
 })
