@@ -78,7 +78,9 @@ class RewardList extends Component {
                         iconStyle={styles.iconGo}
                         color="#c3c3c3"
                         />
+                        <View style={styles.costWrapper}>
                 <Text style={styles.listPoint}>{item.Cost}</Text>
+                </View>
               </Body>
             </ListItem>
       );

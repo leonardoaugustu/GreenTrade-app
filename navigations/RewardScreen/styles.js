@@ -183,8 +183,7 @@ iconGo: {
 listPoint: {
     fontSize: wp('5%'),
     color: '#FBDFAA',
-    marginTop: wp('-6%'),
-    marginLeft: wp('-9%'),
+    
     flex: 1,
 },
 dateTxt: {
@@ -200,5 +199,13 @@ iconAfterDate: {
 bottom: {
     height: hp('10%'),
     backgroundColor: '#F7F4F3'
+},
+costWrapper: {
+    marginTop: wp('-6%'),
+    marginLeft: wp('-9%'),
+    width: wp('12%'),
+    height: wp('5%'),
+    // borderColor: 'black',
+    // borderWidth: 1
 }
 })

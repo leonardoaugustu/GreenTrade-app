@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Button, FlatList, TouchableOpacity, ActivityInd
 import { List, ListItem, Icon, Image } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
+import moment from 'moment'
 import 'firebase/firestore';
 import firebase from '../../config/firebase'
 
@@ -36,15 +37,16 @@ export default class ContainerView extends Component {
             this.setState({ loading: false});
           }
           snapshot.forEach((doc) => {
-            db.collection('containers').doc(doc.id)
+            db.collection('containers').doc(doc.data().size)
               .get().then((container) => {
 
                 var containerInfo =
                 {
-                  "Name": container.data().name,
-                  "Img_url": container.data().img_url,
-                  "Amount": doc.data().amount,
-                  "OrderedDate": doc.data().orderedDate
+                  id: doc.id,
+                  name: container.data().name,
+                  imageUrl: container.data().img_url,
+                  amount: doc.data().amount,
+                  orderedDate: doc.data().orderedDate
                 };
                 newData.push(containerInfo);
                 this.setState({ containerData: newData, loading: false});
@@ -79,10 +81,10 @@ export default class ContainerView extends Component {
   renderItem = ({ item }) => (
     <ListItem
       roundAvatar
-      leftAvatar={{ source: { uri: item.Img_url } }}
-      title={item.Name}
-      subtitle={'Amount: ' + item.Amount}
-      rightSubtitle={'Ordered: ' + new Date(item.OrderedDate).toISOString().slice(0, 10)}
+      leftAvatar={{ source: { uri: item.imageUrl } }}
+      title={item.name}
+      subtitle={'Amount: ' + item.amount}
+      rightSubtitle={moment(item.orderedDate.toDate()).format('YYYY-MM-DD hh:mm A')}
     />
   );
 
@@ -112,15 +114,15 @@ export default class ContainerView extends Component {
           :
           <View style={styles.container}>
             <View style={styles.displayBox}>
-              <Text style={styles.displayText}>List of Containers</Text>
+              <Text style={styles.displayText}>Ordered Containers</Text>
             </View>
 
             <FlatList
               style={styles.list}
-              data={this.state.containerData}
+              data={this.state.containerData.sort((b,a) => (a.orderedDate.toDate() > b.orderedDate.toDate()) - (a.orderedDate.toDate() < b.orderedDate.toDate() )) }
               ItemSeparatorComponent={this.renderSeparator}
               renderItem={this.renderItem}
-              keyExtractor={item => item.Name}
+              keyExtractor={item => item.id}
               extraData={this.state}
               removeClippedSubviews={false}
               ListEmptyComponent={this.renderEmptyList}
