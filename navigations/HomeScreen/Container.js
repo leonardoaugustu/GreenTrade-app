@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
 import HomeScreen from './HomeView'
 import {addPoints, updatePoints, getPoint} from '../../actions/Collector/actionCreator'
-import {getPoints} from '../../actions/Payment/actionCreators';
+import {getPoints} from '../../actions/Progress/actionCreators';
 
 const mapStateToProps = (state) => ({
     rewardPoints: state.collectorReducer.rewardPoints,
