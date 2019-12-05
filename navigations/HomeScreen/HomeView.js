@@ -32,15 +32,6 @@ export default class HomeView extends Component {
 	constructor(props) {
 		super(props);
 		this.getInitialPoints();
-		this.state = {
-			dialogVisible: false,
-			height: 0,
-			totalPoint: 0,
-			maxPoint: 1000,
-			percentage: null,
-			point: 50,
-			isAdded: false
-		  };
 
 
 	}
@@ -51,11 +42,14 @@ export default class HomeView extends Component {
 		points: 0,
 		rewardPoint: 0,
 		analyzed: false,
-		// collected: false,
-		// createdAt: date,
-		// estimatedPoints: 50,
-		// imageUri:"",
-
+		dialogVisible: false,
+		height: 0,
+		totalPoint: 0,
+		maxPoint: 1000,
+		percentage: null,
+		point: 50,
+		isAdded: false,
+		user: {},
 	};
 	toggleCamera = () => {
 		this.setState({dialogVisible: true})
@@ -69,7 +63,14 @@ export default class HomeView extends Component {
 		await Permissions.askAsync(Permissions.CAMERA);
 		try{
 		  var db = firebase.firestore();
-	
+
+		  var user = db.collection("users").doc(firebase.auth().currentUser.uid);
+            user.get().then(u => {
+              if (u.exists) {
+                 this.setState({user: u.data()});
+                 console.log(this.state);
+                }
+            });	
 	  
 		  db.collection("recycled-items").get().then((querySnapshot) => {
 			var sum = 0;
@@ -138,7 +139,7 @@ export default class HomeView extends Component {
 					contentContainerStyle={styles.contentContainer}
 				>
 					<View style={styles.welcomeWrapper}>
-		<Text style={styles.welcomeTxt}>{'Welcome Back'.toUpperCase()}, {currentUser.toUpperCase()}!</Text>
+		<Text style={styles.welcomeTxt}>Welcome Back, {this.state.user.displayName}!</Text>
 					</View>
 					 <View>
 					 {this.props.points/this.state.maxPoint * 100 <= 80 ? (  
@@ -202,12 +203,9 @@ export default class HomeView extends Component {
                    visible={this.state.dialogVisible}
                    >
                        <View style={styles.customDialog}>
-                       <Button
-							onPress={this._pickImage}
-							title="Choose from camera roll"
-						/>
-						<Button onPress={this._takePhoto} title="Take a photo" />
-            <Button onPress={this._canceltoggle} title="Cancel" />
+					   <TouchableOpacity onPress={this._pickImage}><Text style={styles.btnTxt}>Choose from camera roll</Text></TouchableOpacity>
+						<TouchableOpacity onPress={this._takePhoto}><Text style={styles.btnTxt}>Take a photo</Text></TouchableOpacity>
+						<TouchableOpacity onPress={this._canceltoggle}><Text style={styles.btnTxt}>Cancel</Text></TouchableOpacity>
                        </View>
                 </Dialog>
                 </View>
@@ -236,13 +234,11 @@ export default class HomeView extends Component {
 								// let Points;
 								switch (item.description) {
 									case "Plastic":
-										this.props.addPoints(50)
-										this.setState({point: 50})
+										//this.props.addPoints(50)
 										alert(`Awsome, you get plastic!`);
 										break;
 									case "Metal":
-										this.props.addPoints(70)
-										this.setState({point: 70})
+										//this.props.addPoints(70)
 										alert(`Awsome, you got metal!`);
 										break;
 									default:
