@@ -20,17 +20,18 @@ const firebaseConfig = {
 
   };
   function getReleaseChannel() {
-    let releaseChannel = Expo.Constants.manifest.releaseChannel;
-    if (releaseChannel === undefined) {
-      return 'staging';
-    } else if (releaseChannel === 'staging') {
-      return 'staging';
-    } else {
-      return 'staging';
-    }
+    return 'staging'
+    // let releaseChannel = Expo.Constants.manifest.releaseChannel;
+    // if (releaseChannel === undefined) {
+    //   return 'staging';
+    // } else if (releaseChannel === 'staging') {
+    //   return 'staging';
+    // } else {
+    //   return 'staging';
+    // }
   }
   function getEnvironment(env) {
-    console.log('Release Channel: ', getReleaseChannel());
+    // console.log('Release Channel: ', getReleaseChannel());
     return firebaseConfig[env];
   }               
   var Environment = getEnvironment(getReleaseChannel());

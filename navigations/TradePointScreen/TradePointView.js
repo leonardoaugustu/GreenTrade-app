@@ -149,7 +149,7 @@ export default class TradePointlView extends Component {
 
         <View style={styles.point}>
           <Button disabled={true} disabledStyle={{ backgroundColor: "white" }}
-            disabledTitleStyle={{ color: "black", left: 10, fontSize: 20 }}
+            disabledTitleStyle={{ color: "black", left: 20, fontSize: 20 }}
             title={point}
             icon={<Icon iconStyle={{ left: 10 }}
               type="font-awesome" name="star" color="#e1b225" />} />
