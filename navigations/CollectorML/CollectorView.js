@@ -23,7 +23,6 @@ import firebase from '../../config/firebase';
 const db = firebase.firestore();
 
 
-
 export default class CollectorView extends Component {
 	constructor(props) {
 		super(props);
@@ -38,31 +37,10 @@ export default class CollectorView extends Component {
 		points: 0,
 		rewardPoint: 0,
 		analyzed: false,
-		// collected: false,
-		// createdAt: date,
-		// estimatedPoints: 50,
-		// imageUri:"",
-
     };
     
 	async componentDidMount() {
-		await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
-
-
-	}
-
-	async getInitialPoints() {
-
-
-		firebase.database().ref('Users/').once('value', function (snapshot) {
-			console.log(snapshot.val())
-		});
-
-		// db.collection('users').doc(doc.data().UserId).get().then((userDoc)=> {
-		// 	this.props.getPoints(userDoc.data().points)
-		// })
-
 	}
 
 	render() {
