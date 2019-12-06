@@ -31,26 +31,20 @@ const db = firebase.firestore();
 export default class HomeView extends Component {
 	constructor(props) {
 		super(props);
-		this.getInitialPoints();
-
-
+		this.state = {
+			image: null,
+			uploading: false,
+			displayConfirmButton: false,
+			googleResponse: null,
+			totalEstimatedPoints: 0,
+			dialogVisible: false,
+			height: 0,
+			maxPoints: 1000,
+			percentage: null,
+			user: {},
+		};
 	}
-	state = {
-		image: null,
-		uploading: false,
-		googleResponse: null,
-		points: 0,
-		rewardPoint: 0,
-		analyzed: false,
-		dialogVisible: false,
-		height: 0,
-		totalPoint: 0,
-		maxPoint: 1000,
-		percentage: null,
-		point: 50,
-		isAdded: false,
-		user: {},
-	};
+	
 	toggleCamera = () => {
 		this.setState({ dialogVisible: true })
 	}
@@ -61,52 +55,37 @@ export default class HomeView extends Component {
 	async componentDidMount() {
 		await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
-		try {
-			var db = firebase.firestore();
-
-			var user = db.collection("users").doc(firebase.auth().currentUser.uid);
-			user.get().then(u => {
+		let db = firebase.firestore();
+		db.collection("users")
+			.doc(firebase.auth().currentUser.uid)
+			.get().then(u => {
 				if (u.exists) {
 					this.setState({ user: u.data() });
-					console.log(this.state);
 				}
 			});
+		this.getUserEstimatedPoints
+		this.forceUpdate();
+	}
 
-			db.collection("recycled-items").get().then((querySnapshot) => {
-				var sum = 0;
-				var p = 0;
-				querySnapshot.forEach((doc) => {
-
-					if (doc.data().userId == firebase.auth().currentUser.uid && doc.data().Collected == false) {
-						this.props.points = this.props.points + parseInt(doc.data().estimatedPoints);
-						p = sum / this.state.maxPoint;
-						h = p * wp('40%');
-						//console.log(this.state.name + "is showing")
-						this.setState({ totalPoint: sum, percentage: p, height: h });
-						console.log(this.props.points)
-						console.log(parseInt(this.props.points) / this.state.maxPoint)
-					}
+	getUserEstimatedPoints() {
+		try {
+			db.collection("recycled-items")
+				.where("collected", "==", false)
+				.where("userId", "==", firebase.auth().currentUser.uid)
+				.get().then((querySnapshot) => {
+					let pointsSum = 0;
+					querySnapshot.forEach((doc) => {
+						pointsSum += doc.data().estimatedPoints;
+						
+					});
+					let fillPercent = pointsSum / this.state.maxPointss;
+					let fillHeight = fillPercent * wp('40%');
+					this.setState({ totalEstimatedPoints: pointsSum, percentage: fillPercent, height: fillHeight });
 				});
-			});
-			console.log(this.state.totalPoint)
 		}
 		catch (error) {
 			console.log(error);
 		}
-		this.forceUpdate();
-	}
-
-	async getInitialPoints() {
-
-
-		firebase.database().ref('Users/').once('value', function (snapshot) {
-			console.log(snapshot.val())
-		});
-
-		// db.collection('users').doc(doc.data().UserId).get().then((userDoc)=> {
-		// 	this.props.getPoints(userDoc.data().points)
-		// })
-
 	}
 
 	render() {
@@ -140,25 +119,25 @@ export default class HomeView extends Component {
 						<Text style={styles.welcomeTxt}>Welcome Back, {this.state.user.displayName}!</Text>
 					</View>
 					<View>
-						{this.props.points / this.state.maxPoint * 100 <= 80 ? (
+						{this.state.totalEstimatedPoints / this.state.maxPoints * 100 <= 80 ? (
 							<View style={styles.waveContainer} >
 								{/* <TouchableHighlight onPress={()=>{
-        // Stop Animation
+        							// Stop Animation
  
-        // set water baseline height
-        this._waveRect && this._waveRect.setWaterHeight(70);
+        							// set water baseline height
+        							this._waveRect && this._waveRect.setWaterHeight(70);
  
-        // reset wave effect
-        this._waveRect && this._waveRect.setWaveParams([
-            {A: 10, T: 260, fill: '#FF9F2E'},
-            {A: 15, T: 220, fill: '#F08200'},
-            {A: 20, T: 180, fill: '#B36100'},
-        ]);
-    }}> */}
+        							// reset wave effect
+        							this._waveRect && this._waveRect.setWaveParams([
+           								{A: 10, T: 260, fill: '#FF9F2E'},
+            							{A: 15, T: 220, fill: '#F08200'},
+            							{A: 20, T: 180, fill: '#B36100'},
+        							]);
+    							}}> */}
 								<Wave
-									ref={(wave) => wave && wave.setWaterHeight(this.props.points / this.state.maxPoint * wp('40%'))}
+									ref={(wave) => wave && wave.setWaterHeight(this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%'))}
 									style={styles.waveBall}
-									H={this.props.points / this.state.maxPoint * wp('40%')}
+									H={this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%')}
 									waveParams={[
 										{ A: 10, T: 260, fill: '#62c2ff' },
 										{ A: 15, T: 220, fill: '#0087dc' },
@@ -166,14 +145,14 @@ export default class HomeView extends Component {
 									]}
 									animated={true}
 								/>
-								<Text style={styles.perText}>{parseFloat(parseInt(this.props.points) / this.state.maxPoint).toFixed(2) * 100} %</Text>
+								<Text style={styles.perText}>{parseFloat(this.state.totalEstimatedPoints / this.state.maxPoints).toFixed(2) * 100} %</Text>
 								{/* </TouchableHighlight> */}
 							</View>
 						) : <View style={styles.waveContainer} >
 								<Wave
-									ref={(wave) => wave && wave.setWaterHeight(this.props.points / this.state.maxPoint * wp('40%'))}
+									ref={(wave) => wave && wave.setWaterHeight(this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%'))}
 									style={styles.waveBall}
-									H={this.props.points / this.state.maxPoint * wp('40%')}
+									H={this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%')}
 									waveParams={[
 										{ A: 10, T: 260, fill: '#FF9F2E' },
 										{ A: 15, T: 220, fill: '#F08200' },
@@ -181,18 +160,16 @@ export default class HomeView extends Component {
 									]}
 									animated={true}
 								/>
-								<Text style={styles.perText}>{this.props.points / this.state.maxPoint < 1 ? parseFloat(parseInt(this.props.points) / this.state.maxPoint).toFixed(2) * 100 : 100} %</Text>
+								<Text style={styles.perText}>{this.state.totalEstimatedPoints / this.state.maxPoints < 1 ? parseFloat(this.state.totalEstimatedPoints / this.state.maxPoints).toFixed(2) * 100 : 100} %</Text>
 								{/* </TouchableHighlight> */}
 							</View>}
 					</View>
 					<View style={styles.pointWrapper}>
-						<Text style={styles.pointTxt}>{this.props.points} {'total points'.toUpperCase()}</Text>
+						<Text style={styles.pointTxt}>{this.state.totalEstimatedPoints} {'estimated total points'.toUpperCase()}</Text>
 					</View>
 					<View style={styles.cameraWrapper}>
 						<TouchableOpacity onPress={this.toggleCamera} style={styles.cameraImg}>
-
 							<Image style={styles.cameraImg} source={require('../../assets/camera.png')} />
-
 						</TouchableOpacity>
 					</View>
 					<View style={styles.dialogContainer}>
@@ -201,7 +178,7 @@ export default class HomeView extends Component {
 							visible={this.state.dialogVisible}
 						>
 							<View style={styles.customDialog}>
-								<TouchableOpacity onPress={this._pickImage}><Text style={styles.btnTxt}>Choose from camera roll</Text></TouchableOpacity>
+								<TouchableOpacity onPress={this._pickImage}><Text style={styles.btnTxt}>Camera Roll</Text></TouchableOpacity>
 								<TouchableOpacity onPress={this._takePhoto}><Text style={styles.btnTxt}>Take a photo</Text></TouchableOpacity>
 								<TouchableOpacity onPress={this._canceltoggle}><Text style={styles.btnTxt}>Cancel</Text></TouchableOpacity>
 							</View>
@@ -209,21 +186,11 @@ export default class HomeView extends Component {
 					</View>
 					<View style={styles.getStartedContainer}>
 						{image ? null : (
-							<Text style={styles.getStartedText}>Find Your Recyclables</Text>
+							<Text style={styles.getStartedText}>Capture Your Recyclables</Text>
 						)}
 					</View>
-
 					<View style={styles.helpContainer}>
-						{/* <Button
-							onPress={() => {
-								this._pickImage()
-								this.setState({ analyzed: !this.state.analyzed })
-							}}
-							title="Pick an image from camera roll"
-						/>
-						<Button style={styles.takePhoto} onPress={this._takePhoto} title="Take a photo" /> */}
-
-						<FlatList
+						{/* <FlatList
 							data={this.state.googleResponse ? this.state.googleResponse.responses[0].labelAnnotations : null}
 							extraData={this.state}
 							keyExtractor={this._keyExtractor}
@@ -247,41 +214,14 @@ export default class HomeView extends Component {
 								return <Text>Item: {item.description}</Text>
 							}}
 
-						/>
-
+						/> */}
 						{this._maybeRenderImage()}
 						{this._maybeRenderUploadingOverlay()}
 					</View>
 				</ScrollView>
-
 			</SafeAreaView>
 		);
 	}
-
-	organize = array => {
-		return array.map(function (item, i) {
-			return (
-				<View key={i}>
-					<Text>{item}</Text>
-				</View>
-			);
-		});
-	};
-	// async updatePoints() {
-	// 	const user = firebase.auth().currentUser;
-	// 	let uid;
-	// 	if (user != null) {
-	// 		uid = user.uid;
-	// 		const db = firebase.firestore();
-	// 		const docRef = db.collection('users').doc(uid);
-	// 		docRef.update({
-	// 			points: this.props.rewardPoints
-
-	// 		});
-
-	// 	}
-	// }
-
 
 	_maybeRenderUploadingOverlay = () => {
 		if (this.state.uploading) {
@@ -301,9 +241,10 @@ export default class HomeView extends Component {
 			);
 		}
 	};
+
 	_maybeRenderImage = () => {
 		let { image, googleResponse } = this.state;
-		if (!image) {
+		if (!image || !displayConfirmButton) {
 			return;
 		}
 
@@ -321,7 +262,7 @@ export default class HomeView extends Component {
 					onPress={() => {
 						this.submitToGoogle()
 					}}
-					title="Analyze!"
+					title="Confirm!"
 				/>
 
 				<View
@@ -337,11 +278,11 @@ export default class HomeView extends Component {
 				>
 					<Image source={{ uri: image }} style={{ width: 250, height: 250 }} />
 				</View>
-				<Text
+				{/* <Text
 					onPress={this._copyToClipboard}
 					onLongPress={this._share}
 					style={{ paddingVertical: 10, paddingHorizontal: 10 }}
-				/>
+				/> */}
 
 				{/* <Text>Raw JSON:</Text> */}
 
@@ -357,24 +298,19 @@ export default class HomeView extends Component {
 			</View>
 		);
 	};
-	_keyExtractor = (item, index) => item.id;
 
-	_renderItem = item => {
-		<Text>response: {JSON.stringify(item)}</Text>;
-	};
+	// _share = () => {
+	// 	Share.share({
+	// 		message: JSON.stringify(this.state.googleResponse.responses),
+	// 		title: 'Check it out',
+	// 		url: this.state.image
+	// 	});
+	// };
 
-	_share = () => {
-		Share.share({
-			message: JSON.stringify(this.state.googleResponse.responses),
-			title: 'Check it out',
-			url: this.state.image
-		});
-	};
-
-	_copyToClipboard = () => {
-		Clipboard.setString(this.state.image);
-		alert('Copied to clipboard');
-	};
+	// _copyToClipboard = () => {
+	// 	Clipboard.setString(this.state.image);
+	// 	alert('Copied to clipboard');
+	// };
 
 	_takePhoto = async () => {
 		let pickerResult = await ImagePicker.launchCameraAsync({
@@ -458,8 +394,8 @@ export default class HomeView extends Component {
 				googleResponse: responseJson,
 				uploading: false
 			});
-			this.props.points = this.props.points + this.state.point
-			console.log(this.props.points)
+			this.state.totalEstimatedPoints = this.state.totalEstimatedPoints + this.state.point
+			console.log(this.state.totalEstimatedPoints)
 			this.setState({ isAdded: !this.state.isAdded })
 		} catch (error) {
 			console.log(error);
