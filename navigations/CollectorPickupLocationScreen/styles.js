@@ -1,7 +1,16 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center'
+    },
+    horizontal: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 10
+    },
     menuContainer: {
         flex: 1,
         flexDirection: "column",
@@ -45,6 +54,7 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: "column",
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     headerContainer: {
         flexDirection: "row",
