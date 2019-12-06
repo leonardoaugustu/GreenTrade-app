@@ -122,7 +122,7 @@ const DrawerNavigator = createDrawerNavigator(
         // },
         Pickup: {
             screen: CollectorPickupView, navigationOptions: {
-                drawerLabel: "Confirmed Pickup",
+                drawerLabel: "Track Pickups",
                 drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params: {role: ['collector']}
