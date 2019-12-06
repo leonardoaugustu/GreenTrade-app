@@ -16,6 +16,7 @@ export default class Scheduling extends Component {
     // 10 days
     const maxDateOffsetinMilli = 10 * 24 * 60 * 60 * 1000;
     this.state = {
+      userDisplayName: '',
       date: new Date(),
       maxDate: new Date(Date.now() + maxDateOffsetinMilli),
       message: "Lets Schedule It",
@@ -38,27 +39,17 @@ export default class Scheduling extends Component {
     navigation.addListener('willFocus', () => {
       this.setState({ chosenDate: '', dateTimestamp: null, additionalInfo: ''});
     });
-    this.keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      this._keyboardDidShow,
-    );
-    this.keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      this._keyboardDidHide,
-    );
+    // Need to get actual display name saved in firestore and not with firebase auth
+    this.getUserDisplayName();
   }
 
-  componentWillUnmount() {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
-  }
-
-  _keyboardDidShow() {
-    //alert('Keyboard Shown');
-  }
-
-  _keyboardDidHide() {
-    //alert('Keyboard Hidden');
+  getUserDisplayName = () => {
+    db.collection('users')
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then((doc) => {
+        this.setState({ userDisplayName: doc.data().displayName });
+      });
   }
 
   //for handling date and time
@@ -109,7 +100,6 @@ export default class Scheduling extends Component {
         }
         
         snapshot.forEach( doc=> {
-          //console.log(doc.id , '=>' , doc.data().displayName);
           collectorsavailable.push(doc.data());
           var randomcollector = collectorsavailable[Math.floor(Math.random() * collectorsavailable.length)];
           var randomcollectoruid= randomcollector.uid;
@@ -139,7 +129,7 @@ export default class Scheduling extends Component {
    //storing the value and passing to db
    async handlePress() {
     if( this.state.chosenDate==="" ){
-        Alert.alert('Please Choose a Date and Time '+firebase.auth().currentUser.displayName);
+        Alert.alert('Please Choose a Date and Time '+this.state.userDisplayName);
     }
 
     else{
@@ -188,7 +178,7 @@ export default class Scheduling extends Component {
     //   [userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null})]);
     
    //await userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null}); 
-    Alert.alert('Scheduling successful!', `Thank you ${firebase.auth().currentUser.displayName}!\nWe will pick up your recycling on ${this.state.chosenDate}.`);
+    Alert.alert('Scheduling successful!', `Thank you ${this.state.userDisplayName}!\nWe will pick up your recycling on ${this.state.chosenDate}.`);
     }
   }
 
@@ -215,7 +205,7 @@ export default class Scheduling extends Component {
         </View>
         <View style={{ flex: 1, alignContent: "center" }}>
           <View style={{ flex: 1, backgroundColor: '#DAE0E2', alignContent: "center", alignItems: "center" }} >
-            <Text style={{ height: 80, padding: 60, fontSize: 22 }} >Welcome Back {firebase.auth().currentUser && firebase.auth().currentUser.displayName}</Text>
+            <Text style={{ height: 80, padding: 60, fontSize: 22 }} >Welcome Back {firebase.auth().currentUser && this.state.userDisplayName}</Text>
 
           </View>
           <View style={{ flex: 2, backgroundColor: '#DAE0E2', padding: 20, alignItems: "center", alignContent: "center" }} >

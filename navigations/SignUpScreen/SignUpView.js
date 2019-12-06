@@ -10,6 +10,9 @@ import 'firebase/firestore';
 import firebase from '../../config/firebase'
 
 export default class SignUpView extends Component {
+
+  DEFAULT_PHOTO_URI = 'https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg';
+
   constructor(props) {
     super(props);
     this.state = {
@@ -77,6 +80,7 @@ export default class SignUpView extends Component {
         userData.type = 'member';
         userData.deleted = false;
         userData.points = 0;
+        userData.profilePhoto = userData.profilePhoto ? userData.profilePhoto: this.DEFAULT_PHOTO_URI;
 
         user.set(userData)
           .then((snapshot) => {
