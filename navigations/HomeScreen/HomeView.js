@@ -59,6 +59,12 @@ export default class HomeView extends Component {
 	}
 
 	async componentDidMount() {
+		const { navigation } = this.props;
+		// refresh screen after purchasing new containers
+		navigation.addListener('willFocus', () => {
+			this.getUserEstimatedPoints();
+		});
+		
 		await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
 		let db = firebase.firestore();
