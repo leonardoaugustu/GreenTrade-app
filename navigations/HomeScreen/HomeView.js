@@ -32,20 +32,6 @@ export default class HomeView extends Component {
 	constructor(props) {
 		super(props);
 		this.getInitialPoints();
-		this.state = {
-			dialogVisible: false,
-			height: 0,
-			totalEstimatedPoints: 0,
-			maxPoints: 1000,
-			percentage: null,
-			image: null,
-			uploading: false,
-			googleResponse: null,
-			points: 0,
-			rewardPoint: 0,
-			analyzed: false,
-		};
-	}
 
 	toggleCamera = () => {
 		this.setState({ dialogVisible: true })
@@ -54,30 +40,62 @@ export default class HomeView extends Component {
 	_canceltoggle = () => {
 		this.setState({ dialogVisible: false })
 	}
-
-	async componentDidMount() {
-		await Permissions.askAsync(Permissions.CAMERA_ROLL);
+	state = {
+		image: null,
+		uploading: false,
+		googleResponse: null,
+		points: 0,
+		rewardPoint: 0,
+		analyzed: false,
+		dialogVisible: false,
+		height: 0,
+		totalPoint: 0,
+		maxPoint: 1000,
+		percentage: null,
+		point: 50,
+		isAdded: false,
+		user: {},
+	};
+	toggleCamera = () => {
+		this.setState({dialogVisible: true})
+	  }
+	  _canceltoggle = () => {
+		this.setState({dialogVisible: false})
+	  }
+	
+	  async componentDidMount() {
+			await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
-		this.getUserEstimatedPoints();
-		this.forceUpdate();
-	}
+		try{
+		  var db = firebase.firestore();
 
-	getUserEstimatedPoints() {
-		try {
-			var db = firebase.firestore();
-			db.collection("recycled-items")
-				.where("collected", "==", false)
-				.where("userId", "==", firebase.auth().currentUser.uid)
-				.get()
-				.then((querySnapshot) => {
-					var pointsSum = 0;
-					querySnapshot.forEach((doc) => {
-						pointsSum += doc.data().estimatedPoints;
-					});
-					let fillPercent = pointsSum / this.state.maxPoints;
-					let fillHeight = fillPercent * wp('40%');
-					this.setState({ totalEstimatedPoints: pointsSum, percentage: fillPercent, height: fillHeight });
-				});
+		  var user = db.collection("users").doc(firebase.auth().currentUser.uid);
+            user.get().then(u => {
+              if (u.exists) {
+                 this.setState({user: u.data()});
+                 console.log(this.state);
+                }
+            });	
+	  
+		  db.collection("recycled-items").get().then((querySnapshot) => {
+			var sum = 0;
+			var p = 0;
+			querySnapshot.forEach((doc) => 
+			{
+	
+			  if (doc.data().userId==firebase.auth().currentUser.uid && doc.data().Collected == false)
+			  {   
+				this.props.points = this.props.points + parseInt(doc.data().estimatedPoints);
+			p = sum / this.state.maxPoint;
+			h = p* wp('40%');
+			//console.log(this.state.name + "is showing")
+			this.setState({totalPoint: sum, percentage: p, height: h});
+			console.log(this.props.points)
+			console.log(parseInt(this.props.points)/this.state.maxPoint)
+				}
+			  });
+			});
+			console.log(this.state.totalPoint)
 		}
 		catch (error) {
 			console.log(error);
@@ -121,7 +139,7 @@ export default class HomeView extends Component {
 					contentContainerStyle={styles.contentContainer}
 				>
 					<View style={styles.welcomeWrapper}>
-						<Text style={styles.welcomeTxt}>{'Welcome Back'.toUpperCase()}, {currentUser.toUpperCase()}!</Text>
+		<Text style={styles.welcomeTxt}>Welcome Back, {this.state.user.displayName}!</Text>
 					</View>
 					<View>
 						{this.state.totalEstimatedPoints / this.state.maxPoints * 100 <= 80 ? (
@@ -192,6 +210,25 @@ export default class HomeView extends Component {
 							</View>
 						</Dialog>
 					</View>
+ <View style={styles.cameraWrapper}>
+          <TouchableOpacity onPress={this.toggleCamera} style={styles.cameraImg}>
+          
+          <Image style={styles.cameraImg} source={require('../../assets/camera.png')}/>
+          
+          </TouchableOpacity>
+          </View>
+          <View style={styles.dialogContainer}>
+                <Dialog
+                dialogStyle ={styles.dialog}
+                   visible={this.state.dialogVisible}
+                   >
+                       <View style={styles.customDialog}>
+					    <TouchableOpacity onPress={this._pickImage}><Text style={styles.btnTxt}>Choose from camera roll</Text></TouchableOpacity>
+						<TouchableOpacity onPress={this._takePhoto}><Text style={styles.btnTxt}>Take a photo</Text></TouchableOpacity>
+						<TouchableOpacity onPress={this._canceltoggle}><Text style={styles.btnTxt}>Cancel</Text></TouchableOpacity>
+                       </View>
+                </Dialog>
+                </View>
 					<View style={styles.getStartedContainer}>
 						{image ? null : (
 							<Text style={styles.getStartedText}>Find Your Recyclables</Text>
@@ -215,22 +252,20 @@ export default class HomeView extends Component {
 							keyExtractor={this._keyExtractor}
 							renderItem={({ item }) => {
 								// let Points;
-								switch (item.description) {
-									case "Plastic":
-										this.props.addPoints(50)
-										this.setState({ point: 50 })
-										alert(`Awsome, you get plastic!`);
-										break;
-									case "Metal":
-										this.props.addPoints(70)
-										this.setState({ point: 70 })
-										alert(`Awsome, you got metal!`);
-										break;
-									default:
-										break;
+								// switch (item.description) {
+								// 	case "Plastic":
+								// 		//this.props.addPoints(50)
+								// 		alert(`Awsome, you get plastic!`);
+								// 		break;
+								// 	case "Metal":
+								// 		//this.props.addPoints(70)
+								// 		alert(`Awsome, you got metal!`);
+								// 		break;
+								// 	default:
+								// 		break;
 
-								}
-								this.updatePoints()
+								// }
+								// this.updatePoints()
 
 								return <Text>Item: {item.description}</Text>
 							}}
@@ -255,20 +290,20 @@ export default class HomeView extends Component {
 			);
 		});
 	};
-	async updatePoints() {
-		const user = firebase.auth().currentUser;
-		let uid;
-		if (user != null) {
-			uid = user.uid;
-			const db = firebase.firestore();
-			const docRef = db.collection('users').doc(uid);
-			docRef.update({
-				points: this.props.rewardPoints
+	// async updatePoints() {
+	// 	const user = firebase.auth().currentUser;
+	// 	let uid;
+	// 	if (user != null) {
+	// 		uid = user.uid;
+	// 		const db = firebase.firestore();
+	// 		const docRef = db.collection('users').doc(uid);
+	// 		docRef.update({
+	// 			points: this.props.rewardPoints
 
-			});
+	// 		});
 
-		}
-	}
+	// 	}
+	// }
 
 
 	_maybeRenderUploadingOverlay = () => {

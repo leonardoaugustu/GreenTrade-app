@@ -99,6 +99,8 @@ export default StyleSheet.create({
     customDialog: {
         flexDirection: 'column',
         height: hp('15%'),
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     takePhoto: {
         width: wp('30%'),
@@ -170,7 +172,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: wp('100%'),
-        height: wp('10%')
+        height: wp('10%'),
     },
     welcomeTxt: {
         fontSize: wp('5%'),
@@ -189,5 +191,10 @@ export default StyleSheet.create({
         fontSize: wp('5%'),
         color: 'rgba(96,100,109, 1)',
         fontWeight: 'bold'
-    }
+    },
+    btnTxt:{
+        color: '#1aa7ff',
+         fontSize: wp('5%'),
+         marginVertical: wp('2.2%')
+     }
 });

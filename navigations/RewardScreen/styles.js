@@ -131,8 +131,16 @@ topContainer: {
 pointText: {
     fontSize: wp('6.5%'),
     color: '#FBDFAA',
+
+    
+},
+pointContainer: {
+    // borderWidth: 1,
+    // borderColor: 'black',
+    width: wp('30%'),
+    height: wp('8%'),
     marginTop: wp('-7%'),
-    marginLeft: wp('50%')
+    marginLeft: wp('50%'),
 },
 starIcon: {
     fontSize: wp('6.5%'),
