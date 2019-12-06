@@ -55,12 +55,33 @@ export default class HomeView extends Component {
 	async componentDidMount() {
 		await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
-		let db = firebase.firestore();
-		db.collection("users")
-			.doc(firebase.auth().currentUser.uid)
-			.get().then(u => {
-				if (u.exists) {
-					this.setState({ user: u.data() });
+		try{
+		  var db = firebase.firestore();
+
+		  var user = db.collection("users").doc(firebase.auth().currentUser.uid);
+            user.get().then(u => {
+              if (u.exists) {
+                 this.setState({user: u.data()});
+                 console.log(this.state);
+                }
+            });	
+	  
+		  db.collection("recycled-items").get().then((querySnapshot) => {
+			var sum = 0;
+			var p = 0;
+			querySnapshot.forEach((doc) => 
+			{
+	
+			  if (doc.data().userId==firebase.auth().currentUser.uid && doc.data().Collected == false)
+			  {   
+				sum = sum + parseInt(doc.data().estimatedPoints);
+			p = sum / this.state.maxPoint;
+			h = p* wp('40%');
+			//console.log(this.state.name + "is showing")
+			this.setState({totalPoint: sum, percentage: p, height: h});
+			this.props.getPoints(sum);
+			console.log(this.props.points)
+			console.log(parseInt(this.props.points)/this.state.maxPoint)
 				}
 			});
 		this.getUserEstimatedPoints
@@ -394,9 +415,10 @@ export default class HomeView extends Component {
 				googleResponse: responseJson,
 				uploading: false
 			});
-			this.state.totalEstimatedPoints = this.state.totalEstimatedPoints + this.state.point
-			console.log(this.state.totalEstimatedPoints)
-			this.setState({ isAdded: !this.state.isAdded })
+			var newPoint = this.props.points + this.state.point;
+			this.props.getPoints(newPoint)
+			console.log(this.props.points)
+			this.setState({isAdded: !this.state.isAdded})
 		} catch (error) {
 			console.log(error);
 		}
