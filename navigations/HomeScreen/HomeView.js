@@ -80,11 +80,12 @@ export default class HomeView extends Component {
 	
 			  if (doc.data().userId==firebase.auth().currentUser.uid && doc.data().Collected == false)
 			  {   
-				this.props.points = this.props.points + parseInt(doc.data().estimatedPoints);
+				sum = sum + parseInt(doc.data().estimatedPoints);
 			p = sum / this.state.maxPoint;
 			h = p* wp('40%');
 			//console.log(this.state.name + "is showing")
 			this.setState({totalPoint: sum, percentage: p, height: h});
+			this.props.getPoints(sum);
 			console.log(this.props.points)
 			console.log(parseInt(this.props.points)/this.state.maxPoint)
 				}
@@ -461,7 +462,8 @@ export default class HomeView extends Component {
 				googleResponse: responseJson,
 				uploading: false
 			});
-			this.props.points = this.props.points + this.state.point
+			var newPoint = this.props.points + this.state.point;
+			this.props.getPoints(newPoint)
 			console.log(this.props.points)
 			this.setState({isAdded: !this.state.isAdded})
 		} catch (error) {
