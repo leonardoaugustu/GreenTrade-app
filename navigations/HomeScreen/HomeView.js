@@ -33,12 +33,7 @@ export default class HomeView extends Component {
 		super(props);
 		this.getInitialPoints();
 
-	toggleCamera = () => {
-		this.setState({ dialogVisible: true })
-	}
 
-	_canceltoggle = () => {
-		this.setState({ dialogVisible: false })
 	}
 	state = {
 		image: null,
@@ -57,58 +52,61 @@ export default class HomeView extends Component {
 		user: {},
 	};
 	toggleCamera = () => {
-		this.setState({dialogVisible: true})
-	  }
-	  _canceltoggle = () => {
-		this.setState({dialogVisible: false})
-	  }
-	
-	  async componentDidMount() {
-			await Permissions.askAsync(Permissions.CAMERA_ROLL);
-		await Permissions.askAsync(Permissions.CAMERA);
-		try{
-		  var db = firebase.firestore();
+		this.setState({ dialogVisible: true })
+	}
+	_canceltoggle = () => {
+		this.setState({ dialogVisible: false })
+	}
 
-		  var user = db.collection("users").doc(firebase.auth().currentUser.uid);
-            user.get().then(u => {
-              if (u.exists) {
-                 this.setState({user: u.data()});
-                 console.log(this.state);
-                }
-            });	
-	  
-		  db.collection("recycled-items").get().then((querySnapshot) => {
-			var sum = 0;
-			var p = 0;
-			querySnapshot.forEach((doc) => 
-			{
-	
-			  if (doc.data().userId==firebase.auth().currentUser.uid && doc.data().Collected == false)
-			  {   
-				this.props.points = this.props.points + parseInt(doc.data().estimatedPoints);
-			p = sum / this.state.maxPoint;
-			h = p* wp('40%');
-			//console.log(this.state.name + "is showing")
-			this.setState({totalPoint: sum, percentage: p, height: h});
-			console.log(this.props.points)
-			console.log(parseInt(this.props.points)/this.state.maxPoint)
+	async componentDidMount() {
+		await Permissions.askAsync(Permissions.CAMERA_ROLL);
+		await Permissions.askAsync(Permissions.CAMERA);
+		try {
+			var db = firebase.firestore();
+
+			var user = db.collection("users").doc(firebase.auth().currentUser.uid);
+			user.get().then(u => {
+				if (u.exists) {
+					this.setState({ user: u.data() });
+					console.log(this.state);
 				}
-			  });
+			});
+
+			db.collection("recycled-items").get().then((querySnapshot) => {
+				var sum = 0;
+				var p = 0;
+				querySnapshot.forEach((doc) => {
+
+					if (doc.data().userId == firebase.auth().currentUser.uid && doc.data().Collected == false) {
+						this.props.points = this.props.points + parseInt(doc.data().estimatedPoints);
+						p = sum / this.state.maxPoint;
+						h = p * wp('40%');
+						//console.log(this.state.name + "is showing")
+						this.setState({ totalPoint: sum, percentage: p, height: h });
+						console.log(this.props.points)
+						console.log(parseInt(this.props.points) / this.state.maxPoint)
+					}
+				});
 			});
 			console.log(this.state.totalPoint)
 		}
 		catch (error) {
 			console.log(error);
 		}
+		this.forceUpdate();
 	}
 
 	async getInitialPoints() {
+
+
 		firebase.database().ref('Users/').once('value', function (snapshot) {
 			console.log(snapshot.val())
 		});
+
 		// db.collection('users').doc(doc.data().UserId).get().then((userDoc)=> {
 		// 	this.props.getPoints(userDoc.data().points)
 		// })
+
 	}
 
 	render() {
@@ -139,28 +137,28 @@ export default class HomeView extends Component {
 					contentContainerStyle={styles.contentContainer}
 				>
 					<View style={styles.welcomeWrapper}>
-		<Text style={styles.welcomeTxt}>Welcome Back, {this.state.user.displayName}!</Text>
+						<Text style={styles.welcomeTxt}>Welcome Back, {this.state.user.displayName}!</Text>
 					</View>
 					<View>
-						{this.state.totalEstimatedPoints / this.state.maxPoints * 100 <= 80 ? (
+						{this.props.points / this.state.maxPoint * 100 <= 80 ? (
 							<View style={styles.waveContainer} >
 								{/* <TouchableHighlight onPress={()=>{
-       							 	// Stop Animation
+        // Stop Animation
  
-        							// set water baseline height
-        							this._waveRect && this._waveRect.setWaterHeight(70);
+        // set water baseline height
+        this._waveRect && this._waveRect.setWaterHeight(70);
  
-        							// reset wave effect
-        							this._waveRect && this._waveRect.setWaveParams([
-           								{A: 10, T: 260, fill: '#FF9F2E'},
-          								{A: 15, T: 220, fill: '#F08200'},
-           								{A: 20, T: 180, fill: '#B36100'},
-        							]);
-   								}}> */}
+        // reset wave effect
+        this._waveRect && this._waveRect.setWaveParams([
+            {A: 10, T: 260, fill: '#FF9F2E'},
+            {A: 15, T: 220, fill: '#F08200'},
+            {A: 20, T: 180, fill: '#B36100'},
+        ]);
+    }}> */}
 								<Wave
-									ref={(wave) => wave && wave.setWaterHeight(this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%'))}
+									ref={(wave) => wave && wave.setWaterHeight(this.props.points / this.state.maxPoint * wp('40%'))}
 									style={styles.waveBall}
-									H={this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%')}
+									H={this.props.points / this.state.maxPoint * wp('40%')}
 									waveParams={[
 										{ A: 10, T: 260, fill: '#62c2ff' },
 										{ A: 15, T: 220, fill: '#0087dc' },
@@ -168,14 +166,14 @@ export default class HomeView extends Component {
 									]}
 									animated={true}
 								/>
-								<Text style={styles.perText}>{parseFloat(this.state.totalEstimatedPoints / this.state.maxPoints).toFixed(2) * 100} %</Text>
+								<Text style={styles.perText}>{parseFloat(parseInt(this.props.points) / this.state.maxPoint).toFixed(2) * 100} %</Text>
 								{/* </TouchableHighlight> */}
 							</View>
 						) : <View style={styles.waveContainer} >
 								<Wave
-									ref={(wave) => wave && wave.setWaterHeight(this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%'))}
+									ref={(wave) => wave && wave.setWaterHeight(this.props.points / this.state.maxPoint * wp('40%'))}
 									style={styles.waveBall}
-									H={this.state.point / this.state.maxPoints * wp('40%')}
+									H={this.props.points / this.state.maxPoint * wp('40%')}
 									waveParams={[
 										{ A: 10, T: 260, fill: '#FF9F2E' },
 										{ A: 15, T: 220, fill: '#F08200' },
@@ -183,16 +181,18 @@ export default class HomeView extends Component {
 									]}
 									animated={true}
 								/>
-								<Text style={styles.perText}>{this.state.totalEstimatedPoints / this.state.maxPoints < 1 ? parseFloat(this.state.totalEstimatedPoints / this.state.maxPoints).toFixed(2) * 100 : 100} %</Text>
+								<Text style={styles.perText}>{this.props.points / this.state.maxPoint < 1 ? parseFloat(parseInt(this.props.points) / this.state.maxPoint).toFixed(2) * 100 : 100} %</Text>
 								{/* </TouchableHighlight> */}
 							</View>}
 					</View>
 					<View style={styles.pointWrapper}>
-						<Text style={styles.pointTxt}>{this.state.totalEstimatedPoints} {'total estimated points'.toUpperCase()}</Text>
+						<Text style={styles.pointTxt}>{this.props.points} {'total points'.toUpperCase()}</Text>
 					</View>
 					<View style={styles.cameraWrapper}>
 						<TouchableOpacity onPress={this.toggleCamera} style={styles.cameraImg}>
+
 							<Image style={styles.cameraImg} source={require('../../assets/camera.png')} />
+
 						</TouchableOpacity>
 					</View>
 					<View style={styles.dialogContainer}>
@@ -201,34 +201,12 @@ export default class HomeView extends Component {
 							visible={this.state.dialogVisible}
 						>
 							<View style={styles.customDialog}>
-								<Button
-									onPress={this._pickImage}
-									title="Choose from camera roll"
-								/>
-								<Button onPress={this._takePhoto} title="Take a photo" />
-								<Button onPress={this._canceltoggle} title="Cancel" />
+								<TouchableOpacity onPress={this._pickImage}><Text style={styles.btnTxt}>Choose from camera roll</Text></TouchableOpacity>
+								<TouchableOpacity onPress={this._takePhoto}><Text style={styles.btnTxt}>Take a photo</Text></TouchableOpacity>
+								<TouchableOpacity onPress={this._canceltoggle}><Text style={styles.btnTxt}>Cancel</Text></TouchableOpacity>
 							</View>
 						</Dialog>
 					</View>
- <View style={styles.cameraWrapper}>
-          <TouchableOpacity onPress={this.toggleCamera} style={styles.cameraImg}>
-          
-          <Image style={styles.cameraImg} source={require('../../assets/camera.png')}/>
-          
-          </TouchableOpacity>
-          </View>
-          <View style={styles.dialogContainer}>
-                <Dialog
-                dialogStyle ={styles.dialog}
-                   visible={this.state.dialogVisible}
-                   >
-                       <View style={styles.customDialog}>
-					    <TouchableOpacity onPress={this._pickImage}><Text style={styles.btnTxt}>Choose from camera roll</Text></TouchableOpacity>
-						<TouchableOpacity onPress={this._takePhoto}><Text style={styles.btnTxt}>Take a photo</Text></TouchableOpacity>
-						<TouchableOpacity onPress={this._canceltoggle}><Text style={styles.btnTxt}>Cancel</Text></TouchableOpacity>
-                       </View>
-                </Dialog>
-                </View>
 					<View style={styles.getStartedContainer}>
 						{image ? null : (
 							<Text style={styles.getStartedText}>Find Your Recyclables</Text>
@@ -243,7 +221,6 @@ export default class HomeView extends Component {
 							}}
 							title="Pick an image from camera roll"
 						/>
-
 						<Button style={styles.takePhoto} onPress={this._takePhoto} title="Take a photo" /> */}
 
 						<FlatList
@@ -481,7 +458,9 @@ export default class HomeView extends Component {
 				googleResponse: responseJson,
 				uploading: false
 			});
-			this.setState({ totalEstimatedPoints: this.state.totalEstimatedPoints + 50 })
+			this.props.points = this.props.points + this.state.point
+			console.log(this.props.points)
+			this.setState({ isAdded: !this.state.isAdded })
 		} catch (error) {
 			console.log(error);
 		}
@@ -518,9 +497,9 @@ async function uploadImageAsync(uri) {
 	const user = firebase.auth().currentUser;
 
 	db.collection("recycled-items").doc().set({
-		createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-		collected: false,
-		estimatedPoints: 50,
+		createdAt: Date.now(),
+		Collected: false,
+		estimatedPoints: "50",
 		imageUri: picURI,
 		userId: user.uid
 	})
@@ -530,5 +509,9 @@ async function uploadImageAsync(uri) {
 		.catch(function (error) {
 			console.error("Error writing document: ", error);
 		});
+
+
 	return await snapshot.ref.getDownloadURL()
+
+
 }
