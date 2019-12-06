@@ -3,9 +3,9 @@ import { Text, View, StyleSheet, Button, FlatList, TouchableOpacity, ActivityInd
 import { List, ListItem, Icon, Image } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
-import moment from 'moment'
+import moment from 'moment';
 import 'firebase/firestore';
-import firebase from '../../config/firebase'
+import firebase from '../../config/firebase';
 
 export default class ContainerView extends Component {
   constructor(props) {

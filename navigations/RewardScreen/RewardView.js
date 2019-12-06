@@ -28,7 +28,16 @@ class RewardView extends React.Component {
     };
     this.marginLeft = new Animated.Value(wp('10%'));
   }
-async componentDidMount() {
+
+componentDidMount() {
+  const { navigation } = this.props;
+  // refresh screen after purchasing new containers
+  navigation.addListener('willFocus', () => {
+    this.fetchData();
+  });
+}
+
+fetchData = () => {
   try {
     var db = firebase.firestore();
     var user = db.collection("users").doc(firebase.auth().currentUser.uid);

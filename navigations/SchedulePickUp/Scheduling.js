@@ -6,33 +6,38 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import { Keyboard } from 'react-native';
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
-import moment from 'moment'
+import moment from 'moment';
 import firebase from '../../config/firebase';
 const db = firebase.firestore();
 
 export default class Scheduling extends Component {
   constructor(props) {
     super(props);
+    // 10 days
+    const maxDateOffsetinMilli = 10 * 24 * 60 * 60 * 1000;
     this.state = {
-      maxDate: new Date('2019-11-29T22:40:00'),
-      date: new Date('2019-11-19T22:40:00'),
+      date: new Date(),
+      maxDate: new Date(Date.now() + maxDateOffsetinMilli),
       message: "Lets Schedule It",
       user: '',
       isVisible: false,
+      dateTimestamp: null,
       chosenDate: '',
       additionalInfo: '',
       collectPersonId: '',
       collectorperson: '',
-      useraddressDetailscity: '',
-      useraddressDetailspostalCode: '',
-      useraddressDetailsprovince: '',
-      useraddressDetailsstreet: '',
-      userprofilePicUrl: ''
+      address: {},
+      userprofilePicUrl: '',
     };
   }
 
   //for keyboard dismissing
   componentDidMount() {
+    const { navigation } = this.props;
+    // refresh screen after purchasing new containers
+    navigation.addListener('willFocus', () => {
+      this.setState({ chosenDate: '', dateTimestamp: null, additionalInfo: ''});
+    });
     this.keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
       this._keyboardDidShow,
@@ -60,7 +65,8 @@ export default class Scheduling extends Component {
   handlePicker = (datetime) => {
     this.setState({
       isVisible: false,
-      chosenDate: moment(datetime).format('MMMM, Do YYYY HH:mm')
+      chosenDate: moment(datetime).format('MMMM, Do YYYY HH:mm'),
+      dateTimestamp: datetime,
     })
     //setting up the pickup randomly
     this.assignPickup();
@@ -92,12 +98,10 @@ export default class Scheduling extends Component {
 
   //method for assigningpicker
   assignPickup(){
-
-
     //random collector
     let collectorreferenceurl= db.collection("users");
     var collectorsavailable=[];
-    let queryref= collectorreferenceurl.where( 'type', '==', 'collector').get()
+    let queryref= collectorreferenceurl.where('type', '==', 'collector').get()
       .then( snapshot=> {
         if(snapshot.empty){
           console.log("No matching Collector");
@@ -110,7 +114,6 @@ export default class Scheduling extends Component {
           var randomcollector = collectorsavailable[Math.floor(Math.random() * collectorsavailable.length)];
           var randomcollectoruid= randomcollector.uid;
           this.setState({ collectorperson: randomcollector.displayName , collectPersonId:randomcollectoruid});
-          
         })
       })
       .catch( err=> {
@@ -127,8 +130,7 @@ export default class Scheduling extends Component {
           console.log("No users found");
         }
         else{
-          this.setState({ useraddressDetailscity: doc.data().address.city , useraddressDetailspostalCode: doc.data().address.postalcode, useraddressDetailsprovince: doc.data().address.province, useraddressDetailsstreet: doc.data().address.street, userprofilePicUrl: doc.data().profilePhoto});
-         
+          this.setState({ address: doc.data().address, userprofilePicUrl: doc.data().profilePhoto});
         }
       })
       .catch( err => console.log("error getting users", err));
@@ -141,22 +143,52 @@ export default class Scheduling extends Component {
     }
 
     else{
-    var user = firebase.auth().currentUser;
-    var userRef = db.collection(`users/${user.uid}/pickups`);
+      var clientPickUpsRef = db.collection(`users/${firebase.auth().currentUser.uid}/pickups`).doc();
+      var pickUpsRef = db.collection('pickups').doc(clientPickUpsRef.id);
 
-    var pickupRef= db.collection('pickups');
+      let batch = db.batch();
 
-    var realUser= firebase.auth().currentUser.uid;
-    var userName= firebase.auth().currentUser.displayName;
+      // write to client's pickups collection
+      batch.set(clientPickUpsRef, {
+         scheduledTime: this.state.chosenDate, 
+         additionalInfo: this.state.additionalInfo, 
+         collectorName: this.state.collectorperson,
+         collectorId: this.state.collectPersonId,
+         fulfilledTime: null,
+      });
 
-    await Promise.all ( [pickupRef.add({ user: realUser, useraddressDetailscity:this.state.useraddressDetailscity,useraddressDetailspostalCode: this.state.useraddressDetailspostalCode, useraddressDetailsprovince: this.state.useraddressDetailsprovince,useraddressDetailsstreet: this.state.useraddressDetailsstreet,userProfilePicURL: this.state.userprofilePicUrl, scheduledtime: this.state.chosenDate , additionalInfo: this.state.additionalInfo,cancelled: false, collectorid: this.state.collectPersonId , collector: this.state.collectorperson ,customerName: userName, fulfilledAt: null})],
-      [userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null})]);
+      // write to pickups collection
+      batch.set(pickUpsRef, {
+        memberId: firebase.auth().currentUser.uid, 
+        memberName: firebase.auth().currentUser.displayName, 
+        address: {  
+          street: this.state.address.street, 
+          city: this.state.address.city, 
+          province: this.state.address.province, 
+          postalCode: this.state.address.postalCode }, 
+        memberProfilePicURL: this.state.userprofilePicUrl, 
+        scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp), 
+        additionalInfo: this.state.additionalInfo,
+        cancelled: false, 
+        collectorId: this.state.collectPersonId, 
+        collectorName: this.state.collectorperson,
+        fulfilledTime: null,
+      });
+
+      await batch.commit();
+    // var user = firebase.auth().currentUser;
+    // var userRef = db.collection(`users/${user.uid}/pickups`);
+
+    // var pickupRef= db.collection('pickups');
+
+    // var realUser= firebase.auth().currentUser.uid;
+    // var userName= firebase.auth().currentUser.displayName;
+
+    // await Promise.all ( [pickupRef.add({ user: realUser, address: this.state.address, userProfilePicURL: this.state.userprofilePicUrl, scheduledtime: this.state.chosenDate , additionalInfo: this.state.additionalInfo,cancelled: false, collectorid: this.state.collectPersonId , collector: this.state.collectorperson ,customerName: userName, fulfilledAt: null})],
+    //   [userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null})]);
     
    //await userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null}); 
-
-
-
-    Alert.alert(`Thank you ${firebase.auth().currentUser.displayName}\nWe will pick up on ${this.state.chosenDate}`);
+    Alert.alert('Scheduling successful!', `Thank you ${firebase.auth().currentUser.displayName}!\nWe will pick up your recycling on ${this.state.chosenDate}.`);
     }
   }
 
@@ -210,7 +242,7 @@ export default class Scheduling extends Component {
               numberOfLines={3}
               onEndEditing={this.clear}
               onChangeText={this.handleInfo}
-              value={this.state.text}
+              value={this.state.additionalInfo}
               returnKeyType={'default'}
               style={{ fontSize: 20 }}
             />
@@ -219,7 +251,6 @@ export default class Scheduling extends Component {
 
           <View style={{ flex: 3, backgroundColor: '#DAE0E2' }} >
             <Button title="Confirm" onPress={() => this.handlePress()} styles={{ justifyContent: 'center' }} />
-          
           </View>
             
         </View >
@@ -227,4 +258,3 @@ export default class Scheduling extends Component {
     );
   }
 }
-
