@@ -13,9 +13,11 @@ const db = firebase.firestore();
 export default class Scheduling extends Component {
   constructor(props) {
     super(props);
+    // 10 days
+    const maxDateOffsetinMilli = 10 * 24 * 60 * 60 * 1000;
     this.state = {
-      maxDate: new Date('2019-11-29T22:40:00'),
-      date: new Date('2019-11-19T22:40:00'),
+      date: new Date(),
+      maxDate: new Date(Date.now() + maxDateOffsetinMilli),
       message: "Lets Schedule It",
       user: '',
       isVisible: false,
@@ -27,7 +29,7 @@ export default class Scheduling extends Component {
       useraddressDetailspostalCode: '',
       useraddressDetailsprovince: '',
       useraddressDetailsstreet: '',
-      userprofilePicUrl: ''
+      userprofilePicUrl: '',
     };
   }
 
@@ -92,12 +94,10 @@ export default class Scheduling extends Component {
 
   //method for assigningpicker
   assignPickup(){
-
-
     //random collector
     let collectorreferenceurl= db.collection("users");
     var collectorsavailable=[];
-    let queryref= collectorreferenceurl.where( 'type', '==', 'collector').get()
+    let queryref= collectorreferenceurl.where('type', '==', 'collector').get()
       .then( snapshot=> {
         if(snapshot.empty){
           console.log("No matching Collector");
@@ -110,7 +110,6 @@ export default class Scheduling extends Component {
           var randomcollector = collectorsavailable[Math.floor(Math.random() * collectorsavailable.length)];
           var randomcollectoruid= randomcollector.uid;
           this.setState({ collectorperson: randomcollector.displayName , collectPersonId:randomcollectoruid});
-          
         })
       })
       .catch( err=> {
@@ -128,7 +127,6 @@ export default class Scheduling extends Component {
         }
         else{
           this.setState({ useraddressDetailscity: doc.data().address.city , useraddressDetailspostalCode: doc.data().address.postalcode, useraddressDetailsprovince: doc.data().address.province, useraddressDetailsstreet: doc.data().address.street, userprofilePicUrl: doc.data().profilePhoto});
-         
         }
       })
       .catch( err => console.log("error getting users", err));
@@ -153,10 +151,7 @@ export default class Scheduling extends Component {
       [userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null})]);
     
    //await userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null}); 
-
-
-
-    Alert.alert(`Thank you ${firebase.auth().currentUser.displayName}\nWe will pick up on ${this.state.chosenDate}`);
+    Alert.alert('Scheduling successful!', `Thank you ${firebase.auth().currentUser.displayName}!\nWe will pick up your recycling on ${this.state.chosenDate}.`);
     }
   }
 
@@ -219,7 +214,6 @@ export default class Scheduling extends Component {
 
           <View style={{ flex: 3, backgroundColor: '#DAE0E2' }} >
             <Button title="Confirm" onPress={() => this.handlePress()} styles={{ justifyContent: 'center' }} />
-          
           </View>
             
         </View >
