@@ -9,20 +9,28 @@ export default class TradePointlView extends Component {
   constructor(props) {
     super(props); {
       this.state = {
-        currentUserPoint: {},
+        user: {},
         rewards_code: {}
       };
       try {
-        const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
+        // const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
+        // var db = firebase.firestore();
+        // db.collection("users").where("displayName", "==", currentUser).get().then((querySnapshot) => {
+        //   querySnapshot.forEach((doc) => {
+        //     var userPoint = {
+        //       point: doc.data().points
+        //     };
+        //     this.setState({ currentUserPoint: userPoint });
+        //   });
+        // });
         var db = firebase.firestore();
-        db.collection("users").where("displayName", "==", currentUser).get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            var userPoint = {
-              point: doc.data().points
-            };
-            this.setState({ currentUserPoint: userPoint });
-          });
-        });
+        var user = db.collection("users").doc(firebase.auth().currentUser.uid);
+                user.get().then(u => {
+                  if (u.exists) {
+                     this.setState({user: u.data()});
+                     console.log(this.state);
+                    }
+                });
       }
       catch (error) {
         console.log(error);
@@ -112,7 +120,7 @@ export default class TradePointlView extends Component {
     const image = navigation.state.params.Img_url;
     const point = navigation.state.params.Cost;
     const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
-    var userPoint = this.state.currentUserPoint.point;
+    var userPoint = this.state.user.points;
     return (
 
       <View style={styles.container}>
@@ -134,13 +142,8 @@ export default class TradePointlView extends Component {
               </View>
             </View>
           </View>
-        </SafeAreaView>
-
-        <View style={styles.userPoint}>
-          <Button disabled={true} disabledStyle={{ backgroundColor: "white" }}
-            disabledTitleStyle={{ color: "black", left: 10, fontSize: 20 }}
-            title={currentUser + ": " + userPoint}
-          />
+          <View style={styles.welcomeWrapper}>
+            <Text style={styles.welcomeTxt}>{this.state.user.displayName} : {this.state.user.points}</Text>
         </View>
 
         <View style={styles.rewardInfo}>
@@ -149,8 +152,8 @@ export default class TradePointlView extends Component {
 
         <View style={styles.point}>
           <Button disabled={true} disabledStyle={{ backgroundColor: "white" }}
-            disabledTitleStyle={{ color: "black", left: 20, fontSize: 20 }}
-            title={point}
+            disabledTitleStyle={{ color: "black", left: 10, fontSize: 20 }}
+            title={point.toString()}
             icon={<Icon iconStyle={{ left: 10 }}
               type="font-awesome" name="star" color="#e1b225" />} />
         </View>
@@ -159,8 +162,9 @@ export default class TradePointlView extends Component {
           <Button disabled={point > userPoint} buttonStyle={{ backgroundColor: "#da272a" }}
             titleStyle={{ color: "white", fontSize: 25 }}
             title="Use your point" iconRight={true}
-            onPress={() => this.updatePoint(userPoint, point, currentUser)} />
+            onPress={() => this.updatePoint(userPoint, point, this.state.user.displayName)} />
         </View>
+        </SafeAreaView>
       </View>
     );
   }
