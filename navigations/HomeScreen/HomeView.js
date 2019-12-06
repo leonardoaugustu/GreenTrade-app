@@ -10,7 +10,8 @@ import {
 	ScrollView,
 	View,
 	Button,
-	TouchableOpacity
+	TouchableOpacity,
+	Alert
 } from 'react-native';
 import uuid from 'uuid';
 import * as ImagePicker from 'expo-image-picker';
@@ -24,11 +25,15 @@ import firebase from '../../config/firebase';
 import Wave from 'react-native-waveview';
 import { Dialog } from 'react-native-simple-dialogs';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import * as FileSystem from 'expo-file-system';
 
 const db = firebase.firestore();
 
 
 export default class HomeView extends Component {
+	PLASTIC_POINTS = 50;
+	METAL_POINTS = 85;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -39,12 +44,13 @@ export default class HomeView extends Component {
 			totalEstimatedPoints: 0,
 			dialogVisible: false,
 			height: 0,
+			recyclePoints: 0,
 			maxPoints: 1000,
 			percentage: null,
 			user: {},
 		};
 	}
-	
+
 	toggleCamera = () => {
 		this.setState({ dialogVisible: true })
 	}
@@ -55,40 +61,20 @@ export default class HomeView extends Component {
 	async componentDidMount() {
 		await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
-		try{
-		  var db = firebase.firestore();
-
-		  var user = db.collection("users").doc(firebase.auth().currentUser.uid);
-            user.get().then(u => {
-              if (u.exists) {
-                 this.setState({user: u.data()});
-                 console.log(this.state);
-                }
-            });	
-	  
-		  db.collection("recycled-items").get().then((querySnapshot) => {
-			var sum = 0;
-			var p = 0;
-			querySnapshot.forEach((doc) => 
-			{
-	
-			  if (doc.data().userId==firebase.auth().currentUser.uid && doc.data().Collected == false)
-			  {   
-				sum = sum + parseInt(doc.data().estimatedPoints);
-			p = sum / this.state.maxPoint;
-			h = p* wp('40%');
-			//console.log(this.state.name + "is showing")
-			this.setState({totalPoint: sum, percentage: p, height: h});
-			this.props.getPoints(sum);
-			console.log(this.props.points)
-			console.log(parseInt(this.props.points)/this.state.maxPoint)
+		let db = firebase.firestore();
+		db.collection("users")
+			.doc(firebase.auth().currentUser.uid)
+			.get()
+			.then(u => {
+				if (u.exists) {
+					this.setState({ user: u.data() });
 				}
 			});
-		this.getUserEstimatedPoints
+		this.getUserEstimatedPoints();
 		this.forceUpdate();
 	}
 
-	getUserEstimatedPoints() {
+	getUserEstimatedPoints = () => {
 		try {
 			db.collection("recycled-items")
 				.where("collected", "==", false)
@@ -97,11 +83,12 @@ export default class HomeView extends Component {
 					let pointsSum = 0;
 					querySnapshot.forEach((doc) => {
 						pointsSum += doc.data().estimatedPoints;
-						
+
 					});
-					let fillPercent = pointsSum / this.state.maxPointss;
+					let fillPercent = pointsSum / this.state.maxPoints;
 					let fillHeight = fillPercent * wp('40%');
 					this.setState({ totalEstimatedPoints: pointsSum, percentage: fillPercent, height: fillHeight });
+					this.props.getPoints(pointsSum);
 				});
 		}
 		catch (error) {
@@ -211,31 +198,6 @@ export default class HomeView extends Component {
 						)}
 					</View>
 					<View style={styles.helpContainer}>
-						{/* <FlatList
-							data={this.state.googleResponse ? this.state.googleResponse.responses[0].labelAnnotations : null}
-							extraData={this.state}
-							keyExtractor={this._keyExtractor}
-							renderItem={({ item }) => {
-								// let Points;
-								// switch (item.description) {
-								// 	case "Plastic":
-								// 		//this.props.addPoints(50)
-								// 		alert(`Awsome, you get plastic!`);
-								// 		break;
-								// 	case "Metal":
-								// 		//this.props.addPoints(70)
-								// 		alert(`Awsome, you got metal!`);
-								// 		break;
-								// 	default:
-								// 		break;
-
-								// }
-								// this.updatePoints()
-
-								return <Text>Item: {item.description}</Text>
-							}}
-
-						/> */}
 						{this._maybeRenderImage()}
 						{this._maybeRenderUploadingOverlay()}
 					</View>
@@ -265,7 +227,7 @@ export default class HomeView extends Component {
 
 	_maybeRenderImage = () => {
 		let { image, googleResponse } = this.state;
-		if (!image || !displayConfirmButton) {
+		if (!image || !this.state.displayConfirmButton) {
 			return;
 		}
 
@@ -280,10 +242,8 @@ export default class HomeView extends Component {
 			>
 				<Button
 					style={{ marginBottom: 10 }}
-					onPress={() => {
-						this.submitToGoogle()
-					}}
-					title="Confirm!"
+					onPress={this.saveRecyclableImage}
+					title="RECYCLE ITEM"
 				/>
 
 				<View
@@ -297,41 +257,11 @@ export default class HomeView extends Component {
 						overflow: 'hidden'
 					}}
 				>
-					<Image source={{ uri: image }} style={{ width: 250, height: 250 }} />
+					<Image source={{ uri: image.uri }} style={{ width: 250, height: 250 }} />
 				</View>
-				{/* <Text
-					onPress={this._copyToClipboard}
-					onLongPress={this._share}
-					style={{ paddingVertical: 10, paddingHorizontal: 10 }}
-				/> */}
-
-				{/* <Text>Raw JSON:</Text> */}
-
-				{/* {googleResponse && (
-					<Text
-						onPress={this._copyToClipboard}
-						onLongPress={this._share}
-						style={{ paddingVertical: 10, paddingHorizontal: 10 }}
-					>
-						{JSON.stringify(googleResponse.responses)}
-					</Text>
-				)} */}
 			</View>
 		);
 	};
-
-	// _share = () => {
-	// 	Share.share({
-	// 		message: JSON.stringify(this.state.googleResponse.responses),
-	// 		title: 'Check it out',
-	// 		url: this.state.image
-	// 	});
-	// };
-
-	// _copyToClipboard = () => {
-	// 	Clipboard.setString(this.state.image);
-	// 	alert('Copied to clipboard');
-	// };
 
 	_takePhoto = async () => {
 		let pickerResult = await ImagePicker.launchCameraAsync({
@@ -353,45 +283,46 @@ export default class HomeView extends Component {
 		this._handleImagePicked(pickerResult);
 	};
 
-	_handleImagePicked = async pickerResult => {
+	_handleImagePicked = async (pickerResult) => {
 		try {
 			this.setState({ uploading: true });
 
+			// If a photo was selected, call ML API and return us the contents of the image
 			if (!pickerResult.cancelled) {
-				uploadUrl = await uploadImageAsync(pickerResult.uri);
-				this.setState({ image: uploadUrl });
+				let MLResponse = await this.submitToGoogle(pickerResult);
+				let recycleItem = this.getRecylableItem(MLResponse)
+				if (recycleItem !== null) {
+					this.setState({ displayConfirmButton: true, recyclePoints: recycleItem.points, image: pickerResult });
+				}
+				else {
+					Alert.alert("Invalid Picture", "The picture you selected does not contain a recyclable that we recognize. Please try again.");
+					this.setState({ displayConfirmButton: false });
+				}
+				//uploadUrl = await uploadImageAsync(pickerResult.uri);
+				//this.setState({ image: uploadUrl });
 			}
 		} catch (e) {
 			console.log(e);
-			alert('Upload failed, sorry :(');
+			alert('Upload failed.');
 		} finally {
 			this.setState({ uploading: false });
 		}
 	};
 
-	submitToGoogle = async () => {
+	submitToGoogle = async (image) => {
 		try {
 			this.setState({ uploading: true });
-			let { image } = this.state;
+			let encodedContent = await localImageToBase64Encode(image.uri);
 			let body = JSON.stringify({
 				requests: [
 					{
 						features: [
 							{ type: 'LABEL_DETECTION', maxResults: 10 },
-							{ type: 'LANDMARK_DETECTION', maxResults: 5 },
-							{ type: 'FACE_DETECTION', maxResults: 5 },
-							{ type: 'LOGO_DETECTION', maxResults: 5 },
-							{ type: 'TEXT_DETECTION', maxResults: 5 },
-							{ type: 'DOCUMENT_TEXT_DETECTION', maxResults: 5 },
-							{ type: 'SAFE_SEARCH_DETECTION', maxResults: 5 },
-							{ type: 'IMAGE_PROPERTIES', maxResults: 5 },
-							{ type: 'CROP_HINTS', maxResults: 5 },
-							{ type: 'WEB_DETECTION', maxResults: 5 }
+							{ type: 'TEXT_DETECTION', maxResults: 10 },
+							{ type: 'OBJECT_LOCALIZATION', maxResults: 10 },
 						],
 						image: {
-							source: {
-								imageUri: image
-							}
+							content: encodedContent,
 						}
 					}
 				]
@@ -409,20 +340,123 @@ export default class HomeView extends Component {
 					body: body
 				}
 			);
-			let responseJson = await response.json();
-			// alert(JSON.stringify(responseJson));
-			this.setState({
-				googleResponse: responseJson,
-				uploading: false
-			});
-			var newPoint = this.props.points + this.state.point;
-			this.props.getPoints(newPoint)
-			console.log(this.props.points)
-			this.setState({isAdded: !this.state.isAdded})
+			return await response.json();
+			// this.setState({
+			// 	googleResponse: responseJson,
+			// 	uploading: false
+			// });
+			//var newPoint = this.props.points + this.state.point;
+			//this.props.getPoints(newPoint)
+			//this.setState({isAdded: !this.state.isAdded})
 		} catch (error) {
+			alert("ML API failed to return a response. Please try again.");
 			console.log(error);
 		}
 	};
+
+	saveRecyclableImage = async () => {
+		this.setState({ uploading: true });
+		let storageURI = await uploadImageAsync(this.state.image.uri);
+		let addedDoc = await this.saveImageToDB(storageURI);
+		if (addedDoc) {
+			this.props.getPoints(this.props.points + this.state.recyclePoints);
+		}
+		this.setState({ totalEstimatedPoints: this.state.totalEstimatedPoints + this.state.recyclePoints, displayConfirmButton: false });
+	}
+
+	saveImageToDB = async (uri) => {
+		const user = firebase.auth().currentUser;
+
+		return await db.collection("recycled-items").add({
+			createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+			collected: false,
+			estimatedPoints: this.state.recyclePoints,
+			imageUri: uri,
+			userId: user.uid,
+		})
+			.then((ref) => {
+				Alert.alert("Success!", "Recyclable successfully added to your recycling container.");
+				console.log("Document successfully written!");
+			})
+			.catch((error) => {
+				console.error("Error writing document: ", error);
+			})
+			.finally(() => {
+				this.setState({ uploading: false });
+			});
+	}
+
+	// This is so hacky and bad, but I'm tired and just want it to work
+	// TODO: REFACTOR THIS UGLY MESS
+	getRecylableItem(jsonResponse) {
+		let hasMetal = false;
+		let hasPlastic = false;
+		let hasCheatCode = false;
+		const cheatCode = "RECYCLE";
+
+		let texts = jsonResponse.responses[0].textAnnotations;
+		texts && texts.forEach((text) => {
+			//console.log(text.description);
+			if (text.description.toUpperCase().includes(cheatCode)) {
+				hasCheatCode = true;
+			}
+			else if (text.description.toUpperCase().includes('METAL')) {
+				hasMetal = true;
+			}
+			else if (text.description.toUpperCase().includes('PLASTIC')  || text.description.toUpperCase().includes('PACKAGE')) {
+				hasPlastic = true;
+			}
+		});
+
+		let labels = jsonResponse.responses[0].labelAnnotations;
+		labels && labels.forEach((label) => {
+			//console.log(label.description);
+			if (label.description.toUpperCase().includes(cheatCode)) {
+				hasCheatCode = true;
+			}
+			else if (label.description.toUpperCase().includes('METAL')) {
+				hasMetal = true;
+			}
+			else if (label.description.toUpperCase().includes('PLASTIC') || label.description.toUpperCase().includes('PACKAGE')) {
+				hasPlastic = true;
+			}
+		})
+
+		let localizedObjects = jsonResponse.responses[0].localizedObjectAnnotations;
+		localizedObjects && localizedObjects.forEach((localizedObject) => {
+			//console.log(localizedObject.name);
+			if (localizedObject.name.toUpperCase().includes(cheatCode)) {
+				asCheatCode = true;
+			}
+			else if (localizedObject.name.toUpperCase().includes('METAL')) {
+				hasMetal = true;
+			}
+			else if (localizedObject.name.toUpperCase().includes('PLASTIC') || localizedObject.name.toUpperCase().includes('PACKAGE')) {
+				hasPlastic = true;
+			}
+		})
+
+		if (hasCheatCode) {
+			return {
+				points: 750,
+			}
+		}
+		else if (hasMetal) {
+			return {
+				points: this.METAL_POINTS,
+			}
+		}
+		else if (hasPlastic) {
+			return {
+				points: this.PLASTIC_POINTS,
+			}
+		}
+		else return null;
+	}
+}
+
+async function localImageToBase64Encode(uri) {
+	return await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
 }
 
 async function uploadImageAsync(uri) {
@@ -445,31 +479,9 @@ async function uploadImageAsync(uri) {
 		.ref()
 		.child(uuid.v4());
 
-
 	const snapshot = await ref.put(blob);
 
 	blob.close();
 
-	const picURI = await ref.getDownloadURL()
-	console.log(picURI)
-	const user = firebase.auth().currentUser;
-
-	db.collection("recycled-items").doc().set({
-		createdAt: Date.now(),
-		Collected: false,
-		estimatedPoints: "50",
-		imageUri: picURI,
-		userId: user.uid
-	})
-		.then(function () {
-			console.log("Document successfully written!");
-		})
-		.catch(function (error) {
-			console.error("Error writing document: ", error);
-		});
-
-
-	return await snapshot.ref.getDownloadURL()
-
-
+	return await ref.getDownloadURL();
 }
