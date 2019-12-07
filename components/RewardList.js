@@ -72,13 +72,17 @@ class RewardList extends Component {
               </Left>
               <Body style={styles.body}>
                 <Text style={styles.rewardNameTxt}>{item.Name}</Text>
+                <View style={styles.contentWrapper}>
+                <View style={styles.costWrapper}>
+                <Text style={styles.listPoint}>{item.Cost}</Text>
+                </View>
                 <Text style={styles.moreTxt}>View More</Text>
                 <Icon name="keyboard-arrow-right" 
                         type='material'
                         iconStyle={styles.iconGo}
                         color="#c3c3c3"
                         />
-                <Text style={styles.listPoint}>{item.Cost}</Text>
+                </View>
               </Body>
             </ListItem>
       );
@@ -102,6 +106,7 @@ class RewardList extends Component {
 
 function mapStateToProps (state){
     return{
+      navigationState: state.sortRewardsReducer,
     }; 
   }
   

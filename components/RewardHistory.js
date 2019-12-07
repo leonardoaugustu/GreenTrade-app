@@ -104,14 +104,13 @@ class RewardHistory extends Component {
     }
 }
 
-
-function mapStateToProps(state) {
-    return {
-        // navigationState: state.sortCommunityReducer,
-    };
-}
-
-function mapDispatchToProps(dispatch) {
+function mapStateToProps (state){
+    return{
+        navigationState: state.sortRewardsReducer,
+    }; 
+  }
+  
+  function mapDispatchToProps (dispatch)  {
     return {
         sortRewards: (index) => dispatch(sortRewards(index)),
     };

@@ -8,11 +8,13 @@ import {
 	StyleSheet,
 	Text,
 	ScrollView,
-	View
+	View,
+	Button,
+	TouchableOpacity,
+	Alert
 } from 'react-native';
 import uuid from 'uuid';
 import * as ImagePicker from 'expo-image-picker';
-import { Button } from 'react-native-elements';
 import '@firebase/firestore';
 import * as Permissions from 'expo-permissions';
 import { Icon } from "react-native-elements";
@@ -20,51 +22,89 @@ import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import Environment from '../../config/FireBaseConfig';
 import firebase from '../../config/firebase';
+import Wave from 'react-native-waveview';
+import { Dialog } from 'react-native-simple-dialogs';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import * as FileSystem from 'expo-file-system';
+
 const db = firebase.firestore();
 
 
 export default class HomeView extends Component {
+	PLASTIC_POINTS = 50;
+	METAL_POINTS = 85;
+
 	constructor(props) {
 		super(props);
-		this.getInitialPoints()
-
-
+		this.state = {
+			image: null,
+			uploading: false,
+			displayConfirmButton: false,
+			googleResponse: null,
+			totalEstimatedPoints: 0,
+			dialogVisible: false,
+			height: 0,
+			recyclePoints: 0,
+			maxPoints: 1000,
+			percentage: null,
+			user: {},
+		};
 	}
-	state = {
-		image: null,
-		uploading: false,
-		googleResponse: null,
-		points: 0,
-		rewardPoint: 0,
-		analyzed: false,
-		// collected: false,
-		// createdAt: date,
-		// estimatedPoints: 50,
-		// imageUri:"",
 
-	};
+	toggleCamera = () => {
+		this.setState({ dialogVisible: true })
+	}
+	_canceltoggle = () => {
+		this.setState({ dialogVisible: false })
+	}
+
 	async componentDidMount() {
+		const { navigation } = this.props;
+		// refresh screen after purchasing new containers
+		navigation.addListener('willFocus', () => {
+			this.getUserEstimatedPoints();
+		});
+		
 		await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
-
-
+		let db = firebase.firestore();
+		db.collection("users")
+			.doc(firebase.auth().currentUser.uid)
+			.get()
+			.then(u => {
+				if (u.exists) {
+					this.setState({ user: u.data() });
+				}
+			});
+		this.getUserEstimatedPoints();
+		this.forceUpdate();
 	}
 
-	async getInitialPoints() {
+	getUserEstimatedPoints = () => {
+		try {
+			db.collection("recycled-items")
+				.where("collected", "==", false)
+				.where("userId", "==", firebase.auth().currentUser.uid)
+				.get().then((querySnapshot) => {
+					let pointsSum = 0;
+					querySnapshot.forEach((doc) => {
+						pointsSum += doc.data().estimatedPoints;
 
-
-		firebase.database().ref('Users/').once('value', function (snapshot) {
-			console.log(snapshot.val())
-		});
-
-		// db.collection('users').doc(doc.data().UserId).get().then((userDoc)=> {
-		// 	this.props.getPoints(userDoc.data().points)
-		// })
-
+					});
+					let fillPercent = pointsSum / this.state.maxPoints;
+					let fillHeight = fillPercent * wp('40%');
+					this.setState({ totalEstimatedPoints: pointsSum, percentage: fillPercent, height: fillHeight });
+					this.props.getPoints(pointsSum);
+				});
+		}
+		catch (error) {
+			console.log(error);
+		}
 	}
 
 	render() {
 		let { image } = this.state;
+		const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
 
 		return (
 			<SafeAreaView style={styles.container}>
@@ -89,83 +129,88 @@ export default class HomeView extends Component {
 					style={styles.container}
 					contentContainerStyle={styles.contentContainer}
 				>
+					<View style={styles.welcomeWrapper}>
+						<Text style={styles.welcomeTxt}>Welcome Back, {this.state.user.displayName}!</Text>
+					</View>
+					<View>
+						{this.state.totalEstimatedPoints / this.state.maxPoints * 100 <= 80 ? (
+							<View style={styles.waveContainer} >
+								{/* <TouchableHighlight onPress={()=>{
+        							// Stop Animation
+ 
+        							// set water baseline height
+        							this._waveRect && this._waveRect.setWaterHeight(70);
+ 
+        							// reset wave effect
+        							this._waveRect && this._waveRect.setWaveParams([
+           								{A: 10, T: 260, fill: '#FF9F2E'},
+            							{A: 15, T: 220, fill: '#F08200'},
+            							{A: 20, T: 180, fill: '#B36100'},
+        							]);
+    							}}> */}
+								<Wave
+									ref={(wave) => wave && wave.setWaterHeight(this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%'))}
+									style={styles.waveBall}
+									H={this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%')}
+									waveParams={[
+										{ A: 10, T: 260, fill: '#62c2ff' },
+										{ A: 15, T: 220, fill: '#0087dc' },
+										{ A: 20, T: 180, fill: '#1aa7ff' },
+									]}
+									animated={true}
+								/>
+								<Text style={styles.perText}>{parseFloat(this.state.totalEstimatedPoints / this.state.maxPoints).toFixed(2) * 100} %</Text>
+								{/* </TouchableHighlight> */}
+							</View>
+						) : <View style={styles.waveContainer} >
+								<Wave
+									ref={(wave) => wave && wave.setWaterHeight(this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%'))}
+									style={styles.waveBall}
+									H={this.state.totalEstimatedPoints / this.state.maxPoints * wp('40%')}
+									waveParams={[
+										{ A: 10, T: 260, fill: '#FF9F2E' },
+										{ A: 15, T: 220, fill: '#F08200' },
+										{ A: 20, T: 180, fill: '#B36100' },
+									]}
+									animated={true}
+								/>
+								<Text style={styles.perText}>{this.state.totalEstimatedPoints / this.state.maxPoints < 1 ? parseFloat(this.state.totalEstimatedPoints / this.state.maxPoints).toFixed(2) * 100 : 100} %</Text>
+								{/* </TouchableHighlight> */}
+							</View>}
+					</View>
+					<View style={styles.pointWrapper}>
+						<Text style={styles.pointTxt}>{this.state.totalEstimatedPoints} {'estimated total points'.toUpperCase()}</Text>
+					</View>
+					<View style={styles.cameraWrapper}>
+						<TouchableOpacity onPress={this.toggleCamera} style={styles.cameraImg}>
+							<Image style={styles.cameraImg} source={require('../../assets/camera.png')} />
+						</TouchableOpacity>
+					</View>
+					<View style={styles.dialogContainer}>
+						<Dialog
+							dialogStyle={styles.dialog}
+							visible={this.state.dialogVisible}
+						>
+							<View style={styles.customDialog}>
+								<TouchableOpacity onPress={this._pickImage}><Text style={styles.btnTxt}>Camera Roll</Text></TouchableOpacity>
+								<TouchableOpacity onPress={this._takePhoto}><Text style={styles.btnTxt}>Take a photo</Text></TouchableOpacity>
+								<TouchableOpacity onPress={this._canceltoggle}><Text style={styles.btnTxt}>Cancel</Text></TouchableOpacity>
+							</View>
+						</Dialog>
+					</View>
 					<View style={styles.getStartedContainer}>
 						{image ? null : (
-							<Text style={styles.getStartedText}>Find your Recycle Item</Text>
+							<Text style={styles.getStartedText}>Capture Your Recyclables</Text>
 						)}
 					</View>
-
 					<View style={styles.helpContainer}>
-						<Button
-							onPress={() => {
-								this._pickImage()
-								this.setState({ analyzed: !this.state.analyzed })
-							}}
-							title="Pick an image from camera roll"
-						/>
-
-						<Button style={styles.takePhoto} onPress={this._takePhoto} title="Take a photo" />
-
-						<FlatList
-							data={this.state.googleResponse ? this.state.googleResponse.responses[0].labelAnnotations : null}
-							extraData={this.state}
-							keyExtractor={this._keyExtractor}
-							renderItem={({ item }) => {
-								// let Points;
-								switch (item.description) {
-									case "Plastic":
-										this.props.addPoints(50)
-										alert(`Awsome`);
-										break;
-									case "Metal":
-										this.props.addPoints(70)
-
-										alert(`Awsome`);
-										break;
-									default:
-										break;
-
-								}
-								this.updatePoints()
-
-								return <Text>Item: {item.description}</Text>
-							}}
-
-						/>
-
 						{this._maybeRenderImage()}
 						{this._maybeRenderUploadingOverlay()}
 					</View>
 				</ScrollView>
-
 			</SafeAreaView>
 		);
 	}
-
-	organize = array => {
-		return array.map(function (item, i) {
-			return (
-				<View key={i}>
-					<Text>{item}</Text>
-				</View>
-			);
-		});
-	};
-	async updatePoints() {
-		const user = firebase.auth().currentUser;
-		let uid;
-		if (user != null) {
-			uid = user.uid;
-			const db = firebase.firestore();
-			const docRef = db.collection('users').doc(uid);
-			docRef.update({
-				points: this.props.rewardPoints
-
-			});
-
-		}
-	}
-
 
 	_maybeRenderUploadingOverlay = () => {
 		if (this.state.uploading) {
@@ -185,9 +230,10 @@ export default class HomeView extends Component {
 			);
 		}
 	};
+
 	_maybeRenderImage = () => {
 		let { image, googleResponse } = this.state;
-		if (!image) {
+		if (!image || !this.state.displayConfirmButton) {
 			return;
 		}
 
@@ -202,10 +248,8 @@ export default class HomeView extends Component {
 			>
 				<Button
 					style={{ marginBottom: 10 }}
-					onPress={() => {
-						this.submitToGoogle()
-					}}
-					title="Analyze!"
+					onPress={this.saveRecyclableImage}
+					title="RECYCLE ITEM"
 				/>
 
 				<View
@@ -219,45 +263,10 @@ export default class HomeView extends Component {
 						overflow: 'hidden'
 					}}
 				>
-					<Image source={{ uri: image }} style={{ width: 250, height: 250 }} />
+					<Image source={{ uri: image.uri }} style={{ width: 250, height: 250 }} />
 				</View>
-				<Text
-					onPress={this._copyToClipboard}
-					onLongPress={this._share}
-					style={{ paddingVertical: 10, paddingHorizontal: 10 }}
-				/>
-
-				{/* <Text>Raw JSON:</Text> */}
-
-				{/* {googleResponse && (
-					<Text
-						onPress={this._copyToClipboard}
-						onLongPress={this._share}
-						style={{ paddingVertical: 10, paddingHorizontal: 10 }}
-					>
-						{JSON.stringify(googleResponse.responses)}
-					</Text>
-				)} */}
 			</View>
 		);
-	};
-	_keyExtractor = (item, index) => item.id;
-
-	_renderItem = item => {
-		<Text>response: {JSON.stringify(item)}</Text>;
-	};
-
-	_share = () => {
-		Share.share({
-			message: JSON.stringify(this.state.googleResponse.responses),
-			title: 'Check it out',
-			url: this.state.image
-		});
-	};
-
-	_copyToClipboard = () => {
-		Clipboard.setString(this.state.image);
-		alert('Copied to clipboard');
 	};
 
 	_takePhoto = async () => {
@@ -266,6 +275,7 @@ export default class HomeView extends Component {
 			aspect: [4, 3]
 		});
 
+		this.setState({ dialogVisible: false })
 		this._handleImagePicked(pickerResult);
 	};
 
@@ -275,48 +285,50 @@ export default class HomeView extends Component {
 			aspect: [4, 3]
 		});
 
+		this.setState({ dialogVisible: false })
 		this._handleImagePicked(pickerResult);
 	};
 
-	_handleImagePicked = async pickerResult => {
+	_handleImagePicked = async (pickerResult) => {
 		try {
 			this.setState({ uploading: true });
 
+			// If a photo was selected, call ML API and return us the contents of the image
 			if (!pickerResult.cancelled) {
-				uploadUrl = await uploadImageAsync(pickerResult.uri);
-				this.setState({ image: uploadUrl });
+				let MLResponse = await this.submitToGoogle(pickerResult);
+				let recycleItem = this.getRecylableItem(MLResponse)
+				if (recycleItem !== null) {
+					this.setState({ displayConfirmButton: true, recyclePoints: recycleItem.points, image: pickerResult });
+				}
+				else {
+					Alert.alert("Invalid Picture", "The picture you selected does not contain a recyclable that we recognize. Please try again.");
+					this.setState({ displayConfirmButton: false });
+				}
+				//uploadUrl = await uploadImageAsync(pickerResult.uri);
+				//this.setState({ image: uploadUrl });
 			}
 		} catch (e) {
 			console.log(e);
-			alert('Upload failed, sorry :(');
+			alert('Upload failed.');
 		} finally {
 			this.setState({ uploading: false });
 		}
 	};
 
-	submitToGoogle = async () => {
+	submitToGoogle = async (image) => {
 		try {
 			this.setState({ uploading: true });
-			let { image } = this.state;
+			let encodedContent = await localImageToBase64Encode(image.uri);
 			let body = JSON.stringify({
 				requests: [
 					{
 						features: [
 							{ type: 'LABEL_DETECTION', maxResults: 10 },
-							{ type: 'LANDMARK_DETECTION', maxResults: 5 },
-							{ type: 'FACE_DETECTION', maxResults: 5 },
-							{ type: 'LOGO_DETECTION', maxResults: 5 },
-							{ type: 'TEXT_DETECTION', maxResults: 5 },
-							{ type: 'DOCUMENT_TEXT_DETECTION', maxResults: 5 },
-							{ type: 'SAFE_SEARCH_DETECTION', maxResults: 5 },
-							{ type: 'IMAGE_PROPERTIES', maxResults: 5 },
-							{ type: 'CROP_HINTS', maxResults: 5 },
-							{ type: 'WEB_DETECTION', maxResults: 5 }
+							{ type: 'TEXT_DETECTION', maxResults: 10 },
+							{ type: 'OBJECT_LOCALIZATION', maxResults: 10 },
 						],
 						image: {
-							source: {
-								imageUri: image
-							}
+							content: encodedContent,
 						}
 					}
 				]
@@ -334,16 +346,123 @@ export default class HomeView extends Component {
 					body: body
 				}
 			);
-			let responseJson = await response.json();
-			// alert(JSON.stringify(responseJson));
-			this.setState({
-				googleResponse: responseJson,
-				uploading: false
-			});
+			return await response.json();
+			// this.setState({
+			// 	googleResponse: responseJson,
+			// 	uploading: false
+			// });
+			//var newPoint = this.props.points + this.state.point;
+			//this.props.getPoints(newPoint)
+			//this.setState({isAdded: !this.state.isAdded})
 		} catch (error) {
+			alert("ML API failed to return a response. Please try again.");
 			console.log(error);
 		}
 	};
+
+	saveRecyclableImage = async () => {
+		this.setState({ uploading: true });
+		let storageURI = await uploadImageAsync(this.state.image.uri);
+		let addedDoc = await this.saveImageToDB(storageURI);
+		if (addedDoc) {
+			this.props.getPoints(this.props.points + this.state.recyclePoints);
+		}
+		this.setState({ totalEstimatedPoints: this.state.totalEstimatedPoints + this.state.recyclePoints, displayConfirmButton: false });
+	}
+
+	saveImageToDB = async (uri) => {
+		const user = firebase.auth().currentUser;
+
+		return await db.collection("recycled-items").add({
+			createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+			collected: false,
+			estimatedPoints: this.state.recyclePoints,
+			imageUri: uri,
+			userId: user.uid,
+		})
+			.then((ref) => {
+				Alert.alert("Success!", "Recyclable successfully added to your recycling container.");
+				console.log("Document successfully written!");
+			})
+			.catch((error) => {
+				console.error("Error writing document: ", error);
+			})
+			.finally(() => {
+				this.setState({ uploading: false });
+			});
+	}
+
+	// This is so hacky and bad, but I'm tired and just want it to work
+	// TODO: REFACTOR THIS UGLY MESS
+	getRecylableItem(jsonResponse) {
+		let hasMetal = false;
+		let hasPlastic = false;
+		let hasCheatCode = false;
+		const cheatCode = "RECYCLE";
+
+		let texts = jsonResponse.responses[0].textAnnotations;
+		texts && texts.forEach((text) => {
+			//console.log(text.description);
+			if (text.description.toUpperCase().includes(cheatCode)) {
+				hasCheatCode = true;
+			}
+			else if (text.description.toUpperCase().includes('METAL')) {
+				hasMetal = true;
+			}
+			else if (text.description.toUpperCase().includes('PLASTIC')  || text.description.toUpperCase().includes('PACKAGE')) {
+				hasPlastic = true;
+			}
+		});
+
+		let labels = jsonResponse.responses[0].labelAnnotations;
+		labels && labels.forEach((label) => {
+			//console.log(label.description);
+			if (label.description.toUpperCase().includes(cheatCode)) {
+				hasCheatCode = true;
+			}
+			else if (label.description.toUpperCase().includes('METAL')) {
+				hasMetal = true;
+			}
+			else if (label.description.toUpperCase().includes('PLASTIC') || label.description.toUpperCase().includes('PACKAGE')) {
+				hasPlastic = true;
+			}
+		})
+
+		let localizedObjects = jsonResponse.responses[0].localizedObjectAnnotations;
+		localizedObjects && localizedObjects.forEach((localizedObject) => {
+			//console.log(localizedObject.name);
+			if (localizedObject.name.toUpperCase().includes(cheatCode)) {
+				asCheatCode = true;
+			}
+			else if (localizedObject.name.toUpperCase().includes('METAL')) {
+				hasMetal = true;
+			}
+			else if (localizedObject.name.toUpperCase().includes('PLASTIC') || localizedObject.name.toUpperCase().includes('PACKAGE')) {
+				hasPlastic = true;
+			}
+		})
+
+		if (hasCheatCode) {
+			return {
+				points: 750,
+			}
+		}
+		else if (hasMetal) {
+			return {
+				points: this.METAL_POINTS,
+			}
+		}
+		else if (hasPlastic) {
+			return {
+				points: this.PLASTIC_POINTS,
+			}
+		}
+		else return null;
+	}
+}
+
+async function localImageToBase64Encode(uri) {
+	return await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
 }
 
 async function uploadImageAsync(uri) {
@@ -366,31 +485,9 @@ async function uploadImageAsync(uri) {
 		.ref()
 		.child(uuid.v4());
 
-
 	const snapshot = await ref.put(blob);
 
 	blob.close();
 
-	const picURI = await ref.getDownloadURL()
-	console.log(picURI)
-	const user = firebase.auth().currentUser;
-
-	db.collection("recycled-items").doc().set({
-		createdAt: Date.now(),
-		Collected: false,
-		estimatedPoints: "50",
-		imageUri: picURI,
-		userId: user.uid
-	})
-		.then(function () {
-			console.log("Document successfully written!");
-		})
-		.catch(function (error) {
-			console.error("Error writing document: ", error);
-		});
-
-
-	return await snapshot.ref.getDownloadURL()
-
-
+	return await ref.getDownloadURL();
 }

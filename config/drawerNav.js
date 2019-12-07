@@ -18,6 +18,9 @@ import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/co
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
+import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
+import PaymentView from "../navigations/PaymentScreen/PaymentView";
+import RecycledItemsHistoryView from "../navigations/RecycledItemsHistoryScreen/RecycledItemsHistoryView";
 
 
 class DrawerComponent extends Component {
@@ -34,7 +37,7 @@ class DrawerComponent extends Component {
             user.get().then(u => {
               if (u.exists) {
                  this.setState({user: u.data()});
-                 console.log(this.state);
+                 //console.log(this.state);
                 }
             });
         }
@@ -43,7 +46,7 @@ class DrawerComponent extends Component {
         }
     }
     filterMenuByUserRole = (items) => {
-        console.log('>>> filtering drawerNav');
+        //console.log('>>> filtering drawerNav');
         return items.filter(i=>
             i.params && i.params.role && 
             (i.params.role.includes("*") ||
@@ -87,8 +90,8 @@ class DrawerComponent extends Component {
                         source={{ uri: firebase.auth().currentUser && firebase.auth().currentUser.providerData[0].photoURL ? firebase.auth().currentUser.providerData[0].photoURL : 'https://us.123rf.com/450wm/gmast3r/gmast3r1909/gmast3r190900039/129397458-man-wearing-protective-face-mask-with-human-putting-rubbish-into-trash-bin-environment-protection-re.jpg?ver=6' }}
                         style={styles.profileImg}
                     />
-                    <Text style={styles.nameTxt}>{firebase.auth().currentUser && firebase.auth().currentUser.displayName}</Text>
-                    <Text style={styles.emailTxt}>{firebase.auth().currentUser && firebase.auth().currentUser.providerData[0].email}</Text>
+                    <Text style={styles.nameTxt}>{this.state.user.displayName}</Text>
+                    <Text style={styles.emailTxt}>{this.state.user.email}</Text>
                 </View>
                 <View style={styles.safeView}>
                     <View style={styles.DrawerComponentScrollView}>
@@ -102,6 +105,22 @@ class DrawerComponent extends Component {
     }
 }
 
+const CollectorPickupStack = createStackNavigator({
+    CollectorPickup: CollectorPickupView,
+    CollectorMap: CollectorMapView,
+},
+    {
+        headerMode: "none", //Hide the back button react navigation
+    })
+
+const ContainerPurchaseStack = createStackNavigator({
+    PurchaseContainer: UserContainerSelectionView,
+    Payment: PaymentView,
+},
+{
+    headerMode: "none", //Hide the back button react navigation
+});
+
 const DrawerNavigator = createDrawerNavigator(
     {
         Home: {
@@ -111,24 +130,32 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params: {role: ['member', 'collector']}
         },
-        EditProfile: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Edit Profile",
-                drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        // EditProfile: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Edit Profile",
+        //         drawerIcon: <Icon type="material-community" name="account-box-multiple" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             
-            },
-            params: {role: ['member', 'collector']}
-        },
+        //     },
+        //     params: {role: ['member', 'collector']}
+        // },
         Pickup: {
-            screen: CollectorPickupView, navigationOptions: {
-                drawerLabel: "Confirmed Pickup",
+            screen: CollectorPickupStack, navigationOptions: {
+                drawerLabel: "Track Pickups",
                 drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params: {role: ['collector']}
         },
+        
+        CollectorPickupHistory: {
+            screen: CollectorPickupHistory, navigationOptions: {
+                drawerLabel: "Completed Pickups",
+                drawerIcon: <Icon type="material-community" name="history" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params: {role: ['collector']}
+        },
         PurchaseContainer: {
-            screen: UserContainerSelectionView, navigationOptions: {
-                drawerLabel: "Purchase Container",
+            screen: ContainerPurchaseStack, navigationOptions: {
+                drawerLabel: "Purchase Container(s)",
                 drawerIcon: <Icon type="material-community" name="shopping" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params:  {role: ['member', 'collector']}
@@ -147,6 +174,13 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params:  {role: ['member', 'collector']}
         },
+        // Initial: {
+        //     screen: InitialView, navigationOptions: {
+        //         drawerLabel: "Initial Test",
+        //         drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params:  {role: ['member', 'collector']}
+        // },
         // Notifications: {
         //     screen: HomeView, navigationOptions: {
         //         drawerLabel: "Notifications",
@@ -161,13 +195,13 @@ const DrawerNavigator = createDrawerNavigator(
         //     },
         //     params: {role: ['member', 'collector']}
         // },
-        Settings: {
-            screen: HomeView, navigationOptions: {
-                drawerLabel: "Settings",
-                drawerIcon: <Icon type="font-awesome" name="cog" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params: {role: ['member', 'collector']}
-        },
+        // Settings: {
+        //     screen: HomeView, navigationOptions: {
+        //         drawerLabel: "Settings",
+        //         drawerIcon: <Icon type="font-awesome" name="cog" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+        //     },
+        //     params: {role: ['member', 'collector']}
+        // },
         // Help: {
         //     screen: HomeView, navigationOptions: {
         //         drawerLabel: "Help",
@@ -189,6 +223,8 @@ const DrawerNavigator = createDrawerNavigator(
         initialRouteName: "Home",
     }
 );
+
+
 
 const AuthStack = createStackNavigator({
     SignIn: {

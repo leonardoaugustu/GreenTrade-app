@@ -196,5 +196,8 @@ export default StyleSheet.create({
         color: '#1aa7ff',
          fontSize: wp('5%'),
          marginVertical: wp('2.2%')
-     }
+     },
+     cardContainer: {
+        backgroundColor: '#87D5FA',
+    },
 });

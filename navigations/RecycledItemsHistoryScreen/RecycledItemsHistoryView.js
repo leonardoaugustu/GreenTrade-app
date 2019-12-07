@@ -10,12 +10,11 @@ import firebase from '../../config/firebase'
 import { Dropdown } from 'react-native-material-dropdown';
 import moment from 'moment';
 
-export default class CollectorPickupHistoryView extends Component {
+export default class RecycledItemsHistoryView extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      collectorHistoryData: [],
+      recyclables: [],
       isLoading: true,
     }
 
@@ -31,19 +30,22 @@ export default class CollectorPickupHistoryView extends Component {
       var db = firebase.firestore();
 
       this.setState({ isLoading: true });
-      db.collection("completed-pickups").doc(firebase.auth().currentUser.uid).collection("pickups").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          var historyInfo =
-          {
-            imageUri: doc.data().imageUri,
-            fulfilledTime: doc.data().fulfilledTime,
-            address: doc.data().address,
-            memberNotes: doc.data().memberNotes,
-          };
-          newData.push(historyInfo);
-          this.setState({ collectorHistoryData: newData });
+      db.collection("recycled-items")
+        .where('userId', '==', firebase.auth().currentUser.uid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            var historyInfo =
+            {
+              collected: doc.data().collected,
+              createdAt: doc.data().createdAt,
+              estimatedPoints: doc.data().estimatedPoints,
+              imageUri: doc.data().imageUri,
+            };
+            newData.push(historyInfo);
+          });
+          this.setState({ recyclables: newData });
         });
-      });
     }
     catch (error) {
       console.log(error);
@@ -76,16 +78,16 @@ export default class CollectorPickupHistoryView extends Component {
       >
       <ListItem
         containerStyle={styles.cardContainer}
-        title={`${item.address.street}`}
-        subtitle={`Notes: ${item.memberNotes}`}
-        rightSubtitle={moment(item.fulfilledTime.toDate()).format('MMM Do, h:mm a')}
+        title={`Estimated Points: ${item.estimatedPoints}`}
+        subtitle={`Collected: ${item.collected ? 'Yes' : 'No'}`}
+        rightSubtitle={moment(item.createdAt.toDate()).format('MMM Do, h:mm a')}
       />
     </Card>
   );
 
   renderEmptyList = () => {
     return (
-      <Text style={styles.displayMessage}>No Completed Pickups Found.</Text>
+      <Text style={styles.displayMessage}>No Recycled Items Found.</Text>
     );
   }
 
@@ -105,13 +107,12 @@ export default class CollectorPickupHistoryView extends Component {
               />
             </View>
             <View style={styles.titleWrapper}>
-              <Text style={styles.textTitle}>Completed Pickups</Text>
-
+              <Text style={styles.textTitle}>Recyclables</Text>
             </View>
           </View>
         </View>
         <FlatList
-          data={this.state.collectorHistoryData}
+          data={this.state.recyclables.sort((b,a) => (a.createdAt.toDate() > b.createdAt.toDate()) - (a.createdAt.toDate() < b.createdAt.toDate()))}
           ItemSeparatorComponent={this.renderSeparator}
           renderItem={this.renderItem}
           keyExtractor={item => item.imageUri}

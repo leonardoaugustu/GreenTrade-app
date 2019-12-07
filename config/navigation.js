@@ -6,20 +6,21 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import HomeView from "../navigations/HomeScreen/Container";
 import RewardView from "../navigations/RewardScreen/RewardView";
 import HistoryView from "../navigations/HistoryScreen/HistoryView";
-import TradePointlView from "../navigations/TradePointScreen/TradePointView";
+import TradePointView from "../navigations/TradePointScreen/TradePointView";
 import CollectorMapView from "../navigations/CollectMapScreen/container";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import CollectorView from "../navigations/CollectorML/CollectorView";
+import RecycledItemsHistoryView from "../navigations/RecycledItemsHistoryScreen/RecycledItemsHistoryView";
 
 const Tabs = createBottomTabNavigator(
   {
     History: {
-        screen: HistoryView
+        screen: RecycledItemsHistoryView
     },
     Home: {
-      screen: HomeView 
+        screen: HomeView 
     },
     Reward: {
         screen: RewardView
@@ -59,29 +60,18 @@ const Tabs = createBottomTabNavigator(
   }
 );
 
+
 const StackNavigator = createStackNavigator({
+  
   Home: {
     screen: Tabs
   },
   Reward: {
     screen: RewardView
-
 },
   Trade: {
-    screen: TradePointlView
+    screen: TradePointView
   },
-  CollectorMap: {
-    screen: CollectorMapView
-  },
-  CollectorPickup: {
-    screen: CollectorPickupView
-  },
-  Payment: {
-    screen: PaymentView
-  },
-  CollectorML:{
-    screen: CollectorView
-  }
 },
 {
   headerMode: "none", //Hide the back button react navigation

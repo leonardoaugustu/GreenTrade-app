@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default {
@@ -11,7 +11,8 @@ export default {
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   logoText: {
     fontSize: 25,

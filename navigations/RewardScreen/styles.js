@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default StyleSheet.create({
@@ -45,6 +45,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
 },
 headerContainer: {
     flexDirection: "row",
@@ -123,7 +124,7 @@ sceneContainer: {
 },
 headerImg: {
     width: wp('100%'),
-    height: wp('47.5%')
+    height: wp('45.8%')
 },
 topContainer: {
     height: wp('30%')
@@ -131,8 +132,16 @@ topContainer: {
 pointText: {
     fontSize: wp('6.5%'),
     color: '#FBDFAA',
+
+    
+},
+pointContainer: {
+    // borderWidth: 1,
+    // borderColor: 'black',
+    width: wp('30%'),
+    height: wp('8%'),
     marginTop: wp('-7%'),
-    marginLeft: wp('50%')
+    marginLeft: wp('50%'),
 },
 starIcon: {
     fontSize: wp('6.5%'),
@@ -171,20 +180,17 @@ img: {
     height: wp('20%')
 },
 moreTxt: {
-    marginTop: wp('5%'),
     marginLeft: wp('3%'),
     color: '#A5A2A2',
     fontSize: wp('4%')
 },
 iconGo: {
-    marginTop: wp('-5%'),
     marginLeft: wp('3%')
 },
 listPoint: {
     fontSize: wp('5%'),
     color: '#FBDFAA',
-    marginTop: wp('-6%'),
-    marginLeft: wp('-9%'),
+    
     flex: 1,
 },
 dateTxt: {
@@ -200,5 +206,20 @@ iconAfterDate: {
 bottom: {
     height: hp('10%'),
     backgroundColor: '#F7F4F3'
+},
+costWrapper: {
+    width: wp('12%'),
+    // borderColor: 'black',
+    // borderWidth: 1
+},
+contentWrapper: {
+    flexDirection: 'row',
+    // borderWidth: 1,
+    // borderColor: 'black',
+    marginTop: wp('2%'),
+    marginLeft: wp('-10%'),
+},
+body: {
+    flexDirection: 'column'
 }
 })

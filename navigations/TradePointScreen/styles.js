@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default StyleSheet.create({
@@ -44,6 +44,7 @@ export default StyleSheet.create({
     },
     container: {
         flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     },
     headerContainer: {
         flexDirection: "row",
@@ -81,6 +82,7 @@ export default StyleSheet.create({
         width: wp('80%'),
         alignSelf: "center",
         padding: wp("3%"),
+        marginTop: wp('50%')
     },
     img: {
         alignSelf: "center",
@@ -93,17 +95,18 @@ export default StyleSheet.create({
 
     point: {
         shadowColor:"black",
-        shadowOffset:{width:5, height:7},
+        shadowOffset:{width:15, height:7},
         bottom: hp('25%'),
         height: hp('10'),
         width: wp('20%'),
         left: wp("10%"),
         alignSelf: "flex-start",
         padding: wp("3%"),
+        marginTop: wp('5%')
     },
     userPoint: {
         shadowColor:"black",
-        shadowOffset:{width:5, height:7},
+        shadowOffset:{width:15, height:7},
         bottom: hp('25%'),
         height: hp('10'),
         width: wp('100%'),
@@ -113,11 +116,24 @@ export default StyleSheet.create({
     },
     usePoint: {
         shadowColor:"black",
-        shadowOffset:{width:5, height:7},
+        shadowOffset:{width:15, height:7},
         bottom: hp('30%'),
         height: hp('20%'),
         width: wp('80%'),
         alignSelf: "center",
         padding: wp("3%"),
+    },
+    welcomeWrapper: {
+        // borderWidth: 1,
+        // borderColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: wp('100%'),
+        height: wp('10%'),
+        marginTop: wp('4%')
+    },
+    welcomeTxt: {
+        fontSize: wp('5%'),
+        color: 'rgba(96,100,109, 1)',
     },
 })

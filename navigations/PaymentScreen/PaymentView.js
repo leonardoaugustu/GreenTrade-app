@@ -10,7 +10,8 @@ import { connect } from 'react-redux';
 import {purchaseTotal} from '../../actions/Payment/actionCreators';
 import {containersToPurchase} from '../../actions/Payment/actionCreators';
 import 'firebase/firestore';
-import firebase from '../../config/firebase'
+import firebase from '../../config/firebase';
+import { NavigationActions } from 'react-navigation';
 
 
 const options = [
@@ -37,6 +38,7 @@ class PaymentView extends Component {
     console.log(this.state.creditCard);
     if (this.state.creditCard.valid) {
       this.showConfirmmDialog();
+      this.props.purchaseTotal(0)
     } else {
       this.showValidationErrors();
     }
@@ -91,13 +93,13 @@ class PaymentView extends Component {
     var db = firebase.firestore();
     db.collection("users")
       .doc(firebase.auth().currentUser.uid)
-      .collection('containers').doc(container.Size)
-      .set(
+      .collection('containers')
+      .add(
         {
-          amount: firebase.firestore.FieldValue.increment(container.Quantity),
-          orderedDate: Date.now()
-        },
-        { merge: true }
+          amount: container.Quantity,
+          size: container.Size,
+          orderedDate: firebase.firestore.Timestamp.now()
+        }
       )
       .then(() => {
         console.info('>>> container added to user');
@@ -123,16 +125,27 @@ class PaymentView extends Component {
   //   return (number).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   // }
 
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
           <View style={styles.header}>
-            <View style={styles.iconWrapper}>
+            {/* <View style={styles.iconWrapper}>
               <Icon
                 onPress={() => this.props.navigation.openDrawer()}
                 type="material"
                 name="menu"
+                size={30}
+                color="#fff"
+                containerStyle={styles.drawerIcon}
+              />
+            </View> */}
+            <View style={styles.iconWrapper}>
+              <Icon
+                onPress={() => this.props.navigation.goBack()}
+                type="material"
+                name="keyboard-arrow-left"
                 size={30}
                 color="#fff"
                 containerStyle={styles.drawerIcon}
@@ -217,8 +230,10 @@ class PaymentView extends Component {
               Your payment has been successfully processed.
           </Text>
           <Button
+          
             style={styles.dialogButton}
             onPress={() => {
+              this.props.navigation.pop();
               this.props.navigation.navigate('Containers');
               this.setState({successDialogVisible: false});
             }}

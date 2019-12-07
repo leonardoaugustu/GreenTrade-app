@@ -23,7 +23,6 @@ import firebase from '../../config/firebase';
 const db = firebase.firestore();
 
 
-
 export default class CollectorView extends Component {
 	constructor(props) {
 		super(props);
@@ -38,31 +37,10 @@ export default class CollectorView extends Component {
 		points: 0,
 		rewardPoint: 0,
 		analyzed: false,
-		// collected: false,
-		// createdAt: date,
-		// estimatedPoints: 50,
-		// imageUri:"",
-
     };
     
 	async componentDidMount() {
-		await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		await Permissions.askAsync(Permissions.CAMERA);
-
-
-	}
-
-	async getInitialPoints() {
-
-
-		firebase.database().ref('Users/').once('value', function (snapshot) {
-			console.log(snapshot.val())
-		});
-
-		// db.collection('users').doc(doc.data().UserId).get().then((userDoc)=> {
-		// 	this.props.getPoints(userDoc.data().points)
-		// })
-
 	}
 
 	render() {
@@ -189,6 +167,14 @@ export default class CollectorView extends Component {
 	};
 	_maybeRenderImage = () => {
 		let { image, googleResponse } = this.state;
+		const { navigation } = this.props;
+
+		const name = navigation.state.params.Name;
+		const address = navigation.state.params.Address;
+		const date = navigation.state.params.scheduledtime;
+		const userId = navigation.state.params.UserId;
+		console.log("Get current user data")
+
 		if (!image) {
 			return;
 		}
@@ -206,6 +192,7 @@ export default class CollectorView extends Component {
 					style={{ marginBottom: 10 }}
 					onPress={() => {
 						this.submitToGoogle()
+						this.saveToDB(name, address, date, userId)
 					}}
 					title="Analyze!"
 				/>
@@ -248,6 +235,13 @@ export default class CollectorView extends Component {
 	_renderItem = item => {
 		<Text>response: {JSON.stringify(item)}</Text>;
 	};
+
+	saveToDB = (name, address, date, userId) =>{
+		console.log(name)
+		console.log(address)
+		console.log(date)
+		console.log(userId)
+	}
 
 	_share = () => {
 		Share.share({
