@@ -68,7 +68,7 @@ class RewardList extends Component {
        onPress={
           () => this.toggleReward(item)} >
               <Left>
-              <Image resizeMethod="resize" style={styles.img} source={{uri: item.Img_url}}/>
+              <Image resizeMethod="resize" resizeMode='contain' style={styles.img} source={{uri: item.Img_url}}/>
               </Left>
               <Body style={styles.body}>
                 <Text style={styles.rewardNameTxt}>{item.Name}</Text>
