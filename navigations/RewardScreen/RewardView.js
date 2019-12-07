@@ -31,7 +31,7 @@ class RewardView extends React.Component {
 
 componentDidMount() {
   const { navigation } = this.props;
-  // refresh screen after purchasing new containers
+  // refresh screen on focus
   navigation.addListener('willFocus', () => {
     this.fetchData();
   });
@@ -44,7 +44,7 @@ fetchData = () => {
             user.get().then(u => {
               if (u.exists) {
                  this.setState({user: u.data()});
-                 console.log(this.state);
+                 //console.log(this.state);
                 }
             });	
   }
@@ -59,7 +59,7 @@ _handleIndexChange = index => {
     this.props.sortRewards(index)
   }
     
-    console.log(index)
+    //console.log(index)
 }
 
 _renderTabBar = props => {
@@ -92,7 +92,7 @@ _renderTabBar = props => {
      <Image resizeMethod="resize" source={{uri:'https://cdn.dribbble.com/users/1281708/screenshots/4676637/____dribbble.gif'}} style={styles.headerImg}/>
           <TabBar
           {...props}
-          indicatorStyle={styles.indocator}
+         indicatorStyle={styles.indocator}
          style={styles.tabBar}
          tabStyle={styles.tab}
          labelStyle={[styles.tabText]}
