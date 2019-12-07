@@ -47,6 +47,10 @@ export default StyleSheet.create({
     flexDirection: "column",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
 },
+mapContainer: {
+    flex: 1,
+    flexDirection: "column",
+},
 headerContainer: {
     flexDirection: "row",
     width: wp('100%'),
