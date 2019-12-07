@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import HistoryView from './HistoryView';
 import SafeAreaView from "react-native-safe-area-view";
-import { Text, View} from "react-native";
+import { Text, View } from "react-native";
 
 let wrapped;
 
