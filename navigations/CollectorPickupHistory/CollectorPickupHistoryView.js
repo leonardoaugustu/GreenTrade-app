@@ -95,14 +95,15 @@ export default class CollectorPickupHistoryView extends Component {
         <View style={styles.headerContainer}>
           <View style={styles.header}>
             <View style={styles.iconWrapper}>
+              <TouchableWithoutFeedback onPress={() => this.props.navigation.openDrawer()}>
               <Icon
-                onPress={() => this.props.navigation.openDrawer()}
                 type="material"
                 name="menu"
                 size={30}
                 color="#fff"
                 containerStyle={styles.drawerIcon}
               />
+              </TouchableWithoutFeedback>
             </View>
             <View style={styles.titleWrapper}>
               <Text style={styles.textTitle}>Completed Pickups</Text>

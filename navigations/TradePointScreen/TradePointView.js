@@ -9,7 +9,7 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 export default class TradePointlView extends Component {
 
   constructor(props) {
-    super(props); {
+    super(props); 
       this.state = {
         user: {},
         rewards_code: {}
