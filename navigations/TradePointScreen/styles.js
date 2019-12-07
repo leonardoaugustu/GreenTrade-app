@@ -130,7 +130,8 @@ export default StyleSheet.create({
         alignItems: 'center',
         width: wp('100%'),
         height: wp('10%'),
-        marginTop: wp('4%')
+        marginTop: wp('4%'),
+        marginBottom: wp('10%'),
     },
     welcomeTxt: {
         fontSize: wp('5%'),
