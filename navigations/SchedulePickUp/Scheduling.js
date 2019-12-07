@@ -35,7 +35,7 @@ export default class Scheduling extends Component {
   //for keyboard dismissing
   componentDidMount() {
     const { navigation } = this.props;
-    // refresh screen after purchasing new containers
+    // refresh screen on focus
     navigation.addListener('willFocus', () => {
       this.setState({ chosenDate: '', dateTimestamp: null, additionalInfo: ''});
     });
