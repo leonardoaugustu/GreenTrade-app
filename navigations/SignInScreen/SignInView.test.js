@@ -1,7 +1,8 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import SignInView from './SignInView';
 import { Text, View, KeyboardAvoidingView } from 'react-native';
+import { Button } from 'react-native-elements';
 
 let wrapped;
 
@@ -19,6 +20,10 @@ it('has 6 Views', () => {
 
 it('has 2 Texts', () => {
   expect(wrapped.find(Text).length).toEqual(2);
+});
+
+it('has 2 Buttons', () => {
+  expect(wrapped.find(Button).length).toEqual(2);
 });
 
 // Check SignInView includes Sign In With Google text
