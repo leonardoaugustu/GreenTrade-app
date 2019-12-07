@@ -157,7 +157,7 @@ export default class TradePointlView extends Component {
         </View>
 
         <View style={styles.rewardInfo}>
-          <Image resizeMethod="resize" style={styles.img} source={{ uri: image }} />
+          <Image borderRadius={5} resizeMethod="resize" resizeMode='contain' style={styles.img} source={{ uri: image }} />
         </View>
 
         <View style={styles.point}>
