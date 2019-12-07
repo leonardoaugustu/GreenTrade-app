@@ -20,27 +20,30 @@ class RewardHistory extends Component {
             data: [],
             modalVisible: false,
             selectedReward: {},
-            isLoading: true,
+            isLoading: false,
         };
     }
 
-    componentDidMount(){
+    async componentDidMount() {
         const { navigation } = this.props;
-        // refresh screen after purchasing new containers
+        //refresh screen on focus
         navigation.addListener('willFocus', async () => {
-          // Load the list
+            // Load the list
             await this.loadRewards();
         });
+        // TODO: FIX BUG
+        // For some reason the tab views does not actually trigger navigation's willFocus
+        await this.loadRewards();
     }
 
-    loadRewards = async () =>{
+    loadRewards = async () => {
         this.setState({ isLoading: true });
-        let querySnapshot = await db.collection(`users`).doc(firebase.auth().currentUser.uid).collection(`codes`).get(), data = [];
+        let querySnapshot = await db.collection(`users`).doc(firebase.auth().currentUser.uid).collection(`codes`).get(), codes = [];
 
         querySnapshot.forEach(docSnap => {
-            data.push(docSnap.data());
+            codes.push(docSnap.data());
         });
-        this.setState({ data, isLoading: false });
+        this.setState({ data: codes, isLoading: false });
     }
 
     renderStaticReward = ({item}) => (
@@ -63,16 +66,15 @@ class RewardHistory extends Component {
     render() {
         return (
             <View style={styles.scene}>
-                <ScrollView>
-                    <FlatList
-                        data={this.state.data}
-                        renderItem={this.renderStaticReward}
-                        keyExtractor={item => item.code}
-                        style={styles.listContainer}
-                        refreshing={this.state.isLoading}
-                        onRefresh={this.loadRewards}
-                    />
-                </ScrollView>
+                <FlatList
+                    //(b,a) => (a.orderedDate.toDate() > b.orderedDate.toDate()) - (a.orderedDate.toDate() < b.orderedDate.toDate() ))
+                    data={this.state.data.sort()}
+                    renderItem={this.renderStaticReward}
+                    keyExtractor={item => item.code}
+                    style={styles.listContainer}
+                    refreshing={this.state.isLoading}
+                    onRefresh={this.loadRewards}
+                />
                 <Modal
                     animationType="slide"
                     visible={this.state.modalVisible}
