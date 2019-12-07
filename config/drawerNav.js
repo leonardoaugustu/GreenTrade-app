@@ -17,7 +17,6 @@ import SignUpView from "../navigations/SignUpScreen/SignUpView";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import CollectorPickupHistory from "../navigations/CollectorPickupHistory/CollectorPickupHistoryView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
-import InitialView from "../navigations/InitialHomeScreen/InitialView";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
 import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
@@ -165,6 +164,13 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params:  {role: ['member', 'collector']}
+        },
+        CollectorPickupHistory: {
+            screen: CollectorPickupHistory, navigationOptions: {
+                drawerLabel: "Collected Pickups",
+                drawerIcon: <Icon type="material-community" name="history" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params: {role: ['collector']}
         },
         // Initial: {
         //     screen: InitialView, navigationOptions: {

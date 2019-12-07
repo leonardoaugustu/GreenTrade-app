@@ -124,7 +124,7 @@ sceneContainer: {
 },
 headerImg: {
     width: wp('100%'),
-    height: wp('47.5%')
+    height: wp('45.8%')
 },
 topContainer: {
     height: wp('30%')
@@ -180,13 +180,11 @@ img: {
     height: wp('20%')
 },
 moreTxt: {
-    marginTop: wp('5%'),
     marginLeft: wp('3%'),
     color: '#A5A2A2',
     fontSize: wp('4%')
 },
 iconGo: {
-    marginTop: wp('-5%'),
     marginLeft: wp('3%')
 },
 listPoint: {
@@ -210,11 +208,18 @@ bottom: {
     backgroundColor: '#F7F4F3'
 },
 costWrapper: {
-    marginTop: wp('-6%'),
-    marginLeft: wp('-9%'),
     width: wp('12%'),
-    height: wp('5%'),
     // borderColor: 'black',
     // borderWidth: 1
+},
+contentWrapper: {
+    flexDirection: 'row',
+    // borderWidth: 1,
+    // borderColor: 'black',
+    marginTop: wp('2%'),
+    marginLeft: wp('-10%'),
+},
+body: {
+    flexDirection: 'column'
 }
 })
