@@ -140,7 +140,7 @@ export default class Scheduling extends Component {
 
       // write to client's pickups collection
       batch.set(clientPickUpsRef, {
-         scheduledTime: this.state.chosenDate, 
+         scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp), 
          additionalInfo: this.state.additionalInfo, 
          collectorName: this.state.collectorperson,
          collectorId: this.state.collectPersonId,
@@ -167,7 +167,7 @@ export default class Scheduling extends Component {
 
       await batch.commit();
     // var user = firebase.auth().currentUser;
-    // var userRef = db.collection(`users/${user.uid}/pickups`);
+    // var userRef = db.collection(`users/${user.unpmid}/pickups`);
 
     // var pickupRef= db.collection('pickups');
 

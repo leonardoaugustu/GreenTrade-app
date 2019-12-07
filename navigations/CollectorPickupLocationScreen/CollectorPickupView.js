@@ -23,23 +23,28 @@ export default class CollectorPickupView extends Component {
   }
 
   componentDidMount() {
-    const { navigation } = this.props;
-    navigation.addListener('willFocus', () => {
-      this.fetchData();
-    });
+    // const { navigation } = this.props;
+    // navigation.addListener('willFocus', () => {
+    //   if (this.state.requireDataUpdate) {
+    //     this.fetchData();
+    //   }
+    //   this.state.requireDataUpdate = true;
+    // });
+    this.fetchData();
   }
 
-  fetchData() {
+  fetchData = () => {
     try {
       //this.setState({ collectorData: []});
       let newData = [];
       var db = firebase.firestore();
 
+      this.setState({ isLoading: true });
       db.collection("pickups")
         .where("collectorId", "==", firebase.auth().currentUser.uid)
         .where("fulfilledTime", "==", null)
         .get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
+          querySnapshot.forEach((doc) => {
             var pickupInfo = {
               id: doc.id,
               memberName: doc.data().memberName,
@@ -50,9 +55,13 @@ export default class CollectorPickupView extends Component {
               memberProfileUri: doc.data().memberProfilePicURL,
             };
             newData.push(pickupInfo);
-            this.setState({ collectorData: newData, isLoading: false });
+            this.setState({ collectorData: newData });
+          });
+        }).catch((error) => {
+          console.log(error);
+        }).finally(() => {
+          this.setState({ isLoading: false });
         });
-      });
     }
     catch (error) {
       console.log(error);
@@ -182,23 +191,24 @@ export default class CollectorPickupView extends Component {
             </View>
           </View>
         </View>
-        {this.state.isLoading ? null :
-          (this.state.uploadingPhoto ?  
-            <View style={[styles.loadingContainer, styles.horizontal]}>
-              <ActivityIndicator size="large" color="#0000ff" />
-            </View> 
-           :
-            <FlatList
-              data={this.state.collectorData}
-              renderItem={this.renderItem}
-              keyExtractor={item => item.id}
-              ItemSeparatorComponent={() => <Separator />}
-              ListEmptyComponent={this.renderEmptyList}
-            >
-            </FlatList>
-          )
+        {this.state.uploadingPhoto ?
+          <View style={[styles.loadingContainer, styles.horizontal]}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+          :
+          <FlatList
+            data={this.state.collectorData}
+            renderItem={this.renderItem}
+            keyExtractor={item => item.id}
+            ItemSeparatorComponent={() => <Separator />}
+            ListEmptyComponent={this.renderEmptyList}
+            refreshing={this.state.isLoading}
+            onRefresh={this.fetchData}
+          >
+          </FlatList>
         }
       </SafeAreaView>
+      
     );
 
   }

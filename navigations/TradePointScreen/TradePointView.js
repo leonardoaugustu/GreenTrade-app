@@ -122,7 +122,6 @@ export default class TradePointlView extends Component {
     const currentUser = firebase.auth().currentUser && firebase.auth().currentUser.displayName;
     var userPoint = this.state.user.points;
     return (
-
         <SafeAreaView style={styles.container}>
           <View style={styles.headerContainer}>
             <View style={styles.header}>

@@ -6,7 +6,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import HomeView from "../navigations/HomeScreen/Container";
 import RewardView from "../navigations/RewardScreen/RewardView";
 import HistoryView from "../navigations/HistoryScreen/HistoryView";
-import TradePointlView from "../navigations/TradePointScreen/TradePointView";
+import TradePointView from "../navigations/TradePointScreen/TradePointView";
 import CollectorMapView from "../navigations/CollectMapScreen/container";
 import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/container";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
@@ -59,6 +59,7 @@ const Tabs = createBottomTabNavigator(
   }
 );
 
+
 const StackNavigator = createStackNavigator({
   
   Home: {
@@ -66,23 +67,10 @@ const StackNavigator = createStackNavigator({
   },
   Reward: {
     screen: RewardView
-
 },
   Trade: {
-    screen: TradePointlView
+    screen: TradePointView
   },
-  CollectorMap: {
-    screen: CollectorMapView
-  },
-  CollectorPickup: {
-    screen: CollectorPickupView
-  },
-  Payment: {
-    screen: PaymentView
-  },
-  CollectorML:{
-    screen: CollectorView
-  }
 },
 {
   headerMode: "none", //Hide the back button react navigation
