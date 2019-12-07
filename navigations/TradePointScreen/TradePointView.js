@@ -123,7 +123,6 @@ export default class TradePointlView extends Component {
     var userPoint = this.state.user.points;
     return (
 
-      <View style={styles.container}>
         <SafeAreaView style={styles.container}>
           <View style={styles.headerContainer}>
             <View style={styles.header}>
@@ -165,7 +164,6 @@ export default class TradePointlView extends Component {
             onPress={() => this.updatePoint(userPoint, point, this.state.user.displayName)} />
         </View>
         </SafeAreaView>
-      </View>
     );
   }
 }

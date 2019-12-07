@@ -57,7 +57,7 @@ class RewardHistory extends Component {
 
 function mapStateToProps (state){
     return{
-        // navigationState: state.sortCommunityReducer,
+        navigationState: state.sortRewardsReducer,
     }; 
   }
   

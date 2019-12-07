@@ -6,7 +6,6 @@ export default StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         backgroundColor: '#fff',
-        width: wp('68%')
     },
     safeView: {
         flexDirection: "column",

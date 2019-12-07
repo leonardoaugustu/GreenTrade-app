@@ -54,13 +54,18 @@ fetchData = () => {
 }
 
 _handleIndexChange = index => {
-     this.props.sortRewards(index)
+  if(!isNaN(index))
+  {
+    this.props.sortRewards(index)
+  }
+    
+    console.log(index)
 }
 
 _renderTabBar = props => {
 
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
       <View style={styles.headerContainer}>
          <View style={styles.header}>
          <View style={styles.iconWrapper}>
@@ -94,8 +99,7 @@ _renderTabBar = props => {
         />
         
         </View>
-        <ScrollView></ScrollView>
-            </SafeAreaView>
+            </View>
     );
   };
 
