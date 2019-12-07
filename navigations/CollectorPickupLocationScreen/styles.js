@@ -84,10 +84,8 @@ export default StyleSheet.create({
         marginLeft: wp('-6%')
     },
     displayMessage: {
-        marginTop: wp('2%'),
-        marginHorizontal: wp('9%'),
         justifyContent: "center",
         fontSize: wp('5%'),
-        color: "#3973ad"
+        color: "#3973ad",
     },
 })

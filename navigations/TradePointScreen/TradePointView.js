@@ -1,12 +1,13 @@
-import React, { Component } from "react";
-import { Text, View, Image, Alert } from "react-native";
-import { Icon, Button } from "react-native-elements";
+import React, {Component} from "react";
+import {Text, View, Image, Alert} from "react-native";
+import {Icon, Button} from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import firebase from '../../config/firebase'
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 export default class TradePointlView extends Component {
+
   constructor(props) {
     super(props); {
       this.state = {
@@ -37,84 +38,93 @@ export default class TradePointlView extends Component {
         console.log(error);
       }
     }
-  }
 
-  updatePoint(userPoint, point, currentUser) {
-    try {
-      var db = firebase.firestore();
-      const { navigation } = this.props;
-      // console.log(navigation.state.params.Doc_name);
-      var diff = userPoint - point;
-      const newData = [];
-      if (diff >= 0) {
-        db.collection("rewards").doc(navigation.state.params.Doc_name).collection('codes').get().then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            const data =
-            {
-              "Name": doc._document.key.path.segments[doc._document.key.path.segments.length - 1],
-              "used": doc.data().used
-            };
-            newData.push(data);
-          });
-        });
+    updatePoint(userPoint, point, currentUser) {
+        // This whole method is unbelievable messy, damn
+        try {
+            var db = firebase.firestore();
+            const {navigation} = this.props;
+            // console.log(navigation.state.params.Doc_name);
+            var diff = userPoint - point;
+            const newData = [];
+            if (diff >= 0) {
+                db.collection("rewards").doc(navigation.state.params.Doc_name).collection('codes').get().then(async (querySnapshot) => {
 
-        setTimeout(() => {
-          for (let i = 0; i < newData.length; i++) {
-            if (newData[i].used === false) {
-              let reward = db.collection("rewards").doc(navigation.state.params.Doc_name).collection('codes').doc(newData[i].Name)
-              reward.get().then(
-                reward.update({
-                  used: true
-                }))
+                    // I'm dying inside
+                    const coupon_doc = await db.collection("rewards").doc(navigation.state.params.Doc_name).get();
+                    const coupon = coupon_doc.data();
 
-              var user = db.collection("users").doc(firebase.auth().currentUser.uid);
-              user.get().then(
-                user.update({
-                  points: diff,
-                }))
+                    querySnapshot.forEach((doc) => {
+                        const data =
+                            {
+                                "Name": doc._document.key.path.segments[doc._document.key.path.segments.length - 1],
+                                "used": doc.data().used,
+                                "url": coupon.img_url,
+                                "brand": coupon.brand,
+                                "redeemDate": new Date().toDateString()
 
-              var codes = db.collection("users").doc(firebase.auth().currentUser.uid).collection('codes').doc(newData[i].Name);
-              codes.get().then(
-                codes.set({
-                  brand: navigation.state.params.Doc_name,
-                  code: newData[i].Name,
-                }))
-      
-
-              // update point
-              db.collection("users").where("displayName", "==", currentUser).get().then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                  var userpoint = {
-                    point: doc.data().points
-                  };
-                  this.setState({ currentUserPoint: userpoint });
+                            };
+                        newData.push(data);
+                    });
                 });
-              });
 
-              Alert.alert(
-                'Reward code is ' + newData[i].Name
-              )
-              { break; }
-            }
-            else {
-              if (newData.length === i + 1) {
+                setTimeout(() => {
+                    for (let i = 0; i < newData.length; i++) {
+                        if (newData[i].used === false) {
+                            let reward = db.collection("rewards").doc(navigation.state.params.Doc_name).collection('codes').doc(newData[i].Name)
+                            reward.get().then(
+                                reward.update({
+                                    used: true
+                                }))
+
+                            var user = db.collection("users").doc(firebase.auth().currentUser.uid);
+                            user.get().then(
+                                user.update({
+                                    points: diff,
+                                }))
+
+                            var codes = db.collection("users").doc(firebase.auth().currentUser.uid).collection('codes').doc(newData[i].Name);
+                            codes.get().then(
+                                codes.set({
+                                    code: newData[i].Name,
+                                    brand: newData[i].brand,
+                                    url: newData[i].url,
+                                    redeemDate: newData[i].redeemDate
+                                }))
+
+                            // update point
+                            db.collection("users").where("displayName", "==", currentUser).get().then((querySnapshot) => {
+                                querySnapshot.forEach((doc) => {
+                                    var userpoint = {
+                                        point: doc.data().points
+                                    };
+                                    this.setState({currentUserPoint: userpoint});
+                                });
+                            });
+
+                            Alert.alert(
+                                'Reward code is ' + newData[i].Name
+                            )
+                            {
+                                break;
+                            }
+                        } else {
+                            if (newData.length === i + 1) {
+                                Alert.alert(
+                                    'All rewards are sold out')
+                            }
+                        }
+                    }
+                }, 2000)
+            } else {
                 Alert.alert(
-                  'All rewards are sold out')
-              }
+                    'You need more points!'
+                )
             }
-          }
-        }, 2000)
-      }
-      else {
-        Alert.alert(
-          'You need more points!'
-        )
-      }
+        } catch (error) {
+            console.log(error);
+        }
     }
-    catch (error) {
-      console.log(error);
-    }
-  }
 
   render() {
     const { navigation } = this.props;

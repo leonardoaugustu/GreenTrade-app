@@ -82,9 +82,16 @@ export default class CollectorPickupView extends Component {
 
   processPickupPhoto = async (photo, item) => {
     this.setState({ uploadingPhoto: true });
-    let storageImageUri = await this.uploadImageAsync(photo.uri);
-    await this.savePickupToDB(storageImageUri, item);
-    this.setState({ uploadingPhoto: false });
+    try {
+      let storageImageUri = await this.uploadImageAsync(photo.uri);
+      await this.savePickupToDB(storageImageUri, item);
+    }
+    catch(error) {
+      console.log(error);
+    }
+    finally {
+      this.setState({ uploadingPhoto: false });
+    }
     this.fetchData();
   }
 
@@ -111,7 +118,17 @@ export default class CollectorPickupView extends Component {
       .doc(firebase.auth().currentUser.uid)
       .collection('pickups')
       .doc(item.id);
-    batch.set(completedRef, { fulfilledTime: currentTime, imageUri: uri });
+    batch.set(completedRef, { 
+      fulfilledTime: currentTime, 
+      imageUri: uri, 
+      address: {
+        street: item.address.street,
+        city: item.address.city,
+        province: item.address.province,
+        postalCode: item.address.postalCode,
+      },
+      memberNotes: item.notes,
+    });
 
     // Update pickups in client collection
     let clientPickupsRef = db.collection('users')
@@ -170,6 +187,8 @@ export default class CollectorPickupView extends Component {
       <Text style={styles.displayMessage}>No Pickups Found.</Text>
     );
   }
+
+  
 
   render() {
     return (
