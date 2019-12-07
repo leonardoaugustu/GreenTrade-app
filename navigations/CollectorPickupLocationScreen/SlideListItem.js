@@ -94,7 +94,7 @@ const SlideListItem = ({ item, onLeftPress, onRightPress }) => (
                 leftAvatar={{ rounded: true, source: { uri: item.memberProfileUri } }}
                 title={item.memberName}
                 subtitle={item.address.street}
-                rightSubtitle={moment(item.scheduledTime.toDate()).format('MMM, Do h:mm a')}
+                rightSubtitle={moment(item.scheduledTime.toDate()).format('MMM Do, h:mm a')}
             />
     </Swipeable>
 );
