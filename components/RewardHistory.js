@@ -9,26 +9,37 @@ import {connect} from 'react-redux';
 import {sortRewards} from '../actions/Rewards/actionCreators';
 import {withNavigation, FlatList} from 'react-navigation';
 import styles from '../navigations/RewardScreen/styles';
-
-
-// todo: change this to actual redeemed reward coming from firestore - waiting for jo
-const DATA = [
-    {
-        id: '1',
-        url: 'https://app.starbucks.com/weblx/images/cards/card-and-stars.png',
-        name: 'Starbucks Gift Card',
-        redeemDate: '2019-11-02',
-        code: "ABC123"
-    },
-];
+import firebase from "../config/firebase";
+const db = firebase.firestore();
 
 class RewardHistory extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
+            data: [],
             modalVisible: false,
-            selectedReward: {}
+            selectedReward: {},
+            currentUser: {}
         };
+    }
+
+    async componentDidMount(){
+        // Current user inside props - not sure if this is necessary though
+        this.setState({ currentUser:  await firebase.auth().currentUser});
+
+        // Load the list
+        await this.loadRewards();
+    }
+
+    async loadRewards() {
+        let querySnapshot = await db.collection(`users`).doc(this.state.currentUser.uid).collection(`codes`).get(), data = [];
+
+        querySnapshot.forEach(docSnap => {
+            data.push(docSnap.data());
+        });
+
+        this.setState({data});
     }
 
     renderStaticReward = ({item}) => (
@@ -37,8 +48,8 @@ class RewardHistory extends Component {
                 <Image resizeMethod="resize" style={styles.img} source={{uri: item.url}}/>
             </Left>
             <Body style={styles.body}>
-                <Text style={styles.rewardNameTxt}>{item.name}</Text>
-                <Text style={styles.dateTxt}>Redeem Date: {item.redeemDate}</Text>
+                <Text style={styles.rewardNameTxt}>{item.brand}</Text>
+                <Text style={styles.dateTxt}>{item.redeemDate}</Text>
                 <Icon name="keyboard-arrow-right"
                       type='material'
                       iconStyle={styles.iconAfterDate}
@@ -53,7 +64,7 @@ class RewardHistory extends Component {
             <View style={styles.scene}>
                 <ScrollView>
                     <FlatList
-                        data={DATA}
+                        data={this.state.data}
                         renderItem={this.renderStaticReward}
                         keyExtractor={item => item.id}
                         style={styles.listContainer}
