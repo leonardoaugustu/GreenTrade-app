@@ -35,7 +35,6 @@ class RewardList extends Component {
                     "Cost": doc.data().cost,
                     "Img_url": doc.data().img_url,
                     "Value": doc.data().value,
-                    "Id": doc.data().id.toString(11)
                 };
                 rewards.push(rewardInfo);
                 // console.log(rewards)
@@ -93,11 +92,10 @@ class RewardList extends Component {
               <FlatList
                 data={this.state.rewardList}
                 renderItem={this.renderItem}
-                keyExtractor={item => item.Id}
+                keyExtractor={item => item.Name}
                 style={styles.listContainer}
                 extraData={this.state}
-                getItemLayout={this._itemLayout.bind(this)}
-                removeClippedSubviews={false}
+                //getItemLayout={this._itemLayout.bind(this)}
               />
             </View>
         );
