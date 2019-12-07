@@ -19,6 +19,8 @@ import CollectorPickupHistory from "../navigations/CollectorPickupHistory/Collec
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import InitialView from "../navigations/InitialHomeScreen/InitialView";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
+import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
+import PaymentView from "../navigations/PaymentScreen/PaymentView";
 
 
 class DrawerComponent extends Component {
@@ -35,7 +37,7 @@ class DrawerComponent extends Component {
             user.get().then(u => {
               if (u.exists) {
                  this.setState({user: u.data()});
-                 console.log(this.state);
+                 //console.log(this.state);
                 }
             });
         }
@@ -44,7 +46,7 @@ class DrawerComponent extends Component {
         }
     }
     filterMenuByUserRole = (items) => {
-        console.log('>>> filtering drawerNav');
+        //console.log('>>> filtering drawerNav');
         return items.filter(i=>
             i.params && i.params.role && 
             (i.params.role.includes("*") ||
@@ -103,6 +105,22 @@ class DrawerComponent extends Component {
     }
 }
 
+const CollectorPickupStack = createStackNavigator({
+    CollectorPickup: CollectorPickupView,
+    CollectorMap: CollectorMapView,
+},
+    {
+        headerMode: "none", //Hide the back button react navigation
+    })
+
+const ContainerPurchaseStack = createStackNavigator({
+    PurchaseContainer: UserContainerSelectionView,
+    Payment: PaymentView,
+},
+{
+    headerMode: "none", //Hide the back button react navigation
+});
+
 const DrawerNavigator = createDrawerNavigator(
     {
         Home: {
@@ -121,14 +139,14 @@ const DrawerNavigator = createDrawerNavigator(
         //     params: {role: ['member', 'collector']}
         // },
         Pickup: {
-            screen: CollectorPickupView, navigationOptions: {
+            screen: CollectorPickupStack, navigationOptions: {
                 drawerLabel: "Track Pickups",
                 drawerIcon: <Icon type="material-community" name="cellphone" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params: {role: ['collector']}
         },
         PurchaseContainer: {
-            screen: UserContainerSelectionView, navigationOptions: {
+            screen: ContainerPurchaseStack, navigationOptions: {
                 drawerLabel: "Purchase Container",
                 drawerIcon: <Icon type="material-community" name="shopping" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
@@ -197,6 +215,8 @@ const DrawerNavigator = createDrawerNavigator(
         initialRouteName: "Home",
     }
 );
+
+
 
 const AuthStack = createStackNavigator({
     SignIn: {
