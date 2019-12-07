@@ -69,14 +69,15 @@ _renderTabBar = props => {
       <View style={styles.headerContainer}>
          <View style={styles.header}>
          <View style={styles.iconWrapper}>
-         <Icon
-     onPress={() => this.props.navigation.openDrawer()}
-     type="material"
-     name="menu"
-     size={30}
-     color="#fff"
-     containerStyle={styles.drawerIcon}
-   />
+         <TouchableWithoutFeedback onPress={() => this.props.navigation.openDrawer()}>
+							<Icon
+								type="material"
+								name="menu"
+								size={30}
+								color="#fff"
+								containerStyle={styles.drawerIcon}
+							/>
+							</TouchableWithoutFeedback>
          </View>
          <View style={styles.titleWrapper}>
              <Text style={styles.textTitle}>Rewards</Text>

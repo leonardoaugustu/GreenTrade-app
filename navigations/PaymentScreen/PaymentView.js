@@ -11,6 +11,7 @@ import {purchaseTotal} from '../../actions/Payment/actionCreators';
 import {containersToPurchase} from '../../actions/Payment/actionCreators';
 import 'firebase/firestore';
 import firebase from '../../config/firebase'
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 
 const options = [
@@ -140,14 +141,15 @@ class PaymentView extends Component {
               />
             </View> */}
             <View style={styles.iconWrapper}>
+              <TouchableWithoutFeedback  onPress={() => this.props.navigation.goBack()}>
               <Icon
-                onPress={() => this.props.navigation.goBack()}
                 type="material"
                 name="keyboard-arrow-left"
                 size={30}
                 color="#fff"
                 containerStyle={styles.drawerIcon}
               />
+              </TouchableWithoutFeedback>
             </View>
             <View style={styles.titleWrapper}>
               <Text style={styles.textTitle}>Payment</Text>

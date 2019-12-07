@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, FlatList, ActivityIndicator, Dimensions, SafeAreaView } from "react-native";
+import { Text, View, FlatList, ActivityIndicator, Dimensions, SafeAreaView, TouchableWithoutFeedback } from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import 'firebase/firestore';
@@ -177,14 +177,15 @@ export default class CollectorPickupView extends Component {
         <View style={styles.headerContainer}>
           <View style={styles.header}>
             <View style={styles.iconWrapper}>
-              <Icon
-                onPress={() => this.props.navigation.openDrawer()}
-                type="material"
-                name="menu"
-                size={30}
-                color="#fff"
-                containerStyle={styles.drawerIcon}
-              />
+            <TouchableWithoutFeedback onPress={() => this.props.navigation.openDrawer()}>
+							<Icon
+								type="material"
+								name="menu"
+								size={30}
+								color="#fff"
+								containerStyle={styles.drawerIcon}
+							/>
+							</TouchableWithoutFeedback>
             </View>
             <View style={styles.titleWrapper}>
               <Text style={styles.textTitle}>Track Pickups</Text>

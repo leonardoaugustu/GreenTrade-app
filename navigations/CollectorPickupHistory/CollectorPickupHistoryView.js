@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Button, FlatList, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, Button, FlatList, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { Icon, Image } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
@@ -74,14 +74,15 @@ export default class CollectorPickupHistoryView extends Component
           <View style={styles.headerContainer}>
             <View style={styles.header}>
               <View style={styles.iconWrapper}>
+                <TouchableWithoutFeedback onPress={() => this.props.navigation.openDrawer()}>
                 <Icon
-                  onPress={() => this.props.navigation.openDrawer()}
                   type="material"
                   name="menu"
                   size={30}
                   color="#fff"
                   containerStyle={styles.drawerIcon}
                 />
+                </TouchableWithoutFeedback>
               </View>
               <View style={styles.titleWrapper}>
                 <Text style={styles.textTitle}>Pickup History</Text>

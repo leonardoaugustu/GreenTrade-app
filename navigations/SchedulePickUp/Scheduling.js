@@ -1,6 +1,6 @@
 import React, { Component, useState } from "react";
 import {AsyncStorage} from 'react-native';  
-import { Text, Alert, TextInput, TouchableOpacity, View, Button, show, Platform, StyleSheet } from "react-native";
+import { Text, Alert, TextInput, TouchableOpacity, View, Button, show, Platform, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { colors, Icon } from "react-native-elements";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { Keyboard } from 'react-native';
@@ -189,14 +189,15 @@ export default class Scheduling extends Component {
         <View style={styles.headerContainer}>
           <View style={styles.header}>
             <View style={styles.iconWrapper}>
-              <Icon
-                onPress={() => this.props.navigation.openDrawer()}
-                type="material"
-                name="menu"
-                size={30}
-                color="#fff"
-                containerStyle={styles.drawerIcon}
-              />
+            <TouchableWithoutFeedback onPress={() => this.props.navigation.openDrawer()}>
+							<Icon
+								type="material"
+								name="menu"
+								size={30}
+								color="#fff"
+								containerStyle={styles.drawerIcon}
+							/>
+							</TouchableWithoutFeedback>
             </View>
             <View style={styles.titleWrapper}>
               <Text style={styles.textTitle}>Scheduling Pickup</Text>

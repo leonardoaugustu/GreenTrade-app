@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, Button, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
+import { Text, View, StyleSheet, Button, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, TouchableWithoutFeedback } from "react-native";
 import { List, ListItem, Icon, Image } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
@@ -95,14 +95,15 @@ export default class ContainerView extends Component {
         <View style={styles.headerContainer}>
           <View style={styles.header}>
             <View style={styles.iconWrapper}>
-              <Icon
-                onPress={() => this.props.navigation.openDrawer()}
-                type="material"
-                name="menu"
-                size={30}
-                color="#fff"
-                containerStyle={styles.drawerIcon}
-              />
+            <TouchableWithoutFeedback onPress={() => this.props.navigation.openDrawer()}>
+							<Icon
+								type="material"
+								name="menu"
+								size={30}
+								color="#fff"
+								containerStyle={styles.drawerIcon}
+							/>
+							</TouchableWithoutFeedback>
             </View>
             <View style={styles.titleWrapper}>
               <Text style={styles.textTitle}>Containers</Text>

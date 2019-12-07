@@ -4,6 +4,7 @@ import { Icon, Button } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";
 import firebase from '../../config/firebase'
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 export default class TradePointlView extends Component {
   constructor(props) {
@@ -126,14 +127,15 @@ export default class TradePointlView extends Component {
           <View style={styles.headerContainer}>
             <View style={styles.header}>
               <View style={styles.iconWrapper}>
+                <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack(null)}>
                 <Icon
-                  onPress={() => this.props.navigation.goBack(null)}
                   type="material"
                   name="keyboard-arrow-left"
                   size={30}
                   color="#fff"
                   containerStyle={styles.drawerIcon}
                 />
+                </TouchableWithoutFeedback>
               </View>
               <View style={styles.titleWrapper}>
                 <Text style={styles.textTitle}>Redeem Rewards</Text>

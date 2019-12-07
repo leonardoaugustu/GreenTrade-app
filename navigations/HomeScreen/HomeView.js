@@ -26,6 +26,7 @@ import Wave from 'react-native-waveview';
 import { Dialog } from 'react-native-simple-dialogs';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import * as FileSystem from 'expo-file-system';
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const db = firebase.firestore();
 
@@ -111,14 +112,15 @@ export default class HomeView extends Component {
 				<View style={styles.headerContainer}>
 					<View style={styles.header}>
 						<View style={styles.iconWrapper}>
+							<TouchableWithoutFeedback onPress={() => this.props.navigation.openDrawer()}>
 							<Icon
-								onPress={() => this.props.navigation.openDrawer()}
 								type="material"
 								name="menu"
 								size={30}
 								color="#fff"
 								containerStyle={styles.drawerIcon}
 							/>
+							</TouchableWithoutFeedback>
 						</View>
 						<View style={styles.titleWrapper}>
 							<Text style={styles.textTitle}>Green Trade</Text>

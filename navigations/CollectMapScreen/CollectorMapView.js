@@ -8,6 +8,7 @@ import { Button } from 'react-native-elements';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import { Icon } from "react-native-elements";
 import Environment from '../../config/FireBaseConfig';
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 
 
@@ -128,14 +129,15 @@ export default class CollectorMapView extends React.Component{
               
             </View> */}
             <View style={styles.iconWrapper}>
+              <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack()}>
               <Icon
-                onPress={() => this.props.navigation.goBack()}
                 type="material"
                 name="keyboard-arrow-left"
                 size={30}
                 color="#fff"
                 containerStyle={styles.drawerIcon}
               />
+              </TouchableWithoutFeedback>
             </View>
             <View style={styles.titleWrapper}>
               <Text style={styles.textTitle}>Confirmed Pickups</Text>

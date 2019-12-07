@@ -127,7 +127,7 @@ headerImg: {
     height: wp('45.8%')
 },
 topContainer: {
-    height: wp('30%')
+    height: wp('25%')
 },
 pointText: {
     fontSize: wp('6.5%'),
