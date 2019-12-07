@@ -12,14 +12,15 @@ import CollectorPickupView from "../navigations/CollectorPickupLocationScreen/co
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
 import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import CollectorView from "../navigations/CollectorML/CollectorView";
+import RecycledItemsHistoryView from "../navigations/RecycledItemsHistoryScreen/RecycledItemsHistoryView";
 
 const Tabs = createBottomTabNavigator(
   {
     History: {
-        screen: HistoryView
+        screen: RecycledItemsHistoryView
     },
     Home: {
-      screen: HomeView 
+        screen: HomeView 
     },
     Reward: {
         screen: RewardView
