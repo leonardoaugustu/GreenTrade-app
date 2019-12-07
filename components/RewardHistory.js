@@ -20,32 +20,33 @@ class RewardHistory extends Component {
             data: [],
             modalVisible: false,
             selectedReward: {},
-            currentUser: {}
+            isLoading: true,
         };
     }
 
-    async componentDidMount(){
-        // Current user inside props - not sure if this is necessary though
-        this.setState({ currentUser:  await firebase.auth().currentUser});
-
-        // Load the list
-        await this.loadRewards();
+    componentDidMount(){
+        const { navigation } = this.props;
+        // refresh screen after purchasing new containers
+        navigation.addListener('willFocus', async () => {
+          // Load the list
+            await this.loadRewards();
+        });
     }
 
-    async loadRewards() {
-        let querySnapshot = await db.collection(`users`).doc(this.state.currentUser.uid).collection(`codes`).get(), data = [];
+    loadRewards = async () =>{
+        this.setState({ isLoading: true });
+        let querySnapshot = await db.collection(`users`).doc(firebase.auth().currentUser.uid).collection(`codes`).get(), data = [];
 
         querySnapshot.forEach(docSnap => {
             data.push(docSnap.data());
         });
-
-        this.setState({data});
+        this.setState({ data, isLoading: false });
     }
 
     renderStaticReward = ({item}) => (
         <ListItem style={styles.itemContainer} onPress={() => this.setModalVisible(true, item)}>
             <Left>
-                <Image resizeMethod="resize" style={styles.img} source={{uri: item.url}}/>
+                <Image resizeMethod="resize" resizeMode='contain' style={styles.img} source={{uri: item.url}}/>
             </Left>
             <Body style={styles.body}>
                 <Text style={styles.rewardNameTxt}>{item.brand}</Text>
@@ -66,8 +67,10 @@ class RewardHistory extends Component {
                     <FlatList
                         data={this.state.data}
                         renderItem={this.renderStaticReward}
-                        keyExtractor={item => item.id}
+                        keyExtractor={item => item.code}
                         style={styles.listContainer}
+                        refreshing={this.state.isLoading}
+                        onRefresh={this.loadRewards}
                     />
                 </ScrollView>
                 <Modal
