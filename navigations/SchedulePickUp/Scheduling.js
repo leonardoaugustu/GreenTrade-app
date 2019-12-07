@@ -58,7 +58,7 @@ export default class Scheduling extends Component {
       isVisible: false,
       chosenDate: moment(datetime).format('MMMM, Do YYYY HH:mm'),
       dateTimestamp: datetime,
-    })
+    });
     //setting up the pickup randomly
     this.assignPickup();
   }
@@ -103,7 +103,7 @@ export default class Scheduling extends Component {
           collectorsavailable.push(doc.data());
           var randomcollector = collectorsavailable[Math.floor(Math.random() * collectorsavailable.length)];
           var randomcollectoruid= randomcollector.uid;
-          this.setState({ collectorperson: randomcollector.displayName , collectPersonId:randomcollectoruid});
+          this.setState({ collectorperson: randomcollector.displayName , collectPersonId: randomcollectoruid});
         })
       })
       .catch( err=> {
@@ -131,8 +131,9 @@ export default class Scheduling extends Component {
     if( this.state.chosenDate==="" ){
         Alert.alert('Please Choose a Date and Time '+this.state.userDisplayName);
     }
-
     else{
+      
+
       var clientPickUpsRef = db.collection(`users/${firebase.auth().currentUser.uid}/pickups`).doc();
       var pickUpsRef = db.collection('pickups').doc(clientPickUpsRef.id);
 
@@ -150,7 +151,7 @@ export default class Scheduling extends Component {
       // write to pickups collection
       batch.set(pickUpsRef, {
         memberId: firebase.auth().currentUser.uid, 
-        memberName: firebase.auth().currentUser.displayName, 
+        memberName: this.state.userDisplayName, 
         address: {  
           street: this.state.address.street, 
           city: this.state.address.city, 
@@ -179,12 +180,12 @@ export default class Scheduling extends Component {
     
    //await userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null}); 
     Alert.alert('Scheduling successful!', `Thank you ${this.state.userDisplayName}!\nWe will pick up your recycling on ${this.state.chosenDate}.`);
+    this.props.navigation.goBack(null);
     }
   }
 
   render() {
     return (
-
       <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
           <View style={styles.header}>

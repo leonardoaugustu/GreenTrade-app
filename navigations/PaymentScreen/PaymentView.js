@@ -10,7 +10,8 @@ import { connect } from 'react-redux';
 import {purchaseTotal} from '../../actions/Payment/actionCreators';
 import {containersToPurchase} from '../../actions/Payment/actionCreators';
 import 'firebase/firestore';
-import firebase from '../../config/firebase'
+import firebase from '../../config/firebase';
+import { NavigationActions } from 'react-navigation';
 
 
 const options = [
@@ -124,6 +125,7 @@ class PaymentView extends Component {
   //   return (number).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   // }
 
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -228,8 +230,10 @@ class PaymentView extends Component {
               Your payment has been successfully processed.
           </Text>
           <Button
+          
             style={styles.dialogButton}
             onPress={() => {
+              this.props.navigation.pop();
               this.props.navigation.navigate('Containers');
               this.setState({successDialogVisible: false});
             }}

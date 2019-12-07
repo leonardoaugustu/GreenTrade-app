@@ -20,6 +20,7 @@ import Scheduling from "../navigations/SchedulePickUp/Scheduling";
 import ContainerView from "../navigations/ContainerScreen/ContainerView";
 import CollectorMapView from "../navigations/CollectMapScreen/CollectorMapView";
 import PaymentView from "../navigations/PaymentScreen/PaymentView";
+import RecycledItemsHistoryView from "../navigations/RecycledItemsHistoryScreen/RecycledItemsHistoryView";
 
 
 class DrawerComponent extends Component {
@@ -144,9 +145,17 @@ const DrawerNavigator = createDrawerNavigator(
             },
             params: {role: ['collector']}
         },
+        
+        CollectorPickupHistory: {
+            screen: CollectorPickupHistory, navigationOptions: {
+                drawerLabel: "Completed Pickups",
+                drawerIcon: <Icon type="material-community" name="history" color="#1F9AFC" iconStyle={styles.menuIcon}/>
+            },
+            params: {role: ['collector']}
+        },
         PurchaseContainer: {
             screen: ContainerPurchaseStack, navigationOptions: {
-                drawerLabel: "Purchase Container",
+                drawerLabel: "Purchase Container(s)",
                 drawerIcon: <Icon type="material-community" name="shopping" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params:  {role: ['member', 'collector']}
@@ -164,13 +173,6 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerIcon: <Icon type="material-community" name="car" color="#1F9AFC" iconStyle={styles.menuIcon}/>
             },
             params:  {role: ['member', 'collector']}
-        },
-        CollectorPickupHistory: {
-            screen: CollectorPickupHistory, navigationOptions: {
-                drawerLabel: "Collected Pickups",
-                drawerIcon: <Icon type="material-community" name="history" color="#1F9AFC" iconStyle={styles.menuIcon}/>
-            },
-            params: {role: ['collector']}
         },
         // Initial: {
         //     screen: InitialView, navigationOptions: {
