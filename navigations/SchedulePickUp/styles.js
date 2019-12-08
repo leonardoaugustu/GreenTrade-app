@@ -5,12 +5,39 @@ export default StyleSheet.create({
     second: {
         flex:2,
     },
+    container: {
+        flex: 1,
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      },
     menuContainer: {
         flex: 1,
         flexDirection: "column",
         backgroundColor: '#fff',
         width: wp('68%')
     },
+    inputView: {
+        flex: 1,
+        flexDirection: 'row',
+        height: 43,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#eaeaea',
+        backgroundColor: '#fafafa',
+        paddingLeft: 5,
+        marginLeft: 5,
+        marginRight: 10,
+        marginTop: 5,
+        marginBottom: 15,
+        elevation: 2,
+        shadowOffset: { width: 5, height: 5 },
+        shadowColor: "grey",
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+      },
     safeView: {
         flexDirection: "column",
     },
@@ -63,6 +90,12 @@ header: {
     justifyContent: 'center',
     alignItems: 'center',
 },
+icon: {
+    marginLeft: 5,
+    marginRight: 8,
+    marginTop: 8,
+    color: '#3897f1',
+  },
 iconWrapper: {
     flex: 0.5,
 },

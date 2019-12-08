@@ -29,6 +29,14 @@ export default class Scheduling extends Component {
       collectorperson: '',
       address: {},
       userprofilePicUrl: '',
+      TextInputDisableStatus: false,
+      manualAddress: '',
+      manualCity: '',
+      manualPostalCode: '',
+      manualProvince: '',
+      showTheThing: false,
+      manualEntry: false,
+
     };
   }
 
@@ -66,7 +74,41 @@ export default class Scheduling extends Component {
   handleInfo = (text) => {
     this.setState({
 
-      additionalInfo: text
+      additionalInfo: text,
+     
+    })
+    
+  }
+
+  handleAddress = (text) => {
+    this.setState({
+
+      
+      manualAddress: text
+    })
+    
+  }
+  handleCity = (text) => {
+    this.setState({
+
+      
+      manualCity: text
+    })
+    
+  }
+  handlePostalCode = (text) => {
+    this.setState({
+
+      
+      manualPostalCode: text
+    })
+    
+  }
+  handleProvince = (text) => {
+    this.setState({
+
+      
+      manualProvince: text
     })
     
   }
@@ -85,6 +127,8 @@ export default class Scheduling extends Component {
 
     })
   }
+
+  
 
 
   //method for assigningpicker
@@ -119,8 +163,19 @@ export default class Scheduling extends Component {
         if (!doc.exists){
           console.log("No users found");
         }
+        else if( !doc.data().address ){
+          console.log("here" ,doc.data().address);
+          this.setState({ TextInputDisableStatus : true})
+          this.setState({showTheThing: true })
+          this.setState({manualEntry : true})
+
+        }
         else{
+          console.log(doc.data().address);
+          this.setState({ TextInputDisableStatus : true})
+          this.setState({showTheThing: true })
           this.setState({ address: doc.data().address, userprofilePicUrl: doc.data().profilePhoto});
+          this.setState({ manualAddress: doc.data().address.street , manualCity: doc.data().address.city, manualProvince: doc.data().address.province ,manualPostalCode: doc.data().address.postalCode})
         }
       })
       .catch( err => console.log("error getting users", err));
@@ -148,14 +203,18 @@ export default class Scheduling extends Component {
       });
 
       // write to pickups collection
+      if(!this.state.manualEntry){
+        console.log("SHouldnt work here");
+        
+
       batch.set(pickUpsRef, {
         memberId: firebase.auth().currentUser.uid, 
         memberName: firebase.auth().currentUser.displayName, 
         address: {  
-          street: this.state.address.street, 
-          city: this.state.address.city, 
-          province: this.state.address.province, 
-          postalCode: this.state.address.postalCode }, 
+          street: this.state.manualAddress, 
+          city: this.state.manualCity, 
+          province: this.state.manualProvince, 
+          postalCode: this.state.manualPostalCode }, 
         memberProfilePicURL: this.state.userprofilePicUrl, 
         scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp), 
         additionalInfo: this.state.additionalInfo,
@@ -164,6 +223,46 @@ export default class Scheduling extends Component {
         collectorName: this.state.collectorperson,
         fulfilledTime: null,
       });
+    }
+    else{
+
+
+      if(this.state.manualAddress===''){
+        Alert.alert('Please Enter your Street '+this.state.userDisplayName);
+      }
+     if(this.state.manualCity===''){
+        Alert.alert('Please Enter your City '+this.state.userDisplayName);
+      }
+       if(this.state.manualPostalCode===''){
+        Alert.alert('Please Enter your PostalCode '+this.state.userDisplayName);
+      }
+      if(this.state.manualProvince===''){
+        Alert.alert('Please Enter your Province '+this.state.userDisplayName);
+      }
+
+      else{
+        console.log("Working here");
+      batch.set(pickUpsRef, {
+        memberId: firebase.auth().currentUser.uid, 
+        memberName: firebase.auth().currentUser.displayName, 
+        address: {  
+          street: this.state.manualAddress, 
+          city: this.state.manualCity, 
+          province: this.state.manualProvince, 
+          postalCode: this.state.manualPostalCode }, 
+        memberProfilePicURL: this.state.userprofilePicUrl, 
+        scheduledTime: firebase.firestore.Timestamp.fromDate(this.state.dateTimestamp), 
+        additionalInfo: this.state.additionalInfo,
+        cancelled: false, 
+        collectorId: this.state.collectPersonId, 
+        collectorName: this.state.collectorperson,
+        fulfilledTime: null,
+
+        
+      });
+    }
+
+    }
 
       await batch.commit();
     // var user = firebase.auth().currentUser;
@@ -179,6 +278,7 @@ export default class Scheduling extends Component {
     
    //await userRef.add({ scheduledtime: this.state.chosenDate, additionalInfo: this.state.additionalInfo, pickupby: this.state.collectorperson ,fulfilledtime: null}); 
     Alert.alert('Scheduling successful!', `Thank you ${this.state.userDisplayName}!\nWe will pick up your recycling on ${this.state.chosenDate}.`);
+    this.props.navigation.goBack(null);
     }
   }
 
@@ -205,12 +305,12 @@ export default class Scheduling extends Component {
         </View>
         <View style={{ flex: 1, alignContent: "center" }}>
           <View style={{ flex: 1, backgroundColor: '#DAE0E2', alignContent: "center", alignItems: "center" }} >
-            <Text style={{ height: 80, padding: 60, fontSize: 22 }} >Welcome Back {firebase.auth().currentUser && this.state.userDisplayName}</Text>
+            <Text style={{ height: 50, padding: 5, fontSize: 22 }} >Welcome Back {firebase.auth().currentUser && this.state.userDisplayName}</Text>
 
           </View>
-          <View style={{ flex: 2, backgroundColor: '#DAE0E2', padding: 20, alignItems: "center", alignContent: "center" }} >
+          <View style={{ flex: 3, backgroundColor: '#DAE0E2', padding: 5, alignItems: "center", alignContent: "center" }} >
 
-            <Text style={{ height: 80, padding: 10, fontSize: 20, alignItems: "center" }} >{this.state.message}</Text>
+            <Text style={{ height: 50, padding: 5, fontSize: 20, alignItems: "center" }} >{this.state.message}</Text>
             <Button title="Choose your Date and Time" onPress={this.showPicker} />
             <DateTimePicker
               isVisible={this.state.isVisible}
@@ -228,7 +328,7 @@ export default class Scheduling extends Component {
               maxLength={100}
               multiline={true}
               placeholder="Additional Info"
-              margin="10%"
+              margin="5%"
               numberOfLines={3}
               onEndEditing={this.clear}
               onChangeText={this.handleInfo}
@@ -236,10 +336,112 @@ export default class Scheduling extends Component {
               returnKeyType={'default'}
               style={{ fontSize: 20 }}
             />
+            {this.state.showTheThing && this.state.manualEntry &&
+            <View>
 
+            <TextInput style = {styles.input}
+            underlineColorAndroid = "transparent"
+            placeholder = "Enter Street"
+            margin="1%"
+            editable= {this.state.TextInputDisableStatus}
+            fontSize= "20"
+            placeholderTextColor = "#9a73ef"
+            autoCapitalize = "none"
+            onChangeText = {this.handleAddress}/>
+
+            <TextInput style = {styles.input}
+            underlineColorAndroid = "transparent"
+            placeholder = "Enter City"
+            margin="1%"
+            editable= {this.state.TextInputDisableStatus}
+            fontSize= "20"
+            placeholderTextColor = "#9a73ef"
+            autoCapitalize = "none"
+            onChangeText = {this.handleCity}/>
+
+
+            <TextInput style = {styles.input}
+            underlineColorAndroid = "transparent"
+            editable= {this.state.TextInputDisableStatus}
+            placeholder = "Enter Postal Code"
+            fontSize= "20"
+            placeholderTextColor = "#9a73ef"
+            autoCapitalize = "none"
+            margin="1%"
+            onChangeText = {this.handlePostalCode}/>
+
+
+            <TextInput style = {styles.input}
+            underlineColorAndroid = "transparent"
+            editable= {this.state.TextInputDisableStatus}
+            placeholder = "Enter Province"
+            fontSize= "20"
+            margin="1%"
+            placeholderTextColor = "#9a73ef"
+            autoCapitalize = "none"
+            onChangeText = {this.handleProvince}/>
+            </View>
+            }
+
+      {this.state.showTheThing && !this.state.manualEntry &&
+            <View>
+
+            <TextInput style = {styles.input}
+            underlineColorAndroid = "transparent"
+            defaultValue= {this.state.address.street}
+            placeholder = {this.state.address.street}
+            margin="1%"
+            editable= {this.state.TextInputDisableStatus}
+            fontSize= "20"
+            placeholderTextColor = "#9a73ef"
+            autoCapitalize = "none"
+           
+            onChangeText = {this.handleAddress}/>
+
+            <TextInput style = {styles.input}
+            defaultValue= {this.state.address.city}
+            underlineColorAndroid = "transparent"
+            placeholder ={this.state.address.city}
+            margin="1%"
+            editable= {this.state.TextInputDisableStatus}
+            fontSize= "20"
+            placeholderTextColor = "#9a73ef"
+            autoCapitalize = "none"
+            onChangeText = {this.handleCity}/>
+
+
+            <TextInput style = {styles.input}
+            underlineColorAndroid = "transparent"
+            defaultValue= {this.state.address.postalCode}
+            editable= {this.state.TextInputDisableStatus}
+            placeholder = {this.state.address.postalCode}
+            fontSize= "20"
+            placeholderTextColor = "#9a73ef"
+            autoCapitalize = "none"
+            margin="1%"
+            onChangeText = {this.handlePostalCode}/>
+
+
+            <TextInput style = {styles.input}
+            defaultValue= {this.state.address.province}
+            underlineColorAndroid = "transparent"
+            editable= {this.state.TextInputDisableStatus}
+            placeholder = {this.state.address.province}
+            fontSize= "20"
+            margin="1%"
+            placeholderTextColor = "#9a73ef"
+            autoCapitalize = "none"
+            onChangeText = {this.handleProvince}/>
+
+            </View>
+            }
+            
+
+             
           </View>
 
-          <View style={{ flex: 3, backgroundColor: '#DAE0E2' }} >
+          <View style={{ flex: 1, backgroundColor: '#DAE0E2', padding: 20, alignItems: "center", alignContent: "center" }}  >
+            
             <Button title="Confirm" onPress={() => this.handlePress()} styles={{ justifyContent: 'center' }} />
           </View>
             
