@@ -23,12 +23,11 @@ export default class CollectorPickupView extends Component {
   }
 
   componentDidMount() {
-    // const { navigation } = this.props;
+    const { navigation } = this.props;
     // navigation.addListener('willFocus', () => {
     //   if (this.state.requireDataUpdate) {
     //     this.fetchData();
     //   }
-    //   this.state.requireDataUpdate = true;
     // });
     this.fetchData();
   }
@@ -55,12 +54,11 @@ export default class CollectorPickupView extends Component {
               memberProfileUri: doc.data().memberProfilePicURL,
             };
             newData.push(pickupInfo);
-            this.setState({ collectorData: newData });
           });
         }).catch((error) => {
           console.log(error);
         }).finally(() => {
-          this.setState({ isLoading: false });
+          this.setState({ collectorData: newData, isLoading: false });
         });
     }
     catch (error) {
@@ -91,8 +89,8 @@ export default class CollectorPickupView extends Component {
     }
     finally {
       this.setState({ uploadingPhoto: false });
+      this.fetchData();
     }
-    this.fetchData();
   }
 
   savePickupToDB = async (uri, item) => {
