@@ -21,6 +21,11 @@ export default class RecycledItemsHistoryView extends Component {
   }
 
   componentDidMount() {
+    const { navigation } = this.props;
+    // refresh screen on focus
+    navigation.addListener('willFocus', () => {
+      this.fetchData();
+    });
     this.fetchData();
   }
 
