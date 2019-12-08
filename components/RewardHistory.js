@@ -10,6 +10,7 @@ import {sortRewards} from '../actions/Rewards/actionCreators';
 import {withNavigation, FlatList} from 'react-navigation';
 import styles from '../navigations/RewardScreen/styles';
 import firebase from "../config/firebase";
+import moment from 'moment';
 const db = firebase.firestore();
 
 class RewardHistory extends Component {
@@ -46,6 +47,12 @@ class RewardHistory extends Component {
         this.setState({ data: codes, isLoading: false });
     }
 
+    renderEmptyList = () => {
+        return (
+          <Text style={styles.displayMessage}>No Recycled Items Found.</Text>
+        );
+      }
+
     renderStaticReward = ({item}) => (
         <ListItem style={styles.itemContainer} onPress={() => this.setModalVisible(true, item)}>
             <Left>
@@ -53,7 +60,7 @@ class RewardHistory extends Component {
             </Left>
             <Body style={styles.body}>
                 <Text style={styles.rewardNameTxt}>{item.brand}</Text>
-                <Text style={styles.dateTxt}>{item.redeemDate}</Text>
+                <Text style={styles.dateTxt}>{moment(item.redeemDate.toDate()).format('MMM Do, YYYY H:mm')}</Text>
                 <Icon name="keyboard-arrow-right"
                       type='material'
                       iconStyle={styles.iconAfterDate}
@@ -67,13 +74,13 @@ class RewardHistory extends Component {
         return (
             <View style={styles.scene}>
                 <FlatList
-                    //(b,a) => (a.orderedDate.toDate() > b.orderedDate.toDate()) - (a.orderedDate.toDate() < b.orderedDate.toDate() ))
-                    data={this.state.data.sort()}
+                    data={this.state.data.sort((b,a) => (a.redeemDate.toDate() > b.redeemDate.toDate()) - (a.redeemDate.toDate() < b.redeemDate.toDate()))}
                     renderItem={this.renderStaticReward}
                     keyExtractor={item => item.code}
                     style={styles.listContainer}
                     refreshing={this.state.isLoading}
                     onRefresh={this.loadRewards}
+                    ListEmptyComponent={this.renderEmptyList}
                 />
                 <Modal
                     animationType="slide"
