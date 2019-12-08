@@ -221,5 +221,11 @@ contentWrapper: {
 },
 body: {
     flexDirection: 'column'
-}
+},
+
+displayMessage: {
+    justifyContent: "center",
+    fontSize: wp('5%'),
+    color: "#3973ad",
+},
 })
