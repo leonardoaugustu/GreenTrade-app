@@ -32,14 +32,9 @@ export default class CollectorMapView extends React.Component{
 
   componentDidMount() {
     const { navigation } = this.props;
-    this.focusListener = navigation.addListener('didFocus', () => {
+    navigation.addListener('didFocus', () => {
       this._getLocationAsync();
     });
-  }
-
-  componentWillUnmount() {
-    this.state.isLoading = true;
-    this.focusListener.remove();
   }
 
   componentDidUpdate() {
