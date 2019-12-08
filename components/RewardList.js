@@ -19,8 +19,8 @@ class RewardList extends Component {
             rewardList: [],
         };
     }
-    toggleReward (items) {
-        this.props.navigation.navigate("Trade", items);
+    toggleReward (item) {
+        this.props.navigation.navigate("Trade", { reward: item });
     };
 
     componentDidMount(){
@@ -30,11 +30,11 @@ class RewardList extends Component {
         db.collection("rewards").get().then((querySnapshot)=>{
             querySnapshot.forEach((doc)=>{
                 var rewardInfo = {
-                    "Doc_name": doc._document.key.path.segments[doc._document.key.path.segments.length - 1],
-                    "Name": doc.data().brand,
-                    "Cost": doc.data().cost,
-                    "Img_url": doc.data().img_url,
-                    "Value": doc.data().value,
+                    brand: doc.data().brand,
+                    cost: doc.data().cost,
+                    imageUri: doc.data().img_url,
+                    value: doc.data().value,
+                    id: doc.id,
                 };
                 rewards.push(rewardInfo);
                 // console.log(rewards)
@@ -62,18 +62,19 @@ class RewardList extends Component {
         return width;
       }
 
-    renderItem = ({ item}) => ( <ListItem style={styles.itemContainer}
+    renderItem = ({ item }) => ( 
+      <ListItem style={styles.itemContainer}
       // When the user click speicific rewords, the user can use their potnt.
        onPress={
           () => this.toggleReward(item)} >
               <Left>
-              <Image resizeMethod="resize" resizeMode='contain' style={styles.img} source={{uri: item.Img_url}}/>
+              <Image resizeMethod="resize" resizeMode='contain' style={styles.img} source={{uri: item.imageUri}}/>
               </Left>
               <Body style={styles.body}>
-                <Text style={styles.rewardNameTxt}>{item.Name}</Text>
+                <Text style={styles.rewardNameTxt}>{item.brand}</Text>
                 <View style={styles.contentWrapper}>
                 <View style={styles.costWrapper}>
-                <Text style={styles.listPoint}>{item.Cost}</Text>
+                <Text style={styles.listPoint}>{item.cost}</Text>
                 </View>
                 <Text style={styles.moreTxt}>View More</Text>
                 <Icon name="keyboard-arrow-right" 
@@ -92,7 +93,7 @@ class RewardList extends Component {
               <FlatList
                 data={this.state.rewardList}
                 renderItem={this.renderItem}
-                keyExtractor={item => item.Name}
+                keyExtractor={item => item.id}
                 style={styles.listContainer}
                 extraData={this.state}
                 //getItemLayout={this._itemLayout.bind(this)}

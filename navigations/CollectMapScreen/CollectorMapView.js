@@ -117,17 +117,6 @@ export default class CollectorMapView extends React.Component{
       <SafeAreaView style={styles.container}>
         <View style={styles.headerContainer}>
           <View style={styles.header}>
-            {/* <View style={styles.iconWrapper}>
-              <Icon
-                onPress={() => this.props.navigation.openDrawer()}
-                type="material"
-                name="menu"
-                size={30}
-                color="#fff"
-                containerStyle={styles.drawerIcon}
-              />
-              
-            </View> */}
             <View style={styles.iconWrapper}>
               <TouchableWithoutFeedback onPress={() => this.props.navigation.goBack()}>
               <Icon
