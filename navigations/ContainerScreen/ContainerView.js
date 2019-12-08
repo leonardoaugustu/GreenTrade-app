@@ -11,7 +11,7 @@ export default class ContainerView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true,
+      isLoading: false,
       containerData: [],
       loading: true,
     }
@@ -58,6 +58,9 @@ export default class ContainerView extends Component {
     }
     catch (error) {
       console.log(error);
+    }
+    finally {
+      this.setState({ isLoading: false});
     }
   }
 
