@@ -102,7 +102,7 @@ export default StyleSheet.create({
         left: wp("10%"),
         alignSelf: "flex-start",
         padding: wp("3%"),
-        marginTop: wp('5%')
+        marginTop: wp('5%'),
     },
     userPoint: {
         shadowColor:"black",
@@ -130,7 +130,8 @@ export default StyleSheet.create({
         alignItems: 'center',
         width: wp('100%'),
         height: wp('10%'),
-        marginTop: wp('4%')
+        marginTop: wp('4%'),
+        marginBottom: wp('10%'),
     },
     welcomeTxt: {
         fontSize: wp('5%'),

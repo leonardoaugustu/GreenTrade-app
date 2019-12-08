@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, Image, TouchableOpacity, Button, KeyboardAvoidingView, ScrollView } from "react-native";
+import { Text, View, Image, TouchableOpacity, Button, KeyboardAvoidingView, ScrollView, TouchableWithoutFeedback } from "react-native";
 import { Icon } from "react-native-elements";
 import styles from "./styles";
 import SafeAreaView from "react-native-safe-area-view";

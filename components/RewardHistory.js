@@ -10,6 +10,7 @@ import {sortRewards} from '../actions/Rewards/actionCreators';
 import {withNavigation, FlatList} from 'react-navigation';
 import styles from '../navigations/RewardScreen/styles';
 import firebase from "../config/firebase";
+import moment from 'moment';
 const db = firebase.firestore();
 
 class RewardHistory extends Component {
@@ -20,36 +21,46 @@ class RewardHistory extends Component {
             data: [],
             modalVisible: false,
             selectedReward: {},
-            currentUser: {}
+            isLoading: false,
         };
     }
 
-    async componentDidMount(){
-        // Current user inside props - not sure if this is necessary though
-        this.setState({ currentUser:  await firebase.auth().currentUser});
-
-        // Load the list
+    async componentDidMount() {
+        const { navigation } = this.props;
+        //refresh screen on focus
+        navigation.addListener('willFocus', async () => {
+            // Load the list
+            await this.loadRewards();
+        });
+        // TODO: FIX BUG
+        // For some reason the tab views does not actually trigger navigation's willFocus
         await this.loadRewards();
     }
 
-    async loadRewards() {
-        let querySnapshot = await db.collection(`users`).doc(this.state.currentUser.uid).collection(`codes`).get(), data = [];
+    loadRewards = async () => {
+        this.setState({ isLoading: true });
+        let querySnapshot = await db.collection(`users`).doc(firebase.auth().currentUser.uid).collection(`codes`).get(), codes = [];
 
         querySnapshot.forEach(docSnap => {
-            data.push(docSnap.data());
+            codes.push(docSnap.data());
         });
-
-        this.setState({data});
+        this.setState({ data: codes, isLoading: false });
     }
+
+    renderEmptyList = () => {
+        return (
+          <Text style={styles.displayMessage}>No Recycled Items Found.</Text>
+        );
+      }
 
     renderStaticReward = ({item}) => (
         <ListItem style={styles.itemContainer} onPress={() => this.setModalVisible(true, item)}>
             <Left>
-                <Image resizeMethod="resize" style={styles.img} source={{uri: item.url}}/>
+                <Image resizeMethod="resize" resizeMode='contain' style={styles.img} source={{uri: item.url}}/>
             </Left>
             <Body style={styles.body}>
                 <Text style={styles.rewardNameTxt}>{item.brand}</Text>
-                <Text style={styles.dateTxt}>{item.redeemDate}</Text>
+                <Text style={styles.dateTxt}>{moment(item.redeemDate.toDate()).format('MMM Do, YYYY H:mm')}</Text>
                 <Icon name="keyboard-arrow-right"
                       type='material'
                       iconStyle={styles.iconAfterDate}
@@ -62,14 +73,15 @@ class RewardHistory extends Component {
     render() {
         return (
             <View style={styles.scene}>
-                <ScrollView>
-                    <FlatList
-                        data={this.state.data}
-                        renderItem={this.renderStaticReward}
-                        keyExtractor={item => item.id}
-                        style={styles.listContainer}
-                    />
-                </ScrollView>
+                <FlatList
+                    data={this.state.data.sort((b,a) => (a.redeemDate.toDate() > b.redeemDate.toDate()) - (a.redeemDate.toDate() < b.redeemDate.toDate()))}
+                    renderItem={this.renderStaticReward}
+                    keyExtractor={item => item.code}
+                    style={styles.listContainer}
+                    refreshing={this.state.isLoading}
+                    onRefresh={this.loadRewards}
+                    ListEmptyComponent={this.renderEmptyList}
+                />
                 <Modal
                     animationType="slide"
                     visible={this.state.modalVisible}
