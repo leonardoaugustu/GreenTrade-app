@@ -102,7 +102,7 @@ export default StyleSheet.create({
         left: wp("10%"),
         alignSelf: "flex-start",
         padding: wp("3%"),
-        marginTop: wp('5%')
+        marginTop: wp('5%'),
     },
     userPoint: {
         shadowColor:"black",
