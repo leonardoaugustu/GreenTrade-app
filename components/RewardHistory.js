@@ -49,7 +49,7 @@ class RewardHistory extends Component {
 
     renderEmptyList = () => {
         return (
-          <Text style={styles.displayMessage}>No Recycled Items Found.</Text>
+          <Text style={styles.displayMessage}>You do not have any redeemed rewards.</Text>
         );
       }
 
